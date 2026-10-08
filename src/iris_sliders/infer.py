@@ -8,6 +8,7 @@ import torch
 from PIL import Image
 
 from .adapters import AdapterBank, new_particles
+from .card import native_protocol
 from .checkpoint import load_adapter, metadata, read_metadata, sha256
 from .runtime import IrisRuntime
 from .train import restore_declared
@@ -36,8 +37,9 @@ def main(argv=None):
     saved = read_metadata(args.adapter)
     if saved.get("validation", {}).get("dummy"):
         raise ValueError("tiny fixture adapters cannot be used with Iris-3B weights")
-    if args.cfg_scale != saved["protocol"]["teacher_cfg"]:
-        raise ValueError("inference CFG must match the checkpoint's guided training protocol")
+    protocol = native_protocol(args.cfg_scale)
+    if saved.get("protocol") != protocol:
+        raise ValueError("adapter protocol differs from the supported native inference protocol")
     stamp, declared = restore_declared(saved)
     runtime = IrisRuntime(
         cache_dir=args.cache_dir,
@@ -56,7 +58,7 @@ def main(argv=None):
         runtime.raw["model"],
         base_sha256=runtime.base_sha256,
         validation=saved["validation"],
-        protocol=saved["protocol"],
+        protocol=protocol,
     )
     try:
         load_adapter(args.adapter, bank, particles, expected)

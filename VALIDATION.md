@@ -1,15 +1,15 @@
 # Validation status
 
-Final self-review verification: **28 passed** on Python 3.12.15, PyTorch 2.14.1+cpu,
-pytest 9.1.1. Nineteen native/code-semantic checks, three explicitly mocked loader
-checks, and six local serialization/file/path contracts. Ruff passes. The CLI v2
+Review-v3 verification: **36 passed** on Python 3.12.15, PyTorch 2.14.1+cpu,
+pytest 9.1.1. Twenty-one native/code-semantic checks, nine explicitly mocked loader/protocol
+checks, and six local serialization/file/path contracts. Ruff passes. The CLI v3
 four-step CPU smoke exits 0 and exports EMA adapters plus resumable raw state.
 
-The full CPU suite peaked at 348436 KiB RSS (wall 0:08.63).
-The v2 CLI smoke peaked at 336772 KiB RSS (wall 0:05.86).
-Final JUnit/resource evidence is `../evidence/review-final.xml` and
-`../evidence/review-final-resources.txt`; v2 tiny artifacts are under
-`../checks/self-review-cli/`. Earlier v1 prototype evidence is superseded.
+The full CPU suite peaked at 342840 KiB RSS (wall 0:05.60).
+The v3 CLI smoke peaked at 325256 KiB RSS (wall 0:02.60).
+Current JUnit/resource evidence is `../evidence/review-v3.xml` and
+`../evidence/review-v3-suite-resources.txt`; v3 tiny artifacts are under
+`../checks/review-v3-cli/`. Earlier v1/v2 prototype evidence is superseded.
 
 Actual native checks include official 2,987,511,888-parameter config on the meta
 device and all 24 real targets; tiny hybrid/GQA/layer-attention/PiT forward/backward;
@@ -24,7 +24,11 @@ EMA/resume-state and adapter-byte equality; failed-resume cleanup.
 The independent review's regressions are covered: competing weights or tokenizer/
 adapter files, index hash and exact shard references, control-majority median gain,
 degenerate edit banks, FP64 1e300 rejection before any cast/mutation, and canonical
-indexed-device behavior (CPU alias equivalent; CUDA is not allocated). Expected
+indexed-device behavior (CPU alias equivalent; CUDA is not allocated).
+The additional review regressions verify exact isotropic sketch covariance and
+column-relabeling invariance, fresh expected error energy versus declared noise,
+128 actual refreshed projections, and rejection of six mutated protocol fields
+before any model loader call. Expected
 artifact tensor dtypes are required exactly, with all shapes/finiteness validated
 before state mutation. Mixed-batch comparisons use floating-point tolerance because
 changing batch shape changes reduction rounding; same-batch native solver and saved
@@ -44,10 +48,25 @@ query. The restricted namespace and the intentional CPU-only test build are sepa
 reasons GPU work cannot use this venv as-is. No driver install, permission change,
 shared-GPU allocation or interruption happened. See `../evidence/nvidia-host-diagnosis.json`.
 
-The two accessible historical slider venvs currently report PyTorch2.14.0+cpu in
-both restricted and host execution. They are not established as the earlier immutable
-GPU runtime. `/ml2/work` directory inventory is read-blocked; the exact immutable
-runtime path has been requested. This does not indicate host-driver failure.
+The coordinator supplied the exact recovered Atlas reference runtime:
+`/home/mikkel/Documents/Codex/2026-10-07/task-18/runtime/matched-env/bin/python`.
+Its Python3.12.13 / PyTorch2.13.0+cu126 / CUDA12.6 build reports two devices through
+approved host execution and zero in the ordinary restricted view. Our comparison
+used only NVML/framework device-count queries, with no GPU tensor allocation.
+The approved host query reported free3150/3205MiB. Delivered raw evidence hashes
+were verified against the coordinator handoff. The reference runtime was not
+modified and has not been established as a complete Iris dependency runtime.
+This resolves the earlier unknown-runtime diagnosis; driver/settings/permissions
+were not changed. Future tests require supported approved execution, a compatible
+task runtime, explicitly available GPU memory, and a bounded resource plan.
+
+The supplied independent-review reproduction was replayed against this revision,
+changing only its output paths into our task workspace. Original reviewer files
+and results were left unchanged. `../evidence/review-v3-replay.json` reports:
+- Default bank calibration/fresh expected RMS:1.057599 /1.057599.
+- Constructed adversarial bank calibration/fresh expected RMS:1 /1.
+- Constructed first refreshed sketch RMS:0.895908; declared sigma:3.571429.
+- Unsupported protocol rejected before the model loader, rather than reaching render.
 
 Initial relevant cache check found no matching Iris or Qwen3-VL cache in the inspected
 roots only. Weight-only download remains20,825,832,024 bytes; known token/config/index

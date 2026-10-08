@@ -8,8 +8,10 @@ import torch
 from safetensors.torch import load_file, save_file
 
 from iris_sliders.adapters import AdapterBank, new_particles
+from iris_sliders.card import native_protocol
 from iris_sliders.checkpoint import load_adapter, metadata, save_adapter
 from iris_sliders.formulation import load_stamp
+from iris_sliders.projection import isotropic_calibration_bank
 from iris_sliders.runtime import verify_encoder_files
 from iris_sliders.tiny import SyntheticEncoder, TinyRuntime
 from iris_sliders.train import build_game, paired_records, step_context, train
@@ -174,3 +176,110 @@ def test_failed_resume_closes_native_hooks(tmp_path):
             resume=tmp_path / "first/training.pt",
         )
     assert all(not module._forward_hooks for _, module in runtime.model.named_modules())
+
+
+def test_refreshed_sketch_noise_matches_isotropic_calibration():
+    # The review's accepted adversarial bank is orthogonal to coordinate zero
+    # in both former calibration sketches; refreshed directions still see it.
+    n = 3 * 16 * 16
+    columns = []
+    for seed in (31415, 31416):
+        generator = torch.Generator().manual_seed(seed)
+        signs = torch.randint(0, 2, (n, 8), dtype=torch.int8, generator=generator)
+        columns.append((signs.double() * 2 - 1)[:, 0])
+    basis, _ = torch.linalg.qr(torch.stack(columns, dim=1), mode="reduced")
+    checker = (torch.arange(16)[:, None] + torch.arange(16)[None, :]) % 2 * 2 - 1
+    flat = checker.expand(3, -1, -1).flatten().double()
+    flat = flat - basis @ (basis.T @ flat)
+    delta = (flat / flat.square().mean().sqrt()).float().reshape(1, 3, 16, 16)
+    runtime = TinyRuntime()
+    rows = records_for(runtime, EDIT_ROWS)[:2]
+    records = [dict(row, neutral=torch.zeros_like(delta), target=delta, control=False) for row in rows]
+    stamp, declared = load_stamp(batch=1)
+    game = build_game(runtime, records, stamp, declared)
+    try:
+        scale = game.critic.target_std
+        assert torch.allclose(scale, torch.ones_like(scale), atol=1e-6)
+        fresh_expected = (delta.double().square().mean() * scale.double().reciprocal().square().mean()).sqrt()
+        assert float(fresh_expected) == pytest.approx(game.edit_rms, rel=1e-6)
+        sigma = stamp.noise_std_at(0, game.edit_rms)
+        assert float(fresh_expected) / sigma == pytest.approx(stamp.spec["edit_noise_ratio"], rel=1e-6)
+        refreshed = torch.cat(
+            [
+                game.bridge.projector(delta, seed=game.bridge.projector.seed_for_step(i)) / scale
+                for i in range(1, 129)
+            ]
+        )
+        # Bounded empirical check of the actual refreshing operation, distinct
+        # from its exact second-moment identity (128*8 independent directions).
+        assert float(refreshed.square().mean()) == pytest.approx(float(fresh_expected.square()), rel=0.2)
+    finally:
+        game.bridge.bank.close()
+
+
+def test_isotropic_core_calibration_is_invariant_to_column_relabeling():
+    stamp, _ = load_stamp()
+    rms = torch.tensor([0.5, 1.0, 2.0, 3.0], dtype=torch.float64)
+    bank = isotropic_calibration_bank(rms, 8)
+    # Mean zero and diagonal covariance matching fresh Rademacher sketches.
+    assert torch.equal(bank.mean(0), torch.zeros(8))
+    covariance = bank.double().T @ bank.double() / len(bank)
+    assert torch.allclose(covariance, torch.eye(8).double() * rms.square().mean(), atol=1e-6)
+    critic = stamp.critic(bank, neutrals=torch.zeros_like(bank))
+    permuted = bank[:, torch.tensor([7, 2, 0, 5, 1, 6, 3, 4])]
+    relabeled = stamp.critic(permuted, neutrals=torch.zeros_like(permuted))
+    assert torch.equal(critic.target_std, relabeled.target_std)
+    assert torch.equal(critic.edit_rms, relabeled.edit_rms)
+    # The core's existing lower median-RMS gain remains authoritative.
+    assert torch.allclose(critic.target_std, rms.float().median().expand(8), atol=1e-6)
+    expected = rms.square().mean().sqrt() / critic.target_std.double()[0]
+    assert float(critic.edit_rms) == pytest.approx(float(expected), rel=1e-6)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"id": "unsupported-other-protocol"},
+        {"shift": 2.0},
+        {"num_timesteps": 2000},
+        {"projection_step_stride": 17},
+        {"calibration": "sampled-coordinate-whitening"},
+        {"teacher_cfg": 1.0},
+    ],
+)
+def test_mock_inference_rejects_altered_protocol_before_model_allocation(monkeypatch, tmp_path, change):
+    import iris_sliders.infer as inference
+
+    runtime = TinyRuntime()
+    stamp, declared = load_stamp()
+    bank = AdapterBank(runtime.model, stamp)
+    meta = metadata(
+        bank,
+        stamp,
+        declared,
+        runtime.raw["model"],
+        base_sha256=runtime.base_sha256,
+        validation={"dummy": False},
+        protocol={**native_protocol(), **change},
+    )
+    path = tmp_path / "unsupported.safetensors"
+    save_adapter(path, bank, new_particles(stamp), meta)
+    bank.close()
+
+    def allocation_forbidden(*args, **kwargs):
+        pytest.fail("model allocation was reached for an unsupported protocol")
+
+    monkeypatch.setattr(inference, "IrisRuntime", allocation_forbidden)
+    with pytest.raises(ValueError, match="adapter protocol differs"):
+        inference.main(
+            [
+                "--adapter",
+                str(path),
+                "--prompt",
+                "fox",
+                "--cfg-scale",
+                "3",
+                "--out",
+                "/ml2/iris-particle-sliders-task-20261008/checks/unused.png",
+            ]
+        )

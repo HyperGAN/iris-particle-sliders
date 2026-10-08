@@ -36,20 +36,34 @@ residual, changes with the target, and vanishes for exact student/teacher equali
 
 Critic calibration uses only finite, nondegenerate edit-bearing records. Identical-prompt
 controls remain in the training schedule, but never set the median whitening gain.
-Calibration sketches use `31415 + edit_record_index`, counting only editing records.
-At least two usable projected edits with nonzero variation are required. The actual
-normalizer still comes from `stamp.critic(targets, neutrals=...)`.
+A fresh sketch coordinate has mean zero and variance equal to the full pixel edit's
+mean squared value. For each edit with pixel RMS r, the calibration bank contains
+`+/-sqrt(rank)*r*basis_j` for every coordinate j. These balanced rows have mean zero,
+isotropic covariance `r^2 I`, and row RMS r. This is an exact moment representation,
+not sampled calibration directions; coordinate relabeling leaves the scale unchanged.
+
+The unchanged `stamp.critic(targets, neutrals=zeros)` computes its existing paired
+standard deviation and lower-median RMS gain from that bank. Every final coordinate
+uses the same scale s; this equals the lower median pixel edit RMS when the core's
+existing numerical floors are inactive. Those floors remain unchanged. Both the
+calibration bank and fresh sketches have expected normalized energy
+`mean(r_i^2) / s^2`, so the game's `edit_rms` and declared Gaussian noise
+match that refreshed distribution. No additional clamp, floor or noise knob is
+introduced. At least two edit-bearing records are required; identical nonzero edit
+fields are usable because variation comes from the isotropic sketch distribution.
 
 The inference artifact contains FP32 EMA adapter modules and particles plus source,
 base/config hashes, target names, formulation and full protocol metadata. Strength
 0–1 multiplies each hook residual; zero returns the original tensor exactly. This
 does not promise linear image interpolation. Particles and routed maps remain active
-at inference. Inference CFG must match the checkpoint's teacher CFG. Raw resume state
+at inference. Inference validates the entire checkpoint protocol against an independently constructed
+native protocol before loading models, including the requested CFG. Raw resume state
 separately captures the critic, both optimizers, projection seed, particles, EMA,
 CPU/CUDA RNG and trajectory settings. CPU tests compare all fields and exported bytes.
 
 This revision fixes the first local prototype's CFG1/CFG3 mismatch, fixed pooling
 nullspace, particle context registration, control-majority normalization and dtype
-conversion gap. None of those prototype artifacts were published. Format v2 rejects
-prototype v1 adapters. Real Iris/Qwen weights and image-quality preservation remain
+conversion gap. None of those prototype artifacts were published. Format v3 rejects
+earlier local v1/v2 adapters. The v2 calibration sampled individual directions and
+was inappropriate for refreshed sketches; v3 uses the exact moment bank above. Real Iris/Qwen weights and image-quality preservation remain
 untested; there is no measured full-model convergence or GPU memory-fit claim.

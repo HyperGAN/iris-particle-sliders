@@ -8,6 +8,30 @@ from torch import nn
 from .flow import guided_velocity
 
 
+def isotropic_calibration_bank(edit_rms, rank):
+    """Exact first/second moments of fresh sketches, with core median-RMS gain.
+
+    Fresh Rademacher coordinates have mean zero and covariance rms(e)^2 I.
+    For each pixel edit RMS r, the balanced rows +/-sqrt(rank)*r*basis_j
+    have exactly those moments and each row has RMS r. Passing this moment
+    bank to the unchanged core normalizer gives a common coordinate scale,
+    independent of any calibration sketch. Its median pixel RMS gain and
+    existing numerical floors remain owned by the core.
+    No random sample, column identity, new floor or product noise knob is used.
+    """
+    values = torch.as_tensor(edit_rms, dtype=torch.float64)
+    if values.ndim != 1 or len(values) < 2 or not torch.isfinite(values).all() or not (values > 0).all():
+        raise ValueError("isotropic calibration requires at least two finite positive edit RMS values")
+    if rank < 1:
+        raise ValueError("calibration rank must be positive")
+    axes = torch.eye(rank, dtype=torch.float64, device=values.device) * math.sqrt(rank)
+    directions = torch.cat([axes, -axes])
+    bank = (values[:, None, None] * directions[None]).flatten(0, 1).float()
+    if not torch.isfinite(bank).all():
+        raise ValueError("isotropic calibration moments are not representable in FP32")
+    return bank
+
+
 class VelocityProjection(nn.Module):
     """Seeded Rademacher sketch of every RGB velocity coordinate into stamp rank.
 

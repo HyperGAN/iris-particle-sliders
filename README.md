@@ -45,7 +45,10 @@ GPU or download weights until resources and the exact download plan are reviewed
 The restricted task view has no NVIDIA device nodes; its `nvidia-smi` failure is
 not a host driver failure. Read-only host queries show a working 580.173.02 driver
 and two RTX A6000s using about45 GiB each, with roughly3 GiB free. The task venv is
-CPU-only by design. No matching model cache appeared in the locations inspected.
+CPU-only by design. The exact recovered Atlas runtime
+(`/home/mikkel/Documents/Codex/2026-10-07/task-18/runtime/matched-env/bin/python`)
+reports CUDA 12.6 and two host devices, but zero in the restricted task view. It was
+inspected read-only and has not been changed or used to run Iris. No matching model cache appeared in the locations inspected.
 Full Iris/Qwen validation has **not run**; no shared GPU allocation is authorized.
 
 The pinned Iris weight file is 11,950,112,680 bytes. Qwen's two shards total
@@ -91,7 +94,9 @@ iris-slider-train <same original options> --steps 2000 \
 with strict source/config/base/formulation metadata. The error projection is a changing, deterministic rank-eight Rademacher sketch
 of every RGB coordinate, fixed across each D/G update. It includes high-frequency
 errors and has full pixel error energy coverage in expectation; a finite run is not
-a pixel-matching or quality guarantee. See [FORMULATION.md](FORMULATION.md).
+a pixel-matching or quality guarantee. Critic scales are calibrated from an exact
+isotropic moment bank derived from full pixel edit RMS, so fresh directions retain
+the declared error-to-noise ratio. See [FORMULATION.md](FORMULATION.md).
 
 ## Inference
 
@@ -106,7 +111,9 @@ iris-slider-infer --adapter /ml2/iris-sliders/warm-light/adapter.safetensors \
 Official sample card: 1024px, 100 DPM-Solver++ order-2 steps, CFG 3, shift 4.
 Dimensions must be patch-aligned and <=1,048,576 pixels. PNG sidecars record the
 prompt, seed, shape, sample card and adapter/base hashes. Strength is unipolar 0–1;
-zero bypasses hooks without arithmetic. Inference CFG must match the checkpoint's teacher CFG. Routed adapters remain active at inference;
+zero bypasses hooks without arithmetic. The complete saved protocol must match the independently constructed native
+protocol, including CFG, before models are loaded. Artifact format v3 rejects the
+unreleased earlier local formats. Routed adapters remain active at inference;
 they are nonlinear and cannot be merged into an ordinary LoRA.
 
 Native projection targets are exactly `blocks.0..7.attn.proj_x` (dual-stream image

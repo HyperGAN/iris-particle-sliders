@@ -54,7 +54,7 @@
     "published": false
   },
   "protocol": {
-    "id": "iris-guided-paired-velocity-spatial-sketch-v2",
+    "id": "iris-guided-paired-velocity-spatial-sketch-v3",
     "teacher_cfg": 3.0,
     "cfg_interval": [
       0.0,
@@ -68,7 +68,8 @@
     "projection": "step-seeded-all-coordinate-rademacher",
     "projection_rank": 8,
     "projection_base_seed": 31415,
-    "projection_step_stride": 1000003
+    "projection_step_stride": 1000003,
+    "calibration": "exact-isotropic-pixel-edit-rms-moments"
   },
-  "adapter_format": "iris-native-routed-particle-v2"
+  "adapter_format": "iris-native-routed-particle-v3"
 }

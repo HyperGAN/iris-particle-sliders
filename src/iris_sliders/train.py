@@ -14,7 +14,7 @@ from .card import card, default_prompts, native_protocol
 from .checkpoint import metadata, save_adapter
 from .flow import guided_velocity
 from .formulation import load_stamp
-from .projection import IrisErrorBridge, VelocityProjection
+from .projection import IrisErrorBridge, VelocityProjection, isotropic_calibration_bank
 from .runtime import validate_shape
 
 
@@ -90,43 +90,23 @@ def paired_records(runtime, rows, *, seed, height, width, trajectory_steps, reco
 def build_game(runtime, records, stamp, declared, seed=7):
     torch.manual_seed(seed)
     runtime.device = next(runtime.model.parameters()).device
-    bank = AdapterBank(runtime.model, stamp).to(runtime.device)
     projector = VelocityProjection(int(stamp.spec["adapter_rank"])).to(runtime.device)
-    bridge = IrisErrorBridge(runtime.model, bank, projector)
-    edit_records = []
+    edit_rms = []
     for row in records:
         delta = row["target"] - row["neutral"]
         if not torch.isfinite(delta).all():
-            bank.close()
             raise ValueError("teacher bank contains non-finite velocity edits")
-        if not row.get("control", False) and float(delta.square().mean().sqrt()) > 1e-8:
-            edit_records.append(row)
-    if len(edit_records) < 2:
-        bank.close()
+        rms = delta.double().square().mean().sqrt()
+        if not row.get("control", False) and float(rms) > 1e-8:
+            edit_rms.append(rms)
+    if len(edit_rms) < 2:
         raise ValueError("critic normalization requires at least two edit-bearing teacher records")
-    targets = torch.cat(
-        [
-            projector(row["target"].to(runtime.device), seed=int(projector.base_seed) + i)
-            for i, row in enumerate(edit_records)
-        ]
-    )
-    neutrals = torch.cat(
-        [
-            projector(row["neutral"].to(runtime.device), seed=int(projector.base_seed) + i)
-            for i, row in enumerate(edit_records)
-        ]
-    )
-    projected_edits = targets - neutrals
-    if (
-        not torch.isfinite(projected_edits).all()
-        or float(projected_edits.square().mean().sqrt()) <= 1e-8
-        or float(projected_edits.std(0, unbiased=False).square().mean().sqrt()) <= 1e-8
-    ):
-        bank.close()
-        raise ValueError("degenerate projected edit bank cannot calibrate the critic")
-    if (targets - neutrals).square().mean().item() == 0:
-        bank.close()
-        raise ValueError("positive and neutral projected teachers are identical")
+    # Coordinates are refreshed every step: calibrate their exact isotropic
+    # moments, never fixed per-coordinate scales from a few sampled directions.
+    targets = isotropic_calibration_bank(torch.stack(edit_rms), projector.rank).to(runtime.device)
+    neutrals = torch.zeros_like(targets)
+    bank = AdapterBank(runtime.model, stamp).to(runtime.device)
+    bridge = IrisErrorBridge(runtime.model, bank, projector)
     game = FormulationGame(
         stamp,
         declared,
@@ -140,7 +120,7 @@ def build_game(runtime, records, stamp, declared, seed=7):
     if not torch.isfinite(game.critic.target_std).all() or not (game.critic.target_std > 0).all():
         bank.close()
         raise ValueError("non-finite or non-positive paired edit normalization")
-    game.normalization_records = len(edit_records)
+    game.normalization_records = len(edit_rms)
     return game
 
 
@@ -292,6 +272,7 @@ def train(
             "records": len(records),
             "normalization_records": game.normalization_records,
             "controls_excluded_from_normalization": True,
+            "calibration": "exact-isotropic-pixel-edit-rms-moments",
             "teacher_cfg": teacher_cfg,
             "export": "EMA",
             "ema": decay,
