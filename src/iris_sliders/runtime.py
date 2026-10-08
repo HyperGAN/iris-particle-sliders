@@ -1,0 +1,137 @@
+"""Local-first native Iris loader. Hub access is explicit and pinned."""
+
+import json
+import os
+from pathlib import Path
+
+import torch
+
+from .card import CONFIG_SHA256, MODEL_ID, MODEL_REVISION, MODEL_SHA256, TEXT_ID, TEXT_REVISION
+from .checkpoint import sha256
+
+
+def prepare_paths(cache_dir, *, checkpoint=None, text_dir=None, allow_hub=False):
+    cache_dir = Path(cache_dir).resolve()
+    if not (cache_dir == Path("/ml2") or Path("/ml2") in cache_dir.parents):
+        raise ValueError("model caches and bulk artifacts must be under /ml2")
+    os.environ["HF_HOME"] = str(cache_dir)
+    os.environ["HF_HUB_CACHE"] = str(cache_dir / "hub")
+    os.environ["HF_HUB_OFFLINE"] = "0" if allow_hub else "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "0" if allow_hub else "1"
+    os.environ["WANDB_MODE"] = "disabled"
+    # Upstream text encoder has no revision/local_files_only knobs; resolving an immutable
+    # snapshot to a local directory preserves its native chat-template/layer selection.
+    from huggingface_hub import snapshot_download
+
+    if checkpoint is None:
+        checkpoint = snapshot_download(
+            MODEL_ID,
+            revision=MODEL_REVISION,
+            local_files_only=not allow_hub,
+            cache_dir=str(cache_dir / "hub"),
+            allow_patterns=["config.yaml", "model.safetensors"],
+        )
+    if text_dir is None:
+        text_dir = snapshot_download(
+            TEXT_ID,
+            revision=TEXT_REVISION,
+            local_files_only=not allow_hub,
+            cache_dir=str(cache_dir / "hub"),
+            allow_patterns=["*.json", "*.safetensors", "*.txt"],
+        )
+    return Path(checkpoint), Path(text_dir)
+
+
+class IrisRuntime:
+    def __init__(
+        self, *, cache_dir, checkpoint=None, text_dir=None, allow_hub=False, device="cpu", text_device="cpu"
+    ):
+        from iris3b.config import inference_config
+        from iris3b.models.dit import IrisDiT
+        from iris3b.sampling import load_for_inference
+        from iris3b.text.qwen3_vl import Qwen3VLTextEncoder
+
+        checkpoint, text_dir = prepare_paths(
+            cache_dir, checkpoint=checkpoint, text_dir=text_dir, allow_hub=allow_hub
+        )
+        if not checkpoint.is_dir():
+            raise ValueError("use an official exported Iris directory (config.yaml + model.safetensors)")
+        if sha256(checkpoint / "config.yaml") != CONFIG_SHA256:
+            raise ValueError("Iris configuration differs from the pinned release")
+        self.base_sha256 = sha256(checkpoint / "model.safetensors")
+        if self.base_sha256 != MODEL_SHA256:
+            raise ValueError("Iris weights differ from the pinned official text-to-image checkpoint")
+        # Verify explicit encoder directories against the recorded official shard hashes too.
+        pins = json.loads(Path(__file__).with_name("text-files.json").read_text())
+        for filename, expected in pins.items():
+            if sha256(text_dir / filename) != expected:
+                raise ValueError(f"Qwen3-VL file differs from the pinned encoder: {filename}")
+        raw, weights = load_for_inference(checkpoint)
+        self.raw = raw
+        self.cfg = inference_config(raw)
+        if self.cfg.flow.prediction != "v":
+            raise ValueError("this product requires Iris velocity prediction")
+        self.device = torch.device(device)
+        with torch.device("meta"):
+            self.model = IrisDiT(self.cfg.model)
+        self.model.load_state_dict(weights, strict=True, assign=True)
+        del weights
+        self.model = self.model.eval().requires_grad_(False).to(self.device, dtype=torch.float32)
+        text_cfg = self.cfg.text_encoder
+        text_cfg.pretrained = str(text_dir)
+        text_cfg.null_embed_dir = str(Path(cache_dir) / "null" / TEXT_REVISION)
+        text_cfg.compile = False
+        text_cfg.on_caption_overflow = "error"
+        self.encoder = Qwen3VLTextEncoder(text_cfg, device=text_device)
+        self.encoding_cache = {}
+
+    @torch.no_grad()
+    def encode(self, prompt):
+        from iris3b.text.base import TextEncoding
+
+        if prompt not in self.encoding_cache:
+            encoded = self.encoder.encode([prompt])
+            self.encoding_cache[prompt] = TextEncoding(
+                encoded.embeddings.detach().cpu(), encoded.mask.detach().cpu()
+            )
+        cached = self.encoding_cache[prompt]
+        return TextEncoding(
+            cached.embeddings.to(self.device, dtype=torch.float32), cached.mask.to(self.device)
+        )
+
+    @torch.no_grad()
+    def offload_encoder(self):
+        self.encoder.to("cpu")
+
+    @torch.no_grad()
+    def render(self, prompt, *, seed, height=1024, width=1024, steps=100, cfg_scale=3.0):
+        from iris3b.sampling import generate
+
+        validate_shape(height, width, self.cfg.model.patch_size)
+        if steps < 1 or not 0 <= cfg_scale <= 20:
+            raise ValueError("invalid sample steps or CFG")
+        generator = torch.Generator(device=self.device).manual_seed(seed)
+        with torch.autocast(self.device.type, dtype=torch.bfloat16, enabled=self.device.type == "cuda"):
+            return generate(
+                self.model,
+                self.encoder,
+                [prompt],
+                height,
+                width,
+                steps=steps,
+                order=2,
+                cfg_scale=cfg_scale,
+                cfg_interval=tuple(self.cfg.sample.cfg_interval),
+                shift=self.cfg.flow.shift,
+                generator=generator,
+                device=self.device,
+                num_train_timesteps=self.cfg.flow.num_train_timesteps,
+                prediction=self.cfg.flow.prediction,
+            )
+
+
+def validate_shape(height, width, patch_size=16):
+    if height < patch_size or width < patch_size or height % patch_size or width % patch_size:
+        raise ValueError("height and width must be positive multiples of the Iris patch size")
+    if height * width > 1048576:
+        raise ValueError("this Iris release is limited to one megapixel")

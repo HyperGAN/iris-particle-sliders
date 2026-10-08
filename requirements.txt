@@ -1,0 +1,2 @@
+# Install the desired PyTorch build first; this product pins native Iris and shared core.
+-e .

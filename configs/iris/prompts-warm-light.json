@@ -1,0 +1,10 @@
+{
+  "concept": "warm golden-hour lighting",
+  "recommended_range": [0, 1],
+  "rows": [
+    {"neutral": "A red fox standing in a meadow, photograph.", "positive": "A red fox standing in a meadow, warm golden-hour lighting, photograph."},
+    {"neutral": "A wooden cabin beside a lake, photograph.", "positive": "A wooden cabin beside a lake, warm golden-hour lighting, photograph."},
+    {"neutral": "A bicycle parked beside a brick wall, photograph.", "positive": "A bicycle parked beside a brick wall, warm golden-hour lighting, photograph."}
+  ],
+  "controls": ["A blue ceramic cup on a white table, studio photograph."]
+}
