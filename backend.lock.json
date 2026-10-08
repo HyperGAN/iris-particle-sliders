@@ -36,7 +36,11 @@
       "tokenizer_config.json": "c2da771801886ad9ae98181793ffd3dfb7f1af30f6f7c6a4e15d7dbba52e2399",
       "tokenizer.json": "a5d85b6dcc535e6b93115a9ef287e6132fdbf30270da6218194ba742261173c7",
       "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
-      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "model.safetensors.index.json": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+      "chat_template.json": "6f8a6a55027e3da5160105556cda5dd69f6423f1c32645f6730d32de7773d0c4",
+      "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+      "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13"
     }
   },
   "config": {
@@ -46,8 +50,25 @@
   "publication": {
     "github": "HyperGAN/iris-particle-sliders",
     "python": "iris-particle-sliders",
-    "huggingface": "ntc-ai/iris-particle-sliders",
     "proposed_visibility": "public",
     "published": false
-  }
+  },
+  "protocol": {
+    "id": "iris-guided-paired-velocity-spatial-sketch-v2",
+    "teacher_cfg": 3.0,
+    "cfg_interval": [
+      0.0,
+      1.0
+    ],
+    "null_prompt": "",
+    "num_timesteps": 1000,
+    "prediction": "v",
+    "shift": 4.0,
+    "order": 2,
+    "projection": "step-seeded-all-coordinate-rademacher",
+    "projection_rank": 8,
+    "projection_base_seed": 31415,
+    "projection_step_stride": 1000003
+  },
+  "adapter_format": "iris-native-routed-particle-v2"
 }

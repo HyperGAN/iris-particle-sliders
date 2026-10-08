@@ -13,14 +13,30 @@ MODEL_SHA256 = "a90e1f4c197bac8491f82078def68884b6a3527ea7fc97a693e3e367372aa80f
 CONFIG_SHA256 = "077ce19156d9425a7e665a0059be02b3c5a1fcd7aea7607047b4f7486efa6cd5"
 MODEL_BYTES = 11950112680
 TEXT_BYTES = 8875719344
-FORMAT = "iris-native-routed-particle-v1"
+FORMAT = "iris-native-routed-particle-v2"
+
+
+def native_protocol(teacher_cfg=3.0):
+    return {
+        "id": "iris-guided-paired-velocity-spatial-sketch-v2",
+        "teacher_cfg": float(teacher_cfg),
+        "cfg_interval": [0.0, 1.0],
+        "null_prompt": "",
+        "num_timesteps": 1000,
+        "prediction": "v",
+        "shift": 4.0,
+        "order": 2,
+        "projection": "step-seeded-all-coordinate-rademacher",
+        "projection_rank": 8,
+        "projection_base_seed": 31415,
+        "projection_step_stride": 1000003,
+    }
 
 
 def card():
     return {
         "package": "iris-particle-sliders",
         "proposed_repository": "HyperGAN/iris-particle-sliders",
-        "proposed_adapter_repository": "ntc-ai/iris-particle-sliders",
         "model_id": MODEL_ID,
         "model_revision": MODEL_REVISION,
         "text_encoder": TEXT_ID,
@@ -43,6 +59,7 @@ def card():
         "text_encoder_frozen": True,
         "weight_download_bytes": MODEL_BYTES + TEXT_BYTES,
         "real_weight_validation": False,
+        "protocol": native_protocol(),
     }
 
 

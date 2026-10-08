@@ -36,6 +36,8 @@ def main(argv=None):
     saved = read_metadata(args.adapter)
     if saved.get("validation", {}).get("dummy"):
         raise ValueError("tiny fixture adapters cannot be used with Iris-3B weights")
+    if args.cfg_scale != saved["protocol"]["teacher_cfg"]:
+        raise ValueError("inference CFG must match the checkpoint's guided training protocol")
     stamp, declared = restore_declared(saved)
     runtime = IrisRuntime(
         cache_dir=args.cache_dir,
@@ -54,6 +56,7 @@ def main(argv=None):
         runtime.raw["model"],
         base_sha256=runtime.base_sha256,
         validation=saved["validation"],
+        protocol=saved["protocol"],
     )
     try:
         load_adapter(args.adapter, bank, particles, expected)

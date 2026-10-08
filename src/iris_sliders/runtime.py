@@ -10,6 +10,36 @@ from .card import CONFIG_SHA256, MODEL_ID, MODEL_REVISION, MODEL_SHA256, TEXT_ID
 from .checkpoint import sha256
 
 
+def encoder_pins():
+    return json.loads(Path(__file__).with_name("text-files.json").read_text())
+
+
+def verify_encoder_files(text_dir, *, pins=None):
+    """Verify every load-relevant file, index references and absence of competing weights."""
+    text_dir = Path(text_dir)
+    pins = encoder_pins() if pins is None else pins
+    index_name = "model.safetensors.index.json"
+    if index_name not in pins:
+        raise ValueError("pinned encoder manifest lacks the weight index")
+    load_suffixes = {".json", ".safetensors", ".bin", ".pt", ".pth", ".msgpack", ".h5", ".gguf"}
+    for path in text_dir.iterdir():
+        if path.is_file() and path.suffix in load_suffixes and path.name not in pins:
+            raise ValueError(f"unverified competing encoder file: {path.name}")
+    # Index and config integrity are checked before the potentially multi-GB shard scan.
+    for filename, expected in sorted(pins.items(), key=lambda item: item[0].endswith(".safetensors")):
+        if Path(filename).name != filename or sha256(text_dir / filename) != expected:
+            raise ValueError(f"Qwen3-VL file differs from the pinned encoder: {filename}")
+    index = json.loads((text_dir / index_name).read_text())
+    weights = index.get("weight_map")
+    if not isinstance(weights, dict) or not weights:
+        raise ValueError("encoder index has no weight map")
+    referenced = set(weights.values())
+    shards = {name for name in pins if name.endswith(".safetensors")}
+    if referenced != shards or any(Path(name).name != name for name in referenced):
+        raise ValueError("encoder index references unverified or missing shards")
+    return pins
+
+
 def prepare_paths(cache_dir, *, checkpoint=None, text_dir=None, allow_hub=False):
     cache_dir = Path(cache_dir).resolve()
     if not (cache_dir == Path("/ml2") or Path("/ml2") in cache_dir.parents):
@@ -37,7 +67,7 @@ def prepare_paths(cache_dir, *, checkpoint=None, text_dir=None, allow_hub=False)
             revision=TEXT_REVISION,
             local_files_only=not allow_hub,
             cache_dir=str(cache_dir / "hub"),
-            allow_patterns=["*.json", "*.safetensors", "*.txt"],
+            allow_patterns=sorted(encoder_pins()),
         )
     return Path(checkpoint), Path(text_dir)
 
@@ -61,22 +91,19 @@ class IrisRuntime:
         self.base_sha256 = sha256(checkpoint / "model.safetensors")
         if self.base_sha256 != MODEL_SHA256:
             raise ValueError("Iris weights differ from the pinned official text-to-image checkpoint")
-        # Verify explicit encoder directories against the recorded official shard hashes too.
-        pins = json.loads(Path(__file__).with_name("text-files.json").read_text())
-        for filename, expected in pins.items():
-            if sha256(text_dir / filename) != expected:
-                raise ValueError(f"Qwen3-VL file differs from the pinned encoder: {filename}")
+        verify_encoder_files(text_dir)
         raw, weights = load_for_inference(checkpoint)
         self.raw = raw
         self.cfg = inference_config(raw)
         if self.cfg.flow.prediction != "v":
             raise ValueError("this product requires Iris velocity prediction")
-        self.device = torch.device(device)
+        requested_device = torch.device(device)
         with torch.device("meta"):
             self.model = IrisDiT(self.cfg.model)
         self.model.load_state_dict(weights, strict=True, assign=True)
         del weights
-        self.model = self.model.eval().requires_grad_(False).to(self.device, dtype=torch.float32)
+        self.model = self.model.eval().requires_grad_(False).to(requested_device, dtype=torch.float32)
+        self.device = next(self.model.parameters()).device
         text_cfg = self.cfg.text_encoder
         text_cfg.pretrained = str(text_dir)
         text_cfg.null_embed_dir = str(Path(cache_dir) / "null" / TEXT_REVISION)
@@ -97,6 +124,15 @@ class IrisRuntime:
         cached = self.encoding_cache[prompt]
         return TextEncoding(
             cached.embeddings.to(self.device, dtype=torch.float32), cached.mask.to(self.device)
+        )
+
+    @torch.no_grad()
+    def encode_null(self):
+        from iris3b.text.base import TextEncoding
+
+        encoded = self.encoder.null("")
+        return TextEncoding(
+            encoded.embeddings.to(self.device, dtype=torch.float32), encoded.mask.to(self.device)
         )
 
     @torch.no_grad()

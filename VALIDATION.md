@@ -1,43 +1,56 @@
 # Validation status
 
-Final local verification: **12 passed** on Python 3.12.15, PyTorch 2.14.1+cpu,
-pytest 9.1.1. Seven native integration tests, two explicitly mocked loader tests,
-and three local serialization/path contracts. Ruff passed; wheel and sdist builds
-passed; both archive contents were inspected. The source archive includes test
-fixtures, examples, provenance and release tools.
+Final self-review verification: **28 passed** on Python 3.12.15, PyTorch 2.14.1+cpu,
+pytest 9.1.1. Nineteen native/code-semantic checks, three explicitly mocked loader
+checks, and six local serialization/file/path contracts. Ruff passes. The CLI v2
+four-step CPU smoke exits 0 and exports EMA adapters plus resumable raw state.
 
-Native checks: official 2,987,511,888-parameter config on the meta device with all
-24 targets; real tiny forward/backward with masked 4-D conditioning; frozen base
-invariance; exact strength-zero equality; finite real shared-game updates including
-step-four lazy cap; native CFG/DPM solver export-reload equality; strict metadata,
-key/shape/finiteness rejection; raw and EMA resume equality.
+The full CPU suite peaked at 348436 KiB RSS (wall 0:08.63).
+The v2 CLI smoke peaked at 336772 KiB RSS (wall 0:05.86).
+Final JUnit/resource evidence is `../evidence/review-final.xml` and
+`../evidence/review-final-resources.txt`; v2 tiny artifacts are under
+`../checks/self-review-cli/`. Earlier v1 prototype evidence is superseded.
 
-The CPU suite peaked at 375652 KiB RSS. The four-step command-line
-training smoke exited 0 and peaked at 366560 KiB RSS. It exported EMA
-`adapter.safetensors`, metadata, raw resumable `training.pt`, and a JSONL log.
-Reports and JUnit XML are in `../evidence/`; the tiny artifacts are under
-`../checks/dummy-final/`. These adapters cannot be used with Iris-3B base weights.
+Actual native checks include official 2,987,511,888-parameter config on the meta
+device and all 24 real targets; tiny hybrid/GQA/layer-attention/PiT forward/backward;
+exact native CFG agreement at same-batch times/boundaries; matched noise/time and
+positive/neutral teacher records; actual teacher-error equivalence and zero-error
+controls; visibility of high-frequency errors; all-pixel sketch gradients; gradients
+through every down/router/net/up and the particle values without VIC in the probe;
+base freeze; exact strengthzero and hook-level half-strength semantics; particle
+values affecting inference; native solver export/reload; full critic/optimizer/RNG/
+EMA/resume-state and adapter-byte equality; failed-resume cleanup.
 
-The production adapter policy contains 1,138,976 parameters including particles,
-4,555,904 FP32 tensor bytes (metadata additional). These counts come from actual
-module construction, not a trained production adapter.
+The independent review's regressions are covered: competing weights or tokenizer/
+adapter files, index hash and exact shard references, control-majority median gain,
+degenerate edit banks, FP64 1e300 rejection before any cast/mutation, and canonical
+indexed-device behavior (CPU alias equivalent; CUDA is not allocated). Expected
+artifact tensor dtypes are required exactly, with all shapes/finiteness validated
+before state mutation. Mixed-batch comparisons use floating-point tolerance because
+changing batch shape changes reduction rounding; same-batch native solver and saved
+adapter/resume comparisons remain exact.
 
-Actual pinned native code: tiny IrisDiT with hybrid dual/single trunk, GQA, masked
-layer aggregation and PiT; real pinned shared FormulationGame/ParticleGAN D/G/cap/VIC.
-Model-sized construction happens only on the meta device for 24-target discovery.
-Conditioning in tiny tests is synthetic; no Qwen tokenizer/encoder weights are run.
+Native model tests use random tiny weights and synthetic conditioning; the normally
+zero random output head is initialized nonzero solely to test gradients. There are
+no real Iris/Qwen weight runs, no image-quality, preservation, convergence, ComfyUI,
+full-model performance or GPU memory-fit claims. The model-size test uses only meta
+weights. Production adapter count remains 1,138,976 including particles, with
+4,555,904 FP32 tensor bytes; this is construction evidence, not trained weights.
 
-No real Iris-3B weights were downloaded or loaded. No GPU was allocated. No generated
-sample, convergence, edit strength, held-out preservation, performance, memory-fit,
-ComfyUI or public publication claims are made. Full native loader hashing and snapshot
-resolution can be checked with mocks, but such tests are labeled separately.
+GPU diagnosis correction: default task has no `/dev/nvidia*` nodes. The host is
+Pop!_OS22.04 with working NVIDIA580.173.02, verified by read-only host query. Both
+RTX A6000s were using about45 GiB, with reported free memory2862 and3205 MiB at the
+query. The restricted namespace and the intentional CPU-only test build are separate
+reasons GPU work cannot use this venv as-is. No driver install, permission change,
+shared-GPU allocation or interruption happened. See `../evidence/nvidia-host-diagnosis.json`.
 
-Pre-test resource inspection: /ml2 had 563 GiB disk available. Host had 21,717,140 KiB
-MemAvailable (about 20.7 GiB). NVIDIA driver query failed. No Iris or Qwen3-VL matching
-cache directory was found in the default Hub cache or inspected /ml2 model locations.
-These findings cover only the inspected locations, not every file on the machine.
+The two accessible historical slider venvs currently report PyTorch2.14.0+cpu in
+both restricted and host execution. They are not established as the earlier immutable
+GPU runtime. `/ml2/work` directory inventory is read-blocked; the exact immutable
+runtime path has been requested. This does not indicate host-driver failure.
 
-CPU-only dependencies and supported Python 3.12 were installed in a task-owned /ml2
-venv. The minimal test environment does not install the full upstream training/UI
-stack (Dion, W&B, Transformers, Torchvision); native model/core tests require none of
-those. The wheel metadata declares the full pinned Iris runtime dependency.
+Initial relevant cache check found no matching Iris or Qwen3-VL cache in the inspected
+roots only. Weight-only download remains20,825,832,024 bytes; known token/config/index
+files add about11.6MB. The32GiB free-device/available-host budgets are provisional,
+unmeasured planning values. Guidance doubles the native model evaluation batch, and
+the spatial sketch adds24MiB at512px or96MiB at1024px, before other activations.

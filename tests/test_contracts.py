@@ -73,6 +73,15 @@ def test_strict_tensor_key_and_nan_rejection(tmp_path):
     save_file(payload, str(path), metadata={"iris_sliders": json.dumps(meta)})
     with pytest.raises(ValueError, match="invalid adapter tensor"):
         load_adapter(path, bank, particles, meta)
+    payload["particles"][0, 0] = 0
+    payload["particles"] = payload["particles"].to(torch.int64)
+    save_file(payload, str(path), metadata={"iris_sliders": json.dumps(meta)})
+    with pytest.raises(ValueError, match="invalid adapter tensor"):
+        load_adapter(path, bank, particles, meta)
+    payload["particles"] = payload["particles"][:1].float()
+    save_file(payload, str(path), metadata={"iris_sliders": json.dumps(meta)})
+    with pytest.raises(ValueError, match="invalid adapter tensor"):
+        load_adapter(path, bank, particles, meta)
     bank.close()
 
 

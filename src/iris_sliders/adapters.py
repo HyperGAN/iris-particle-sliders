@@ -51,7 +51,8 @@ class AdapterBank(nn.Module):
         self.names = [name for name, _ in targets]
         self.layers = nn.ModuleList([RoutedProjection(module, stamp) for _, module in targets])
         self.strength = 0.0
-        self._particles = None
+        object.__setattr__(self, "_particles", None)
+        self.particle_shape = (int(stamp.spec["parts"]), int(stamp.spec["particle_dim"]))
         self.handles = []
         for index, (_, module) in enumerate(targets):
             self.handles.append(module.register_forward_hook(self._hook(index)))
@@ -71,12 +72,20 @@ class AdapterBank(nn.Module):
     def active(self, particles, strength=1.0):
         if not math.isfinite(strength) or not 0.0 <= strength <= 1.0:
             raise ValueError("this unipolar particle formulation supports strengths in [0, 1]")
+        if strength != 0.0:
+            if not isinstance(particles, torch.Tensor) or tuple(particles.shape) != self.particle_shape:
+                raise ValueError("active Iris adapter particle shape differs from the stamped bank")
+            if particles.device != self.layers[0].up.weight.device:
+                raise ValueError("particles and Iris adapters must use the same device")
         previous = self._particles, self.strength
-        self._particles, self.strength = particles, float(strength)
+        # Context tensors must not become registered adapter parameters or duplicate the game owner.
+        object.__setattr__(self, "_particles", particles)
+        self.strength = float(strength)
         try:
             yield self
         finally:
-            self._particles, self.strength = previous
+            object.__setattr__(self, "_particles", previous[0])
+            self.strength = previous[1]
 
     def close(self):
         for handle in self.handles:

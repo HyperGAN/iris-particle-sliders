@@ -3,7 +3,7 @@
 Native Iris-3B concept sliders for HyperGAN. Source/package release is prepared locally;
 no repository or registry upload has happened. Proposed source: `HyperGAN/iris-particle-sliders`
 (public, matching siblings). Python distribution: `iris-particle-sliders`; import `iris_sliders`.
-Proposed adapter Hub: `ntc-ai/iris-particle-sliders` (public, matching siblings).
+No adapter Hub repository or registry publication is proposed by this task.
 
 This is a native pixel-space integration. It uses IrisDiT and FlowDPMSolver, a frozen
 Qwen3-VL-4B-Instruct encoder with Iris's chat template and selected hidden layers, and
@@ -42,8 +42,11 @@ uses only CPU and is marked `tiny-native-synthetic-text` in every checkpoint.
 
 First inspect free device/host memory and existing model caches. Do not use a shared
 GPU or download weights until resources and the exact download plan are reviewed.
-The checked environment has no usable NVIDIA driver and no matching cache in the
-locations inspected. Full Iris/Qwen validation has therefore **not run**.
+The restricted task view has no NVIDIA device nodes; its `nvidia-smi` failure is
+not a host driver failure. Read-only host queries show a working 580.173.02 driver
+and two RTX A6000s using about45 GiB each, with roughly3 GiB free. The task venv is
+CPU-only by design. No matching model cache appeared in the locations inspected.
+Full Iris/Qwen validation has **not run**; no shared GPU allocation is authorized.
 
 The pinned Iris weight file is 11,950,112,680 bytes. Qwen's two shards total
 8,875,719,344 bytes. Combined weight-only download: 20,825,832,024 bytes (19.396 GiB),
@@ -62,15 +65,15 @@ iris-slider-train --checkpoint /ml2/models/iris-3b \
   --outdir /ml2/iris-sliders/warm-light
 ```
 
-These paths must contain the pinned official files. File hashes are verified before
-model allocation. `--allow-hub` explicitly permits pinned snapshot downloads when
+These paths must contain the pinned official files. The encoder index, every referenced shard and load-relevant configuration are
+verified; competing/unverified weight or adapter files are rejected before allocation. `--allow-hub` explicitly permits pinned snapshot downloads when
 local paths are omitted; it never downloads the depth/upscaler models. This package
 accepts the official exported directory (`model.safetensors` + `config.yaml`), not
 training `.pth` files or downstream depth/upscaler weights.
 
 Prompt cards are JSON with `rows` containing `neutral`/`positive`, plus optional
-`controls`. See [the example](configs/iris/prompts-warm-light.json). Teachers are
-conditional velocities (CFG=1) at matched neutral trajectory states. The trajectory
+`controls`. See [the example](configs/iris/prompts-warm-light.json). Teachers and students use native guided velocities (CFG=3 by default), including
+the null branch and native strict guidance interval, at matched neutral trajectory states. The trajectory
 uses native DPM-Solver++ order 2, shift 4 and time `1000*sigma`, running from noise
 to image. A positive teacher changes the prompt; controls use identical prompts.
 The default retains two states per prompt from a 100-step trajectory, bounded in CPU
@@ -85,10 +88,10 @@ iris-slider-train <same original options> --steps 2000 \
 ```
 
 `adapter.safetensors` stores only the routed projection modules and EMA particles,
-with strict source/config/base/formulation metadata. The fixed 2x2 RGB velocity
-projection trains only eight spatial/color error coordinates. Fine detail and
-preservation beyond these coordinates require real-model evaluation; no quality or
-convergence claim is made for this new model glue.
+with strict source/config/base/formulation metadata. The error projection is a changing, deterministic rank-eight Rademacher sketch
+of every RGB coordinate, fixed across each D/G update. It includes high-frequency
+errors and has full pixel error energy coverage in expectation; a finite run is not
+a pixel-matching or quality guarantee. See [FORMULATION.md](FORMULATION.md).
 
 ## Inference
 
@@ -103,7 +106,7 @@ iris-slider-infer --adapter /ml2/iris-sliders/warm-light/adapter.safetensors \
 Official sample card: 1024px, 100 DPM-Solver++ order-2 steps, CFG 3, shift 4.
 Dimensions must be patch-aligned and <=1,048,576 pixels. PNG sidecars record the
 prompt, seed, shape, sample card and adapter/base hashes. Strength is unipolar 0–1;
-zero bypasses hooks without arithmetic. Routed adapters remain active at inference;
+zero bypasses hooks without arithmetic. Inference CFG must match the checkpoint's teacher CFG. Routed adapters remain active at inference;
 they are nonlinear and cannot be merged into an ordinary LoRA.
 
 Native projection targets are exactly `blocks.0..7.attn.proj_x` (dual-stream image
@@ -123,11 +126,12 @@ No ComfyUI runtime or ordinary-LoRA export is claimed. A native Python API is in
 a ComfyUI integration should follow real-model validation because there is no current
 native Iris Comfy pipeline established by the inspected upstream/siblings.
 
-Before public release: review the proposed identities/visibility, run bounded real
-weight train/inference checks on an explicitly available device, and provide paired
-held-out subject/control evidence at strengths 0/0.5/1. Only then stage adapters and
-checksums with `scripts/prepare_release.py`. It never publishes. No PyPI upload
-convention was found in the inspected siblings; don't infer one from their Hub releases.
+Before public source release: review the requested HyperGAN repository identity
+and visibility. Real model/registry artifacts are outside this task unless specifically
+requested later. Any future adapter release needs bounded real-weight train/inference
+checks on an explicitly available device and paired held-out subject/control evidence.
+`scripts/prepare_release.py` is an optional local staging utility and never publishes.
+No PyPI upload convention was found in the inspected siblings.
 
 Source license: Apache-2.0. Iris code/weights and Qwen encoder: Apache-2.0. Shared
 core/ParticleGAN: MIT. See [NOTICE](NOTICE). No base weights are redistributed.

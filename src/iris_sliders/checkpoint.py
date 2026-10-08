@@ -24,7 +24,7 @@ def config_digest(config):
     return hashlib.sha256(json.dumps(config, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
-def metadata(bank, stamp, declared, model_config, *, base_sha256, validation):
+def metadata(bank, stamp, declared, model_config, *, base_sha256, validation, protocol=None):
     return {
         **card(),
         "targets": bank.names,
@@ -32,6 +32,7 @@ def metadata(bank, stamp, declared, model_config, *, base_sha256, validation):
         "model_config_sha256": config_digest(model_config),
         "base_sha256": base_sha256,
         "validation": validation,
+        "protocol": protocol if protocol is not None else card()["protocol"],
     }
 
 
@@ -70,6 +71,7 @@ def load_adapter(path, bank, particles, expected):
         "model_config_sha256",
         "base_sha256",
         "formulation",
+        "protocol",
     ):
         # Model-surface settings are captured by the checkpoint; require() handles allowed overrides.
         if meta.get(key) != json.loads(json.dumps(expected.get(key))):
@@ -80,7 +82,11 @@ def load_adapter(path, bank, particles, expected):
     if set(state) != set(wanted):
         raise ValueError("adapter tensor key mismatch")
     for key, tensor in state.items():
-        if tensor.shape != wanted[key].shape or not torch.isfinite(tensor).all():
+        if (
+            tensor.shape != wanted[key].shape
+            or tensor.dtype != wanted[key].dtype
+            or not torch.isfinite(tensor).all()
+        ):
             raise ValueError(f"invalid adapter tensor {key}")
     bank.load_state_dict({k[5:]: v for k, v in state.items() if k.startswith("bank.")}, strict=True)
     with torch.no_grad():

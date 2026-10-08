@@ -34,8 +34,8 @@ Anima/Krea2/Supra source repositories are public under HyperGAN. Their release
 scripts publish model repos under `ntc-ai/*-particle-sliders`, explicitly public,
 with model cards, checksums, source/core provenance and adapter metadata. Inspected
 scripts contain no PyPI publication workflow. New proposed identities:
-`HyperGAN/iris-particle-sliders` (public source), `iris-particle-sliders` (Python),
-`ntc-ai/iris-particle-sliders` (public adapter Hub). These have not been created.
+`HyperGAN/iris-particle-sliders` (public source), `iris-particle-sliders` (Python).
+No model Hub or registry destination is proposed. The source repository has not been created.
 
 Read-only GitHub access check: existing CLI account `mikkel`; HyperGAN membership
 active/admin; particle-sliders permissions admin/maintain/push/pull/triage true.

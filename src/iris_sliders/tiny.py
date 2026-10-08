@@ -70,5 +70,8 @@ class TinyRuntime:
     def encode(self, prompt):
         return self.encoder.encode([prompt])
 
+    def encode_null(self):
+        return self.encoder.null()
+
     def offload_encoder(self):
         pass

@@ -1,4 +1,4 @@
-include README.md FORMULATION.md PROVENANCE.md VALIDATION.md backend.lock.json requirements.txt LICENSE NOTICE
+include README.md FORMULATION.md PROVENANCE.md VALIDATION.md REVIEW.md backend.lock.json requirements.txt LICENSE NOTICE
 recursive-include configs *.json
 recursive-include scripts *.py
 recursive-include tests *.py *.yaml
