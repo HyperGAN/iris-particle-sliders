@@ -1,3 +1,9 @@
+# Archived gmix formulation
+
+This document describes `iris_sliders.legacy_train` only. The default trainer now
+uses installed `particle_sliders.pg09.ConditionalPG09` with native RGB fields; see
+[README.md](README.md). This historical formulation requires explicit legacy opt-in.
+
 # Shared formulation integration
 
 Source pin: `20fdf98d25455582e7e7191eef8ef51cf73173ae`. `winning_formulation()`

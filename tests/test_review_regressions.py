@@ -11,10 +11,10 @@ from iris_sliders.adapters import AdapterBank, new_particles
 from iris_sliders.card import native_protocol
 from iris_sliders.checkpoint import load_adapter, metadata, save_adapter
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import build_game, paired_records, step_context, train
 from iris_sliders.projection import isotropic_calibration_bank
 from iris_sliders.runtime import verify_encoder_files
 from iris_sliders.tiny import SyntheticEncoder, TinyRuntime
-from iris_sliders.train import build_game, paired_records, step_context, train
 
 EDIT_ROWS = [
     {"neutral": "fox", "positive": "fox with golden light"},
@@ -163,7 +163,7 @@ def test_mock_runtime_canonicalizes_device_after_actual_tiny_transfer(monkeypatc
 
 
 def test_failed_resume_closes_native_hooks(tmp_path):
-    train(TinyRuntime(), EDIT_ROWS, tmp_path / "first", steps=1, dummy=True)
+    train(TinyRuntime(), EDIT_ROWS, tmp_path / "first", steps=1, dummy=True, allow_legacy=True)
     runtime = TinyRuntime()
     with pytest.raises(ValueError, match="resume model"):
         train(
@@ -172,7 +172,7 @@ def test_failed_resume_closes_native_hooks(tmp_path):
             tmp_path / "bad",
             steps=2,
             width=8,
-            dummy=True,
+            dummy=True, allow_legacy=True,
             resume=tmp_path / "first/training.pt",
         )
     assert all(not module._forward_hooks for _, module in runtime.model.named_modules())

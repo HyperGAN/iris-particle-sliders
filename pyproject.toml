@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "iris-particle-sliders"
-version = "0.1.0"
+version = "0.2.0"
 description = "Native Iris-3B routed particle concept sliders for HyperGAN"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,15 +12,19 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 dependencies = [
   "torch>=2.7.1,<3", "safetensors>=0.4", "numpy>=1.26", "pillow>=10",
-  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@20fdf98d25455582e7e7191eef8ef51cf73173ae#subdirectory=packages/particle-sliders-core",
+  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@b80b72bc2602ed4b5c0ceed724c6875395944b1f#subdirectory=packages/particle-sliders-core",
   "iris-3b @ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
 ]
 
 [project.optional-dependencies]
+hndl = ["hndl==0.8.2"]
+diagnostics = ["hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@a879c4fbff903ccefeba2194bcc7a13fe7b5abb7"]
 dev = ["pytest>=8,<10", "ruff>=0.8", "build>=1"]
 
 [project.scripts]
 iris-slider-train = "iris_sliders.train:main"
+iris-slider-train-legacy = "iris_sliders.legacy_train:main"
+iris-slider-response = "iris_sliders.response:main"
 iris-slider-infer = "iris_sliders.infer:main"
 iris-slider-card = "iris_sliders.card:main"
 

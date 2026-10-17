@@ -10,6 +10,29 @@ from .card import CONFIG_SHA256, MODEL_ID, MODEL_REVISION, MODEL_SHA256, TEXT_ID
 from .checkpoint import sha256
 
 
+class FreshNullEncoder:
+    """Use native prompt encoding for null text without its unchecked disk cache.
+
+    Iris's upstream ``null`` method trusts a local torch payload without verifying
+    its tensors or encoder identity. Both teacher collection and native sampling
+    receive this proxy, so null conditioning always follows the pinned encoder's
+    current chat template and selected hidden layers.
+    """
+
+    def __init__(self, encoder):
+        self.encoder = encoder
+
+    def encode(self, prompts):
+        return self.encoder.encode(prompts)
+
+    def null(self, negative_prompt=""):
+        return self.encoder.encode([negative_prompt])
+
+    def to(self, device):
+        self.encoder.to(device)
+        return self
+
+
 def encoder_pins():
     return json.loads(Path(__file__).with_name("text-files.json").read_text())
 
@@ -109,7 +132,7 @@ class IrisRuntime:
         text_cfg.null_embed_dir = str(Path(cache_dir) / "null" / TEXT_REVISION)
         text_cfg.compile = False
         text_cfg.on_caption_overflow = "error"
-        self.encoder = Qwen3VLTextEncoder(text_cfg, device=text_device)
+        self.encoder = FreshNullEncoder(Qwen3VLTextEncoder(text_cfg, device=text_device))
         self.encoding_cache = {}
 
     @torch.no_grad()

@@ -8,9 +8,9 @@ from iris_sliders.adapters import AdapterBank, new_particles
 from iris_sliders.checkpoint import load_adapter, metadata, save_adapter, sha256
 from iris_sliders.flow import guided_velocity
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import build_game, paired_records, step_context, train
 from iris_sliders.projection import VelocityProjection
 from iris_sliders.tiny import TinyRuntime
-from iris_sliders.train import build_game, paired_records, step_context, train
 
 ROWS = [
     {"neutral": "fox", "positive": "fox in golden light"},
@@ -217,9 +217,9 @@ def test_strength_scales_hook_residual_and_particle_values_change_inference():
 
 def test_exact_resume_includes_critic_optimizers_rng_ema_and_export(tmp_path):
     rows = ROWS
-    train(TinyRuntime(), rows, tmp_path / "full", steps=3, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=1, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=3, dummy=True, resume=tmp_path / "split/training.pt")
+    train(TinyRuntime(), rows, tmp_path / "full", steps=3, dummy=True, allow_legacy=True)
+    train(TinyRuntime(), rows, tmp_path / "split", steps=1, dummy=True, allow_legacy=True)
+    train(TinyRuntime(), rows, tmp_path / "split", steps=3, dummy=True, allow_legacy=True, resume=tmp_path / "split/training.pt")
     full = torch.load(tmp_path / "full/training.pt", weights_only=True)
     split = torch.load(tmp_path / "split/training.pt", weights_only=True)
 
