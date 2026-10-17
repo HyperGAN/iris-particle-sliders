@@ -1,0 +1,8 @@
+{
+  "core_candidate": "4be0b5b29d2e2c741431f468d71ba8a7c884b724",
+  "exception": "PackageNotFoundError",
+  "missing_distribution": "diffusers",
+  "native_model": "actual TinyRuntime IrisDiT",
+  "hooks_cleaned": true,
+  "cuda_initialized": false
+}

@@ -1,21 +1,21 @@
 {
   "schema": "iris-derivative-audit-v1",
-  "generated_utc": "2026-10-17T19:29:44.451326+00:00",
+  "generated_utc": "2026-10-17T19:39:14.681790+00:00",
   "repository": "https://github.com/HyperGAN/iris-particle-sliders",
   "base_head": "6a226126623fb17c87fe22b86173fe2fcff4bf3e",
-  "implementation_head": "2a2b802f2c93009a624f41efc899170cdbbf66bd",
+  "implementation_head": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
   "branch": "audit/iris-shared-gan-20261017",
   "shared_core": {
-    "proposed_commit": "b80b72bc2602ed4b5c0ceed724c6875395944b1f",
+    "proposed_commit": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
     "version": "0.6.0",
-    "wheel_sha256": "d8da435ca814f17ab96d2d01f754410e91abb99c707483fcc456900c81665260",
-    "build": "exact Git archive; isolated wheel; shared sources untouched",
-    "status": "proposed, not Ada-approved; canonical replacement/publication still pending; later shared4be0b5b observed"
+    "wheel_sha256": "4abc83988fdeb6d7478de830e7ee8ec5d9bd99c20d52f89e4ce594d50dfd39a3",
+    "build": "canonical task14 exact Git archive wheel; build-receipt.json verified",
+    "status": "authoritative frozen proposal; not Ada-approved; public source commit not yet fetchable (GitHub422)"
   },
   "product_wheel": {
     "version": "0.2.0",
-    "sha256": "70f09585c93609b521f37f13f0a97203bc39e127e9f6bff9fb05975f77cc2f8d",
-    "build": "exact implementation Git archive"
+    "sha256": "f896111c05bbdf4dede489674d34d4058deeb33d1c886bc69d2e9d4fba3df998",
+    "build": "exact ca479e7f Git archive"
   },
   "native_iris": {
     "commit": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
@@ -31,11 +31,19 @@
       "bispf",
       "bispf_optimized"
     ],
-    "fresh_process_resume": "all4arms5updates equal2+3 exactly: state, metrics, export, native response",
+    "fresh_process_resume": "bothpresets x bothcritics on finalcdf:5updates ==2+3 exactly for fullstate/metrics/export/native response",
     "public_hypergan_observer": "actual fixed-context2private-latent observation; model/RNG unchanged; no loss change",
     "pip_check": "No broken requirements found",
     "ruff": "passed",
-    "diff_check": "passed"
+    "diff_check": "passed",
+    "baseline_candidate": "4be0b5b29d2e2c741431f468d71ba8a7c884b724",
+    "baseline_atomic_restore_cpu": 15,
+    "final_candidate": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+    "final_focused_cpu": 60,
+    "final_failures": 0,
+    "final_errors": 0,
+    "final_scope": "shared GAN ownership/update/resume/export, conditional CFG, optional HNDL/HyperGAN APIs,17 actualG/Dhistory restore probes and validinitialempty, native game works with both Diffusers import and distribution lookup blocked",
+    "no_diffusers_required": true
   },
   "imports": {
     "iris_sliders.train": {
@@ -52,15 +60,15 @@
     },
     "particle_sliders.pg09": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09.py",
-      "sha256": "8ff7a1f16a0b1eda31e42d59015b5a5959abf5e23dcaf737c880f2fb72b376de"
+      "sha256": "190a7e6c3a8b53d7d495a577183deacce5c8a1250b674de87c349fb7aead84b3"
     },
     "particle_sliders.pg09_images": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_images.py",
-      "sha256": "e92e36fdcc8e5327ea096fa8d48adc8749d453d19c4e945fd246dd931fe2c5c3"
+      "sha256": "f37ef7db2e43a33a20389a4695e78c44be3c231057ea71ec24909aa08d02ae65"
     },
     "particle_sliders.pg09_moss_campaign": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_moss_campaign.py",
-      "sha256": "2490bf752322a7d720b6a83db73ddff74a239ab07c3cce8624c8ea54889eb624"
+      "sha256": "29ab37cc00a1d3785a90630071c286275be1710c9134f8d05581bb3f28c5f0c5"
     },
     "particle_sliders.pg09_hndl": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_hndl.py",
@@ -92,10 +100,10 @@
   },
   "remaining_gates": [
     {
-      "action": "Freeze/publish final shared candidate, retarget/retest exact consumer pin",
-      "target": "HyperGAN/particle-sliders task14 proposed0.6.0",
+      "action": "Publish the frozen shared commit so Iris immutable Git dependency resolves",
+      "target": "HyperGAN/particle-sliders commitcdfb80a76b882b4b73861b12f555263bd64ffeb7",
       "status": "pending",
-      "reason": "Shared owner centralizing additional restore/campaign repairs; b80 proposal-only"
+      "reason": "Final shared wheel passed consumer acceptance; publicGitHubcommit API returned422 at2026-10-17T19:38:40UTC; task14 publication inprogress"
     },
     {
       "action": "Ada exact-head review then parent merge",
