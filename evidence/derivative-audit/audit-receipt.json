@@ -1,6 +1,6 @@
 {
   "schema": "iris-derivative-audit-v1",
-  "generated_utc": "2026-10-17T19:39:14.681790+00:00",
+  "generated_utc": "2026-10-17T19:43:23.355752+00:00",
   "repository": "https://github.com/HyperGAN/iris-particle-sliders",
   "base_head": "6a226126623fb17c87fe22b86173fe2fcff4bf3e",
   "implementation_head": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
@@ -10,7 +10,11 @@
     "version": "0.6.0",
     "wheel_sha256": "4abc83988fdeb6d7478de830e7ee8ec5d9bd99c20d52f89e4ce594d50dfd39a3",
     "build": "canonical task14 exact Git archive wheel; build-receipt.json verified",
-    "status": "authoritative frozen proposal; not Ada-approved; public source commit not yet fetchable (GitHub422)"
+    "status": "authoritative frozen published proposal; exact public Git dependency resolves/builds; not Ada-approved",
+    "public_git_dependency_verified": true,
+    "public_ref": "refs/heads/audit/shared-core-contracts-20261017",
+    "draft_pull_request": "https://github.com/HyperGAN/particle-sliders/pull/141",
+    "public_git_build_receipt": "public-git-dependency-build.json"
   },
   "product_wheel": {
     "version": "0.2.0",
@@ -100,12 +104,6 @@
   },
   "remaining_gates": [
     {
-      "action": "Publish the frozen shared commit so Iris immutable Git dependency resolves",
-      "target": "HyperGAN/particle-sliders commitcdfb80a76b882b4b73861b12f555263bd64ffeb7",
-      "status": "pending",
-      "reason": "Final shared wheel passed consumer acceptance; publicGitHubcommit API returned422 at2026-10-17T19:38:40UTC; task14 publication inprogress"
-    },
-    {
       "action": "Ada exact-head review then parent merge",
       "target": "HyperGAN/iris-particle-sliders main",
       "status": "pending",
@@ -116,6 +114,18 @@
       "target": "new Iris PG0.9.1 cohort",
       "status": "not_attempted",
       "reason": "Raw-response qualification only; coordinator owns device/admission"
+    }
+  ],
+  "resolved_gates": [
+    {
+      "action": "Publish the frozen shared commit so Iris immutable Git dependency resolves",
+      "target": "HyperGAN/particle-sliders commitcdfb80a76b882b4b73861b12f555263bd64ffeb7",
+      "status": "completed",
+      "reason": "Exact public ref and commit verified; immutable Git dependency fetched/built; all 34 packaged files match canonical producer sources; initial422 retained as history",
+      "evidence": [
+        "source-availability.json",
+        "public-git-dependency-build.json"
+      ]
     }
   ]
 }

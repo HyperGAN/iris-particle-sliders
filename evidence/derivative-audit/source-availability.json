@@ -1,21 +1,35 @@
 {
-  "checked_utc": "2026-10-17T19:38:40.653621+00:00",
+  "checked_utc": "2026-10-17T19:42:25.831297+00:00",
   "github": {
     "url": "https://api.github.com/repos/255BITS/ParticleGAN/releases/latest",
     "version": "v0.9.1",
     "html_url": "https://github.com/255BITS/ParticleGAN/releases/tag/v0.9.1",
-    "published_at": "2026-10-17T17:27:17Z"
+    "published_at": "2026-10-17T17:27:17Z",
+    "checked_utc": "2026-10-17T19:38:40.653621+00:00"
   },
   "pypi": {
     "url": "https://pypi.org/pypi/particlegan/json",
     "version": "0.9.1",
     "html_url": null,
-    "published_at": null
+    "published_at": null,
+    "checked_utc": "2026-10-17T19:38:40.653621+00:00"
   },
   "shared_core": {
+    "checked_utc": "2026-10-17T19:42:25.831297+00:00",
     "url": "https://api.github.com/repos/HyperGAN/particle-sliders/commits/cdfb80a76b882b4b73861b12f555263bd64ffeb7",
-    "http_status": 422,
-    "publicly_fetchable": false,
-    "status": "not confirmed"
-  }
+    "http_status": 200,
+    "sha": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+    "publicly_fetchable": true,
+    "remote_ref": "refs/heads/audit/shared-core-contracts-20261017"
+  },
+  "historical_shared_core_checks": [
+    {
+      "url": "https://api.github.com/repos/HyperGAN/particle-sliders/commits/cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+      "http_status": 422,
+      "publicly_fetchable": false,
+      "status": "not confirmed",
+      "checked_utc": "2026-10-17T19:38:40.653621+00:00"
+    }
+  ],
+  "git_dependency_build_receipt": "public-git-dependency-build.json"
 }

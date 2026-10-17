@@ -1,5 +1,5 @@
 {
-  "audit-receipt.json": "e077651d10a1b788ef8da106bcc6fa2cae13b51dbc1762fe7437d337fb905479",
+  "audit-receipt.json": "ef3fe14bd5c951467d415c9bb43921b948d268855fc4f73906ba1472c724688d",
   "diffusers-probe-4be.json": "1f18d36e66fbea8a896e9b4404dfc01f0d25cebd3d4dc3d017bf015f344b832c",
   "entrypoints.json": "dd3792bca2674722a3219fdf31537311f7ef3f7b3112e86b395176c020213505",
   "focused-final-tests.xml": "aa09848ec1b8ff878a94b9db6709e59b2fb53834aeca2616387d1a7f81f8ac2d",
@@ -8,6 +8,7 @@
   "installed-hndl.json": "00938e53751ca391e9a712c99d588e377dd24b104f51fa8625f775cfc18d1a31",
   "installed-tests.xml": "7efd90b7dca1533811a128676996d0af5d8403a68b1c662ef500909b0b0bf04d",
   "pg-latest-release.json": "f3b94f5c5d1c94f1833e651902b7f8229dff0b03eb33356738dca0048b801579",
+  "public-git-dependency-build.json": "cfcd924cdec2eddcec53ec2cea8ce4b62bb7a5ab02f8d0c2b8a978b960e3781e",
   "restore-4be-baseline.xml": "dbdb78c9e67a867b304dcefa6d3f36eecadbede50162688d8cac6e054aa5178e",
-  "source-availability.json": "1f1f3bb94917e2e6008cc44e8b336bbf0b4bccbaec76a2a2d790b7335cf270e0"
+  "source-availability.json": "7498cd76d76d5d5a7df6e5e5297969025814da9db42c8c9beaabb05c266e6e8f"
 }
