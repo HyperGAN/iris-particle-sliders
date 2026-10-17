@@ -51,18 +51,19 @@ def main(argv=None):
         device=args.device,
         text_device=args.text_device,
     )
-    bank = AdapterBank(runtime.model, stamp).to(runtime.device)
-    particles = new_particles(stamp, runtime.device)
-    expected = metadata(
-        bank,
-        stamp,
-        declared,
-        runtime.raw["model"],
-        base_sha256=runtime.base_sha256,
-        validation=saved["validation"],
-        protocol=protocol,
-    )
+    bank = AdapterBank(runtime.model, stamp)
     try:
+        bank.to(runtime.device)
+        particles = new_particles(stamp, runtime.device)
+        expected = metadata(
+            bank,
+            stamp,
+            declared,
+            runtime.raw["model"],
+            base_sha256=runtime.base_sha256,
+            validation=saved["validation"],
+            protocol=protocol,
+        )
         load_adapter(args.adapter, bank, particles, expected)
         with bank.active(particles, args.strength), torch.no_grad():
             image = runtime.render(

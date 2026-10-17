@@ -1,4 +1,4 @@
-"""Archived gmix trainer; explicit legacy opt-in, never the default PG0.9.1 path."""
+"""Archived gmix CPU dummy fixture; real training and raw resume are unsupported."""
 
 import argparse
 import hashlib
@@ -90,6 +90,7 @@ def paired_records(runtime, rows, *, seed, height, width, trajectory_steps, reco
 
 
 def build_game(runtime, records, stamp, declared, seed=7):
+    _require_fixture_runtime(runtime)
     torch.manual_seed(seed)
     runtime.device = next(runtime.model.parameters()).device
     projector = VelocityProjection(int(stamp.spec["adapter_rank"])).to(runtime.device)
@@ -177,7 +178,7 @@ def restore_declared(meta):
 
 
 def _runtime_identity(runtime):
-    """Exact resume remains on the same numerical runtime and actual model device."""
+    """Record the CPU fixture's numerical runtime and actual model device."""
     return {
         "torch_version": str(torch.__version__),
         "model_devices": sorted({str(p.device) for p in runtime.model.parameters()}),
@@ -205,29 +206,28 @@ def _conditioning_digest(records):
     return digest.hexdigest()
 
 
-def _resume_preflight(path, meta, run_config, device, steps):
-    """Reject incompatible runtime/RNG state before installing hooks or loading weights."""
-    state = torch.load(path, map_location="cpu", weights_only=True)
-    saved_config = state.get("run_config", {})
+def _require_fixture_mode(*, dummy, resume, allow_legacy):
+    if not allow_legacy:
+        raise ValueError("archived gmix fixture requires allow_legacy=True or --allow-legacy")
+    if resume is not None:
+        raise ValueError("archived raw resume is unsupported; use iris-slider-train for PG0.9.1")
+    if not dummy:
+        raise ValueError(
+            "archived real training is unsupported; only the explicit CPU dummy fixture is available"
+        )
+
+
+def _require_fixture_runtime(runtime):
+    from .tiny import TinyRuntime
+
     if (
-        state.get("metadata") != meta
-        or not isinstance(saved_config, dict)
-        or {key: value for key, value in saved_config.items() if key != "conditioning_sha256"} != run_config
-        or not isinstance(saved_config.get("conditioning_sha256"), str)
+        type(runtime) is not TinyRuntime
+        or torch.device(runtime.device).type != "cpu"
+        or torch.device(runtime.encoder.device).type != "cpu"
+        or any(parameter.device.type != "cpu" for parameter in runtime.model.parameters())
+        or any(buffer.device.type != "cpu" for buffer in runtime.model.buffers())
     ):
-        raise ValueError("resume model, formulation, or trajectory configuration differs")
-    completed = state.get("step")
-    if type(completed) is not int or completed < 1 or steps <= completed:
-        raise ValueError("resume steps must exceed the checkpoint's completed step")
-    try:
-        torch.Generator(device="cpu").set_state(state["rng"])
-        if device.type == "cuda":
-            torch.Generator(device=device).set_state(state["cuda_rng"])
-        elif state.get("cuda_rng") is not None:
-            raise ValueError("CPU resume contains CUDA RNG state")
-    except (KeyError, TypeError, RuntimeError, ValueError) as exc:
-        raise ValueError("resume RNG state differs from the training runtime") from exc
-    return state
+        raise ValueError("archived training accepts only the CPU TinyRuntime dummy fixture")
 
 
 def train(
@@ -248,8 +248,8 @@ def train(
     teacher_cfg=3.0,
     allow_legacy=False,
 ):
-    if not allow_legacy:
-        raise ValueError("archived gmix training requires allow_legacy=True; use iris-slider-train for PG0.9.1")
+    _require_fixture_mode(dummy=dummy, resume=resume, allow_legacy=allow_legacy)
+    _require_fixture_runtime(runtime)
     if not 0 <= teacher_cfg <= 20:
         raise ValueError("teacher CFG must be finite and in [0, 20]")
     if steps < 1:
@@ -257,9 +257,9 @@ def train(
     stamp, declared = load_stamp(batch=batch, g_lr=g_lr)
     model_config = runtime.raw["model"]
     validation = {
-        "kind": "tiny-native-synthetic-text" if dummy else "real-weights-training",
+        "kind": "tiny-native-synthetic-text",
         "real_weight_validation": False,
-        "dummy": dummy,
+        "dummy": True,
     }
     meta = metadata(
         SimpleNamespace(names=[name for name, _ in target_modules(runtime.model)]),
@@ -281,11 +281,6 @@ def train(
         "teacher_cfg": teacher_cfg,
         "runtime": _runtime_identity(runtime),
     }
-    state = None
-    if resume:
-        state = _resume_preflight(
-            resume, meta, run_config, next(runtime.model.parameters()).device, steps
-        )
     records = paired_records(
         runtime,
         rows,
@@ -297,31 +292,15 @@ def train(
         cfg_scale=teacher_cfg,
     )
     run_config["conditioning_sha256"] = _conditioning_digest(records)
-    if state is not None and state["run_config"] != run_config:
-        raise ValueError("resume conditioning differs from the cached training encodings")
     game = build_game(runtime, records, stamp, declared, seed)
     try:
         outdir = Path(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
         ema = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
         ema_particles = game.particles.detach().clone()
-        start = 1
-        if state is not None:
-            game.bridge.load_state_dict(state["bridge"], strict=True)
-            game.critic.load_state_dict(state["critic"], strict=True)
-            with torch.no_grad():
-                game.particles.copy_(state["particles"])
-            game.opt_g.load_state_dict(state["opt_g"])
-            game.opt_d.load_state_dict(state["opt_d"])
-            torch.set_rng_state(state["rng"].cpu())
-            if game.device.type == "cuda":
-                torch.cuda.set_rng_state(state["cuda_rng"].cpu(), device=game.device)
-            ema = {key: tensor.to(game.device) for key, tensor in state["ema"].items()}
-            ema_particles = state["ema_particles"].to(game.device)
-            start = int(state["step"]) + 1
         history = []
         decay = float(stamp.spec["ema"])
-        for index in range(start, steps + 1):
+        for index in range(1, steps + 1):
             stats = step_context(game, records, index, batch)
             history.append(stats)
             with torch.no_grad():
@@ -346,34 +325,8 @@ def train(
             "ema": decay,
             "projection": "all-RGB-coordinate Rademacher sketch, rank 8, fixed per D/G step and changing by step index",
             "quality_validated": False,
+            "resume_supported": False,
         }
-        # Raw state is resumable; only adapter/particle EMA is the inference export.
-        resume_meta = metadata(
-            game.bridge.bank,
-            stamp,
-            declared,
-            model_config,
-            base_sha256=runtime.base_sha256,
-            validation=validation,
-            protocol=native_protocol(teacher_cfg),
-        )
-        torch.save(
-            {
-                "step": steps,
-                "metadata": resume_meta,
-                "run_config": run_config,
-                "bridge": game.bridge.state_dict(),
-                "critic": game.critic.state_dict(),
-                "particles": game.particles.detach(),
-                "opt_g": game.opt_g.state_dict(),
-                "opt_d": game.opt_d.state_dict(),
-                "rng": torch.get_rng_state(),
-                "cuda_rng": torch.cuda.get_rng_state(game.device) if game.device.type == "cuda" else None,
-                "ema": ema,
-                "ema_particles": ema_particles,
-            },
-            outdir / "training.pt",
-        )
         raw_state = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
         try:
             game.bridge.bank.load_state_dict(ema)
@@ -390,7 +343,9 @@ def train(
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--allow-legacy", action="store_true", help="explicitly permit archived gmix training")
+    parser.add_argument(
+        "--allow-legacy", action="store_true", help="explicitly permit the archived CPU dummy fixture"
+    )
     parser.add_argument("--dummy", action="store_true", help="actual tiny Iris, synthetic text; no downloads")
     parser.add_argument("--print-card", action="store_true")
     parser.add_argument("--prompts", type=Path)
@@ -410,35 +365,30 @@ def main(argv=None):
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--text-device", default="cpu")
     parser.add_argument("--allow-hub", action="store_true")
-    parser.add_argument("--resume", type=Path)
+    parser.add_argument(
+        "--resume", type=Path, help="unsupported for the archived fixture; fails before allocation"
+    )
     args = parser.parse_args(argv)
     if args.print_card:
         print(json.dumps(card(), indent=2))
         return
+    _require_fixture_mode(dummy=args.dummy, resume=args.resume, allow_legacy=args.allow_legacy)
+    if (
+        args.allow_hub
+        or args.checkpoint
+        or args.text_dir
+        or args.device != "cpu"
+        or args.text_device != "cpu"
+    ):
+        raise ValueError("--dummy accepts only the CPU tiny native fixture")
     if Path("/ml2") not in args.outdir.resolve().parents:
         raise ValueError("training artifacts must live under /ml2")
-    if not args.allow_legacy:
-        raise ValueError("archived gmix training requires --allow-legacy")
     rows = load_prompts(args.prompts)
-    if args.dummy:
-        if args.allow_hub or args.checkpoint or args.text_dir or args.device != "cpu":
-            raise ValueError("--dummy accepts only the CPU tiny native fixture")
-        from .tiny import TinyRuntime
+    from .tiny import TinyRuntime
 
-        runtime = TinyRuntime(args.seed)
-        args.height, args.width = 16, 16
-        args.steps, args.trajectory_steps = min(args.steps, 4), 4
-    else:
-        from .runtime import IrisRuntime
-
-        runtime = IrisRuntime(
-            cache_dir=args.cache_dir,
-            checkpoint=args.checkpoint,
-            text_dir=args.text_dir,
-            allow_hub=args.allow_hub,
-            device=args.device,
-            text_device=args.text_device,
-        )
+    runtime = TinyRuntime(args.seed)
+    args.height, args.width = 16, 16
+    args.steps, args.trajectory_steps = min(args.steps, 4), 4
     train(
         runtime,
         rows,

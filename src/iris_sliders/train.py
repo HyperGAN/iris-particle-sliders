@@ -146,7 +146,8 @@ def build_game(runtime, config):
             # Retain the existing routed architecture only. Its historical
             # FormulationGame, sketches and normalization never execute here.
             stamp = winning_formulation()
-            bank = AdapterBank(runtime.model, stamp).to(runtime.device)
+            bank = AdapterBank(runtime.model, stamp)
+            bank.to(runtime.device)
             particles = new_particles(stamp, runtime.device)
             identity = {
                 "iris_commit": IRIS_COMMIT,

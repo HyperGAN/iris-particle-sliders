@@ -132,13 +132,21 @@ quality checks require a separate coordinator-approved qualification.
 
 The archived `iris-native-routed-particle-v3` safetensors format remains available
 to `iris-slider-infer` for historical use with matching source pins. Earlier core
-pins are rejected; retain the original pinned source/environment for those artifacts. Its old training code moved to
-`iris_sliders.legacy_train`; `iris-slider-train-legacy --allow-legacy` is required
-to execute it. Legacy Python `train()` requires `allow_legacy=True`. Its resume
-preflight now binds actual device/dtype/runtime and cached conditioning, rejects
-incompatible checkpoints before module mutation, and cleans hooks on failures.
-The old tests are explicitly imported from the legacy module. See
-[FORMULATION.md](FORMULATION.md) for the archived formulation.
+pins are rejected; retain the original pinned source/environment for those artifacts.
+
+The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
+or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CPU.
+All archived raw resume and real-model training requests fail before checkpoint
+reads or model allocation/mutation. The fixture writes EMA `adapter.safetensors`
+and `run.json`, marks `resume_supported=false`, and writes no `training.pt`.
+Use the default PG0.9.1 trainer for supported training/resume.
+See [FORMULATION.md](FORMULATION.md) for the archived formulation.
+
+Adapter setup closes its hooks if a device transfer, later registration, or
+inference initialization fails. A clean retry can reuse the same native runtime;
+unrelated pre-existing hooks are preserved. This repair changes the source-bound
+checkpoint identity: new qualification uses a new cohort, with no automatic
+rebind of historical checkpoints or active training sources.
 
 Source: Apache-2.0. Native Iris/Qwen: Apache-2.0. Shared core/ParticleGAN: MIT.
 No model/adapter publication or merge is performed by this audit.

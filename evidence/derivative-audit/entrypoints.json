@@ -6,15 +6,15 @@
       "entrypoint": "iris-slider-train",
       "target": "iris_sliders.train:main",
       "source": "src/iris_sliders/train.py",
-      "line": 324,
+      "line": 325,
       "execution": "shared ConditionalPG09 native RGB training"
     },
     {
       "entrypoint": "iris-slider-train-legacy",
       "target": "iris_sliders.legacy_train:main",
       "source": "src/iris_sliders/legacy_train.py",
-      "line": 391,
-      "execution": "explicit opt-in archived gmix"
+      "line": 344,
+      "execution": "explicit CPU TinyRuntime fixture only; all raw resume and real training fail before model access"
     },
     {
       "entrypoint": "iris-slider-response",
@@ -62,5 +62,6 @@
   "optional_execution": [
     "--critic hndl executes shared HNDL resolver/builder and public GAN step",
     "--diversity-report executes reviewed shared HyperGAN observer after strict export reload"
-  ]
+  ],
+  "hook_setup": "constructor-owned handles roll back on attachment failure; game and inference retain bank before transfer and close it on any later setup failure"
 }

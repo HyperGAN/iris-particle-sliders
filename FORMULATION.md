@@ -2,7 +2,9 @@
 
 This document describes `iris_sliders.legacy_train` only. The default trainer now
 uses installed `particle_sliders.pg09.ConditionalPG09` with native RGB fields; see
-[README.md](README.md). This historical formulation requires explicit legacy opt-in.
+[README.md](README.md). This historical formulation is retained only as an explicit CPU TinyRuntime
+fixture. Real archived training and all raw resume requests fail before model
+access, and the fixture emits no resumable training state.
 
 # Shared formulation integration
 
@@ -29,7 +31,7 @@ For one update, the native bridge computes
 `P_step` is a rank-eight Rademacher sketch of every C*H*W coordinate with entries
 +/-1/sqrt(C*H*W), fixed across that update's D/G calls. Its seed is
 `31415 + 1000003*step` (steps start at 1). Changing steps changes the sketch without
-consuming the global RNG, preserving exact CPU resume. In expectation over sketches,
+consuming the global RNG, preserving deterministic per-step sketches. In expectation over sketches,
 `mean((P*e_pixel)^2) = mean(e_pixel^2)`, so high-frequency errors are visible. A finite
 set of sketches and finite-capacity critic still cannot prove pixel matching or quality.
 
@@ -63,9 +65,9 @@ base/config hashes, target names, formulation and full protocol metadata. Streng
 0–1 multiplies each hook residual; zero returns the original tensor exactly. This
 does not promise linear image interpolation. Particles and routed maps remain active
 at inference. Inference validates the entire checkpoint protocol against an independently constructed
-native protocol before loading models, including the requested CFG. Raw resume state
-separately captures the critic, both optimizers, projection seed, particles, EMA,
-CPU/CUDA RNG and trajectory settings. CPU tests compare all fields and exported bytes.
+native protocol before loading models, including the requested CFG. Earlier unpublished fixture revisions stored raw critic/optimizer/RNG state.
+That archived raw resume path is now unsupported and emits no `training.pt`.
+Supported resumable state belongs to the default shared PG0.9.1 trainer.
 
 This revision fixes the first local prototype's CFG1/CFG3 mismatch, fixed pooling
 nullspace, particle context registration, control-majority normalization and dtype

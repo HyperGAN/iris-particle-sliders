@@ -154,17 +154,13 @@ def test_native_solver_export_reload_equal(tmp_path):
     bank2.close()
 
 
-def test_resume_matches_uninterrupted_native_training(tmp_path):
+def test_legacy_dummy_fixture_exports_without_a_raw_resume_checkpoint(tmp_path):
     rows = load_prompts()
-    train(TinyRuntime(), rows, tmp_path / "full", steps=2, dummy=True, allow_legacy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=1, dummy=True, allow_legacy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=2, dummy=True, allow_legacy=True, resume=tmp_path / "split/training.pt")
-    full = torch.load(tmp_path / "full/training.pt", weights_only=True)
-    resumed = torch.load(tmp_path / "split/training.pt", weights_only=True)
-    assert torch.equal(full["particles"], resumed["particles"])
-    assert all(torch.equal(tensor, resumed["bridge"][name]) for name, tensor in full["bridge"].items())
-    assert all(torch.equal(tensor, resumed["ema"][name]) for name, tensor in full["ema"].items())
-    assert read_metadata(tmp_path / "full/adapter.safetensors")["validation"]["dummy"]
+    train(TinyRuntime(), rows, tmp_path / "fixture", steps=2, dummy=True, allow_legacy=True)
+    meta = read_metadata(tmp_path / "fixture/adapter.safetensors")
+    assert meta["validation"]["dummy"]
+    assert meta["training"]["resume_supported"] is False
+    assert not (tmp_path / "fixture/training.pt").exists()
 
 
 def test_stamp_rejects_local_game_drift():
