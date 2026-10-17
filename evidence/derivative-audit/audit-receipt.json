@@ -1,9 +1,9 @@
 {
   "schema": "iris-derivative-audit-v1",
-  "generated_utc": "2026-10-17T19:43:23.355752+00:00",
+  "generated_utc": "2026-10-17T20:02:42.356314+00:00",
   "repository": "https://github.com/HyperGAN/iris-particle-sliders",
   "base_head": "6a226126623fb17c87fe22b86173fe2fcff4bf3e",
-  "implementation_head": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
+  "implementation_head": "e7f979928b4aa1726735325ef0386752e991c62f",
   "branch": "audit/iris-shared-gan-20261017",
   "shared_core": {
     "proposed_commit": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
@@ -18,41 +18,44 @@
   },
   "product_wheel": {
     "version": "0.2.0",
-    "sha256": "f896111c05bbdf4dede489674d34d4058deeb33d1c886bc69d2e9d4fba3df998",
-    "build": "exact ca479e7f Git archive"
+    "sha256": "395c43f03eed9638b48fc229a86e34fd594ccea5e2ad47b7110d27b49aa76308",
+    "build": "exact e7f9799 Git archive",
+    "package_bytes": "repaired-wheel-source.json"
   },
   "native_iris": {
     "commit": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
     "wheel_sha256": "555ef4809868bfd3872b38e7824ff5d7223f636cea2c67ad770ae59839c3c3d1"
   },
   "tests": {
-    "installed_cpu": 108,
+    "installed_cpu": 143,
     "failures": 0,
     "errors": 0,
+    "shared_candidate": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
     "sourcefree_cwd": "/tmp",
     "pythonpath": "empty",
+    "fixture": "actual tiny native Iris with random weights and synthetic text; no accelerator or model download",
+    "transactional_regressions_in_installed_suite": 7,
+    "earlier_source_focused_counts": {
+      "transactional_setup": 7,
+      "legacy_failclosed": 51,
+      "note": "also included in installed suite; do not sum these overlapping counts"
+    },
     "field_and_hndl": [
       "bispf",
       "bispf_optimized"
     ],
-    "fresh_process_resume": "bothpresets x bothcritics on finalcdf:5updates ==2+3 exactly for fullstate/metrics/export/native response",
-    "public_hypergan_observer": "actual fixed-context2private-latent observation; model/RNG unchanged; no loss change",
+    "fresh_process_resume": "all four repaired-source arms:5updates ==2+3 exactly for full state, metrics, export and native response",
+    "public_hypergan_observer": "actual fixed-context private-latent observation; model/RNG unchanged; no loss change",
+    "no_diffusers_required": true,
+    "old_source_export_accepted": false,
     "pip_check": "No broken requirements found",
     "ruff": "passed",
-    "diff_check": "passed",
-    "baseline_candidate": "4be0b5b29d2e2c741431f468d71ba8a7c884b724",
-    "baseline_atomic_restore_cpu": 15,
-    "final_candidate": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
-    "final_focused_cpu": 60,
-    "final_failures": 0,
-    "final_errors": 0,
-    "final_scope": "shared GAN ownership/update/resume/export, conditional CFG, optional HNDL/HyperGAN APIs,17 actualG/Dhistory restore probes and validinitialempty, native game works with both Diffusers import and distribution lookup blocked",
-    "no_diffusers_required": true
+    "diff_check": "passed"
   },
   "imports": {
     "iris_sliders.train": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/train.py",
-      "sha256": "bf4d164b1f1bd44a8be085a08010a2570770fa8ae2b81392930e4efb873f1542"
+      "sha256": "731d0f1e18dae7dce5c25872e8420ff2c4c93202e13b18342fe10ea42f98ce14"
     },
     "iris_sliders.response": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/response.py",
@@ -61,6 +64,18 @@
     "iris_sliders.diagnostics": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/diagnostics.py",
       "sha256": "b7170dfba4388ccc5260ca1de112fc47425c3a9cb2d321269618389288647e9d"
+    },
+    "iris_sliders.adapters": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/adapters.py",
+      "sha256": "5f0299a411c90510542f4eddd9042a5e7a68cf1ab5feee49c5217fa67fb5325a"
+    },
+    "iris_sliders.infer": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/infer.py",
+      "sha256": "1d901610d1f3ef7fb5eb36634ca50ae5ef99146c42686056b5191fa9465a44db"
+    },
+    "iris_sliders.legacy_train": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/legacy_train.py",
+      "sha256": "2bb1eed64b9246dfd96f18fa29343360dfe7e2322165b7af608e2aaa1583b270"
     },
     "particle_sliders.pg09": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09.py",
@@ -127,5 +142,46 @@
         "public-git-dependency-build.json"
       ]
     }
-  ]
+  ],
+  "qualification_history": [
+    {
+      "held_head": "64dbe5988220eec4ba7bcf1e5c218a4de58d88dd",
+      "implementation_head": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
+      "product_wheel_sha256": "f896111c05bbdf4dede489674d34d4058deeb33d1c886bc69d2e9d4fba3df998",
+      "receipt": "history/64dbe5988220eec4ba7bcf1e5c218a4de58d88dd/audit-receipt.json",
+      "status": "historical; source superseded by transactional repair, with no checkpoint rebind"
+    }
+  ],
+  "acceptance_repair": {
+    "reviewed_head": "64dbe5988220eec4ba7bcf1e5c218a4de58d88dd",
+    "review_receipt_sha256": "0385d99a5d6e84365693974b238a6608e34c4b7877a55eb38f37038cbc3792fd",
+    "findings": {
+      "IRIS-DEVICE-TRANSFER-HOOK-CLEANUP": {
+        "status": "fixed, pending exact repaired-head review",
+        "changes": "retain bank before transfer; roll back own partial registrations; inference cleanup encloses all setup",
+        "before_attached_hooks": 2,
+        "after_attached_hooks": 0,
+        "same_runtime_retry_update": 1,
+        "evidence": [
+          "transfer-leak-before-fix.json",
+          "transfer-leak-after-fix.json",
+          "transactional-setup-tests.xml",
+          "installed-tests.xml"
+        ]
+      },
+      "IRIS-RAW-RESUME-PREFLIGHT": {
+        "status": "resolved by fail-closed archive boundaries, pending exact repaired-head review",
+        "changes": "all raw resume and real archived training reject before checkpoint/model access; only CPU TinyRuntime fixture remains; no rawstate reader/writer",
+        "evidence": [
+          "legacy-failclosed-tests.xml",
+          "installed-tests.xml"
+        ]
+      }
+    },
+    "source_lineage": "repair-source-lineage.json",
+    "new_cohort_required": true,
+    "active_pins_modified": false,
+    "shared_core_pin_changed": false,
+    "not_ada_approved": true
+  }
 }

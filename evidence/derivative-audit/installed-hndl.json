@@ -1,7 +1,7 @@
 {
   "schema": "iris-installed-cpu-qualification-v1",
   "critic": "hndl",
-  "cwd": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl",
+  "cwd": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl",
   "pythonpath": null,
   "interpreter": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
   "versions": {
@@ -14,7 +14,7 @@
   "imports": {
     "iris_sliders.train": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/train.py",
-      "sha256": "bf4d164b1f1bd44a8be085a08010a2570770fa8ae2b81392930e4efb873f1542"
+      "sha256": "731d0f1e18dae7dce5c25872e8420ff2c4c93202e13b18342fe10ea42f98ce14"
     },
     "iris_sliders.response": {
       "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/response.py",
@@ -54,7 +54,7 @@
       "--critic",
       "hndl",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/full"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/full"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -70,7 +70,7 @@
       "--stop-after",
       "2",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/split"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/split"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -84,9 +84,9 @@
       "--critic",
       "hndl",
       "--resume",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/split/training.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/split/training.pt",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/split"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/split"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -94,9 +94,9 @@
       "iris_sliders.response",
       "--dummy",
       "--adapter",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/full/response-adapter.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/full/response-adapter.pt",
       "--out",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/full/velocity.pt"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/full/velocity.pt"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -104,9 +104,9 @@
       "iris_sliders.response",
       "--dummy",
       "--adapter",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/split/response-adapter.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/split/response-adapter.pt",
       "--out",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf/split/velocity.pt"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf/split/velocity.pt"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -120,7 +120,7 @@
       "--critic",
       "hndl",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/full"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/full"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -136,7 +136,7 @@
       "--stop-after",
       "2",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/split"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/split"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -150,9 +150,9 @@
       "--critic",
       "hndl",
       "--resume",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/split/training.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/split/training.pt",
       "--outdir",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/split"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/split"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -160,9 +160,9 @@
       "iris_sliders.response",
       "--dummy",
       "--adapter",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/full/response-adapter.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/full/response-adapter.pt",
       "--out",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/full/velocity.pt"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/full/velocity.pt"
     ],
     [
       "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/bin/python",
@@ -170,9 +170,9 @@
       "iris_sliders.response",
       "--dummy",
       "--adapter",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/split/response-adapter.pt",
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/split/response-adapter.pt",
       "--out",
-      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-cdf-hndl/bispf_optimized/split/velocity.pt"
+      "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/acceptance-e7-hndl/bispf_optimized/split/velocity.pt"
     ]
   ],
   "presets": {
@@ -317,7 +317,7 @@
       },
       "objective": "g_adv+public_prior;d_adv+public_penalty",
       "generator_arm": "routed_particle_gan",
-      "source_signature_sha256": "e72f509439da6fc1fac27d0d06a8d116750a0cb5306cd962e8c7936a3bc9c0d5"
+      "source_signature_sha256": "18278cca1c216fe684697d06c545db5b391742c73d9677061f2bb849547cb51e"
     },
     "bispf_optimized": {
       "updates": 5,
@@ -460,7 +460,7 @@
       },
       "objective": "g_adv+public_prior;d_adv+public_penalty",
       "generator_arm": "routed_particle_gan",
-      "source_signature_sha256": "c67f9c6ff16129851ab604ae7e9601f5207f4194b8c0026e5abe756bc97d5883"
+      "source_signature_sha256": "f46d3fca3af399db2c02b8207dca463194dbd3df6ac46970f6b2207e27a4f12c"
     }
   },
   "cuda_initialized": false,

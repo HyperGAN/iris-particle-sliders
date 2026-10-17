@@ -1,0 +1,9 @@
+{
+  "previous_implementation": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
+  "new_implementation": "e7f979928b4aa1726735325ef0386752e991c62f",
+  "old_adapter_accepted": false,
+  "rejection": "adapter export protocol differs",
+  "changed_implementation_modules": [
+    "iris_sliders.adapters"
+  ]
+}
