@@ -1,7 +1,7 @@
 {
   "core": {
     "repository": "https://github.com/HyperGAN/particle-sliders",
-    "commit": "b80b72bc2602ed4b5c0ceed724c6875395944b1f",
+    "commit": "4be0b5b29d2e2c741431f468d71ba8a7c884b724",
     "subdirectory": "packages/particle-sliders-core",
     "import": "particle_sliders",
     "entrypoint": "pg09.ConditionalPG09",

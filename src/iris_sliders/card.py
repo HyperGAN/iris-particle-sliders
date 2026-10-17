@@ -4,7 +4,7 @@ import json
 import math
 from importlib.resources import files
 
-CORE_COMMIT = "b80b72bc2602ed4b5c0ceed724c6875395944b1f"
+CORE_COMMIT = "4be0b5b29d2e2c741431f468d71ba8a7c884b724"
 IRIS_COMMIT = "a8d15239dea469aba042cfa56ca3bb4e450d5ebc"
 MODEL_ID = "speridlabs/iris-3b"
 MODEL_REVISION = "7445443349bc9abe3c96f01ff793e2098ca012b3"

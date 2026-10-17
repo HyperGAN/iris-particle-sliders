@@ -12,7 +12,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 dependencies = [
   "torch>=2.7.1,<3", "safetensors>=0.4", "numpy>=1.26", "pillow>=10",
-  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@b80b72bc2602ed4b5c0ceed724c6875395944b1f#subdirectory=packages/particle-sliders-core",
+  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@4be0b5b29d2e2c741431f468d71ba8a7c884b724#subdirectory=packages/particle-sliders-core",
   "iris-3b @ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
 ]
 
