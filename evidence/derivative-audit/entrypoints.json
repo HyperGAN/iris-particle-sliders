@@ -6,7 +6,7 @@
       "entrypoint": "iris-slider-train",
       "target": "iris_sliders.train:main",
       "source": "src/iris_sliders/train.py",
-      "line": 303,
+      "line": 324,
       "execution": "shared ConditionalPG09 native RGB training"
     },
     {
@@ -20,7 +20,7 @@
       "entrypoint": "iris-slider-response",
       "target": "iris_sliders.response:main",
       "source": "src/iris_sliders/response.py",
-      "line": 23,
+      "line": 30,
       "execution": "shared export loader + raw native response evaluation"
     },
     {
@@ -58,5 +58,9 @@
   ],
   "weight_ownership": "shared AdapterParameters owns actual hooked bank and same128x4particles exactly once",
   "signs": "unipolar +1; negative strength rejected; native noise-clean velocity",
-  "native_image_sampling": "unqualified for shared PG exports; rejected before model allocation"
+  "native_image_sampling": "unqualified for shared PG exports; rejected before model allocation",
+  "optional_execution": [
+    "--critic hndl executes shared HNDL resolver/builder and public GAN step",
+    "--diversity-report executes reviewed shared HyperGAN observer after strict export reload"
+  ]
 }

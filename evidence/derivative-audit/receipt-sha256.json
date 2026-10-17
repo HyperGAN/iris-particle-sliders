@@ -1,0 +1,9 @@
+{
+  "audit-receipt.json": "47008666b63aff35c559e60d11881dd328b73e4a2e992fb90e24adea71badf24",
+  "entrypoints.json": "dd3792bca2674722a3219fdf31537311f7ef3f7b3112e86b395176c020213505",
+  "hypergan-observer.json": "417a4bcc98755a0066b4c2bbf046d8033c9f66a8fceb28fc280a08e6def19bc3",
+  "installed-field.json": "3662731a47656c895d63ce5c0df2eebc9d7ca6b6d9585a1b747b77bf1732531e",
+  "installed-hndl.json": "3792d5124e5dff9dcbfb0d51fa6e1a5e078fcc8c53a2f84bfc76a7d02044e458",
+  "installed-tests.xml": "2eee83e27710e84752ff114a8723d038bb8f9b357089890ffbca95a363f09be7",
+  "pg-latest-release.json": "f3b94f5c5d1c94f1833e651902b7f8229dff0b03eb33356738dca0048b801579"
+}
