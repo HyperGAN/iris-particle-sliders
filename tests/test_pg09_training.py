@@ -390,3 +390,31 @@ def test_response_observer_missing_dependency_rejects_before_runtime_allocation(
                 str(tmp_path / "report.json"),
             ]
         )
+
+
+def test_native_iris_shared_game_needs_no_diffusers_import_or_distribution(monkeypatch):
+    import builtins
+    from importlib import metadata
+
+    original_version, original_import = metadata.version, builtins.__import__
+
+    def without_diffusers(name):
+        if name == "diffusers":
+            raise metadata.PackageNotFoundError("diffusers")
+        return original_version(name)
+
+    def native_only_import(name, *args, **kwargs):
+        if name == "diffusers" or name.startswith("diffusers."):
+            raise ModuleNotFoundError("native Iris must not import Diffusers", name=name)
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(metadata, "version", without_diffusers)
+    monkeypatch.setattr(builtins, "__import__", native_only_import)
+    runtime = TinyRuntime()
+    game = training.build_game(runtime, training.configuration(load_prompts(), **options(steps=2)))
+    try:
+        assert game.backend.metadata()["diffusers_version"] is None
+        assert game.step()["step"] == 1
+    finally:
+        game.backend.adapter.close()
+    assert_no_hooks(runtime)
