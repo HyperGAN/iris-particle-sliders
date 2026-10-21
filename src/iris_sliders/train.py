@@ -9,10 +9,11 @@ from importlib.metadata import version
 from pathlib import Path
 
 import torch
+from particle_sliders.lifecycle import updates, atomic_save
 from particle_sliders import winning_formulation
 from particle_sliders.pg09 import ConditionalPG09, validate_pg09_domain
 from particle_sliders.pg09_images import IrisResponseAdapter, image_condition_features
-from particle_sliders.pg09_moss_campaign import CampaignFieldCritic
+from particle_sliders.field_critic import FieldCritic
 
 from .adapters import AdapterBank, new_particles
 from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION, card
@@ -166,7 +167,7 @@ def build_game(runtime, config):
                     prepared[0].target.numel(), conditions.shape[1], hidden=config["critic_hidden"]
                 ).to(runtime.device)
             else:
-                critic = CampaignFieldCritic(
+                critic = FieldCritic(
                     prepared[0].target.shape[1], conditions.shape[1], width=config["critic_hidden"]
                 ).to(runtime.device)
             return ConditionalPG09(
@@ -228,26 +229,22 @@ def train(runtime, rows, outdir, *, resume=None, stop_after=None, dummy=False, *
         outdir = Path(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
         history = []
-        while game.completed_steps < stop:
-            stats = game.step()
+        for stats in updates(game, stop):
             history.append(stats)
             with (outdir / "train.jsonl").open("a") as stream:
                 stream.write(json.dumps(stats) + "\n")
             print(json.dumps(stats), flush=True)
         state = game.state_dict()
         signature = state["config"]
-        torch.save(
-            {"schema": TRAINING_SCHEMA, "config": config, "dummy": bool(dummy), "game": state},
-            outdir / "training.pt",
-        )
-        torch.save(
+        atomic_save(outdir / "training.pt",
+            {"schema": TRAINING_SCHEMA, "config": config, "dummy": bool(dummy), "game": state})
+        atomic_save(outdir / "response-adapter.pt",
             {
                 "schema": EXPORT_SCHEMA,
                 "config": config,
                 "dummy": bool(dummy),
                 "adapter": game.export_state_dict(),
             },
-            outdir / "response-adapter.pt",
         )
         receipt = {
             "schema": TRAINING_SCHEMA,

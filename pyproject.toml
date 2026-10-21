@@ -12,7 +12,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 dependencies = [
   "torch>=2.7.1,<3", "safetensors>=0.4", "numpy>=1.26", "pillow>=10",
-  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@cdfb80a76b882b4b73861b12f555263bd64ffeb7#subdirectory=packages/particle-sliders-core",
+  "particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@cb0e6c39a51d451fa6ed5e72169b66e12ac247d1#subdirectory=packages/particle-sliders-core",
   "iris-3b @ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
 ]
 
@@ -43,3 +43,6 @@ pythonpath = ["src"]
 
 [tool.ruff]
 line-length = 110
+
+[project.entry-points."particle_sliders.image_backends"]
+iris = "iris_sliders.lifecycle:BACKEND"

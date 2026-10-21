@@ -1,3 +1,5 @@
+For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
+
 # Iris particle sliders
 
 Native Iris-3B routed particle adapters trained through the installed
