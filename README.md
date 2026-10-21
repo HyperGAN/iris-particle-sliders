@@ -84,7 +84,8 @@ stays at adapter strength zero. Targets are unipolar positive-prompt velocities;
 negative strengths are rejected. Global `image_condition_features` and its collision
 gate cover the complete response dataset before game construction.
 
-`CampaignFieldCritic` is the shared spatial raw-logit critic. The shared GAN compares
+`particle_sliders.field_critic.FieldCritic` is the shared spatial raw-logit critic,
+extracted from the historical campaign without changing its math. The shared GAN compares
 Gaussian response noise against noise plus `(student - target) / response_scale`,
 with the public adversarial objectives, critic penalty and prior regularizer.
 The old sketch, isotropic calibration and FormulationGame do not run on this path.

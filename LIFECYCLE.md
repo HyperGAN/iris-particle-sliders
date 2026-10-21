@@ -27,6 +27,13 @@ Strengths remain [0,1]; reference-image conditioning is unsupported.
 Iris PG image rendering fails closed until native FlowDPMSolver parity;
 `evaluate` returns native RGB velocity, not an image. Local native options are
 `checkpoint`, `text_dir`, `cache_dir`, `device`, `text_device`; downloads remain disabled.
+The base loader supports `base_precision='float32'` only; its CUDA autocast
+does not change base storage precision. Adapters and routed particles stay FP32.
+CPU and CUDA devices are supported; the tiny fixture requires both devices to be
+`cpu` and rejects native model paths. Native `cache_dir` defaults to
+`/ml2/iris-particle-sliders/cache`, matching the original product CLI, and must
+remain under `/ml2`. Explicit checkpoint/text paths must be local directories.
+These options are checked before the runtime factory is invoked.
 
 Write `config.as_dict()` as JSON to use `particle-slider capabilities`,
 `particle-slider train`, `particle-slider evaluate` and `particle-slider render`.
@@ -41,3 +48,10 @@ packet and error contracts. Backend dependencies stay isolated: Qwen and Fibo
 use different Diffusers Git revisions and are not a joint environment promise.
 Use CPU thread limits and offline mode for these fixtures. They do not qualify
 pretrained behavior, GPU memory, convergence or image quality.
+
+The original `iris-slider-train`/`iris-slider-response` commands retain their
+product packet schemas and loaders. Use `particle-slider` for common session
+packets and EMA selection; neither entrypoint silently converts the other's
+packets. Historical source receipts under `evidence/derivative-audit` describe
+their original PR1 cohort and are not qualification for a new lifecycle head.
+See `INTEGRATION-AUDIT.md` for the fresh integration inventory and deferred checks.
