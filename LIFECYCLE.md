@@ -1,8 +1,10 @@
 # Iris common lifecycle
 
-Proposed local shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.
-Unpublished; adopted into this local PG0.9.1 proposal after parent reported the
-independent core review. Iris runtime conformance is pending its next CPU slot.
+Exact tested shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.
+This PG0.9.1 runtime passed **60 installed CPU checks**; the pin is publicly
+reachable through merged common-core PR144 ancestry. The product remains a draft
+for independent review. See [qualification status](PUBLICATION-STATUS.md).
+Native solver/render parity remains unqualified.
 The original `fd89e1c` / core 0.7.0 milestone and cohorts remain preserved.
 
 This derivative registers backend `iris` for `particle_sliders.lifecycle`.
