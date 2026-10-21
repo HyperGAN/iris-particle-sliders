@@ -1,0 +1,9 @@
+{
+  "reviewed_head": "64dbe5988220eec4ba7bcf1e5c218a4de58d88dd",
+  "hook_count_before": 0,
+  "source_sha256": "bf4d164b1f1bd44a8be085a08010a2570770fa8ae2b81392930e4efb873f1542",
+  "exception": "injected CPU adapter-transfer failure",
+  "hook_count_after_failed_transfer": 2,
+  "hook_count_after_explicit_cleanup": 0,
+  "cuda_initialized": false
+}

@@ -1,4 +1,4 @@
-"""Acquire the current shared stamp. No local game or regularizer."""
+"""Archived gmix stamp helpers. The default trainer uses the shared PG0.9.1 API."""
 
 from particle_sliders import winning_formulation
 

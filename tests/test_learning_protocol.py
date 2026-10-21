@@ -5,12 +5,12 @@ import torch
 from iris3b.flow.solver import FlowDPMSolver
 
 from iris_sliders.adapters import AdapterBank, new_particles
-from iris_sliders.checkpoint import load_adapter, metadata, save_adapter, sha256
+from iris_sliders.checkpoint import load_adapter, metadata, save_adapter
 from iris_sliders.flow import guided_velocity
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import build_game, paired_records, step_context, train
 from iris_sliders.projection import VelocityProjection
 from iris_sliders.tiny import TinyRuntime
-from iris_sliders.train import build_game, paired_records, step_context, train
 
 ROWS = [
     {"neutral": "fox", "positive": "fox in golden light"},
@@ -215,25 +215,21 @@ def test_strength_scales_hook_residual_and_particle_values_change_inference():
     bank.close()
 
 
-def test_exact_resume_includes_critic_optimizers_rng_ema_and_export(tmp_path):
-    rows = ROWS
-    train(TinyRuntime(), rows, tmp_path / "full", steps=3, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=1, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=3, dummy=True, resume=tmp_path / "split/training.pt")
-    full = torch.load(tmp_path / "full/training.pt", weights_only=True)
-    split = torch.load(tmp_path / "split/training.pt", weights_only=True)
+def test_archived_raw_resume_is_rejected_before_runtime_access(tmp_path):
+    class UntouchableRuntime:
+        def __getattribute__(self, name):
+            pytest.fail("archived resume accessed the runtime")
 
-    def equal(a, b):
-        if isinstance(a, torch.Tensor):
-            return torch.equal(a, b)
-        if isinstance(a, dict):
-            return a.keys() == b.keys() and all(equal(a[k], b[k]) for k in a)
-        if isinstance(a, (list, tuple)):
-            return len(a) == len(b) and all(equal(x, y) for x, y in zip(a, b))
-        return a == b
-
-    assert equal(full, split)
-    assert sha256(tmp_path / "full/adapter.safetensors") == sha256(tmp_path / "split/adapter.safetensors")
+    with pytest.raises(ValueError, match="archived raw resume is unsupported"):
+        train(
+            UntouchableRuntime(),
+            ROWS,
+            tmp_path / "unsupported",
+            dummy=True,
+            allow_legacy=True,
+            resume=tmp_path / "missing-training.pt",
+        )
+    assert not (tmp_path / "unsupported").exists()
 
 
 def test_protocol_mismatch_is_rejected(tmp_path):

@@ -1,3 +1,14 @@
+# Current audit scope
+
+The 2026-10-17 GAN migration is qualified with actual tiny Iris CPU fixtures and
+installed source-free wheels. See `evidence/derivative-audit/` for exact receipts.
+Full pretrained-model/GPU/image-sampler parity and quality remain unqualified.
+The prior validation notes below are historical evidence for earlier gmix
+revisions. Current archived code is CPU TinyRuntime-only, with no raw resume
+reader/writer or real-model training. The current transfer/registration/inference
+setup repair has dedicated failure-injection regressions and new source-bound
+wheel receipts; older wheel/qualification receipts remain historical.
+
 # Validation status
 
 Review-v3 verification: **36 passed** on Python 3.12.15, PyTorch 2.14.1+cpu,

@@ -1,0 +1,67 @@
+{
+  "schema": "iris-entrypoint-audit-v1",
+  "original_head": "6a226126623fb17c87fe22b86173fe2fcff4bf3e",
+  "entries": [
+    {
+      "entrypoint": "iris-slider-train",
+      "target": "iris_sliders.train:main",
+      "source": "src/iris_sliders/train.py",
+      "line": 325,
+      "execution": "shared ConditionalPG09 native RGB training"
+    },
+    {
+      "entrypoint": "iris-slider-train-legacy",
+      "target": "iris_sliders.legacy_train:main",
+      "source": "src/iris_sliders/legacy_train.py",
+      "line": 344,
+      "execution": "explicit CPU TinyRuntime fixture only; all raw resume and real training fail before model access"
+    },
+    {
+      "entrypoint": "iris-slider-response",
+      "target": "iris_sliders.response:main",
+      "source": "src/iris_sliders/response.py",
+      "line": 30,
+      "execution": "shared export loader + raw native response evaluation"
+    },
+    {
+      "entrypoint": "iris-slider-infer",
+      "target": "iris_sliders.infer:main",
+      "source": "src/iris_sliders/infer.py",
+      "line": 17,
+      "execution": "legacy v3 safetensors only; new PG rendering rejected"
+    },
+    {
+      "entrypoint": "iris-slider-card",
+      "target": "iris_sliders.card:main",
+      "source": "src/iris_sliders/card.py",
+      "line": 74,
+      "execution": "current shared PG card"
+    },
+    {
+      "entrypoint": "scripts/train_iris.py",
+      "target": "iris_sliders.train:main",
+      "execution": "same console main via direct import"
+    },
+    {
+      "entrypoint": "scripts/infer_iris.py",
+      "target": "iris_sliders.infer:main",
+      "execution": "same console main via direct import"
+    }
+  ],
+  "default_training_chain": [
+    "iris_sliders.train:main/train/build_game",
+    "iris_sliders.teacher:collect_response_rows",
+    "particle_sliders.pg09_images:IrisResponseAdapter.prepare",
+    "particle_sliders.pg09_images:image_condition_features",
+    "particle_sliders.pg09_moss_campaign:CampaignFieldCritic",
+    "particle_sliders.pg09:ConditionalPG09.step"
+  ],
+  "weight_ownership": "shared AdapterParameters owns actual hooked bank and same128x4particles exactly once",
+  "signs": "unipolar +1; negative strength rejected; native noise-clean velocity",
+  "native_image_sampling": "unqualified for shared PG exports; rejected before model allocation",
+  "optional_execution": [
+    "--critic hndl executes shared HNDL resolver/builder and public GAN step",
+    "--diversity-report executes reviewed shared HyperGAN observer after strict export reload"
+  ],
+  "hook_setup": "constructor-owned handles roll back on attachment failure; game and inference retain bank before transfer and close it on any later setup failure"
+}

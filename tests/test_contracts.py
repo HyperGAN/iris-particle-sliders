@@ -13,9 +13,9 @@ from iris_sliders.adapters import AdapterBank, new_particles
 from iris_sliders.card import CORE_COMMIT, IRIS_COMMIT, card
 from iris_sliders.checkpoint import load_adapter, metadata, read_metadata, save_adapter
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import load_prompts
 from iris_sliders.runtime import prepare_paths, validate_shape
 from iris_sliders.tiny import TinyRuntime
-from iris_sliders.train import load_prompts
 
 
 def test_mock_snapshot_resolution_is_pinned_and_local_first(monkeypatch, tmp_path):

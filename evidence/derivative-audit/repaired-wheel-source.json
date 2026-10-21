@@ -1,0 +1,26 @@
+{
+  "schema": "iris-repaired-wheel-source-v1",
+  "source_commit": "e7f979928b4aa1726735325ef0386752e991c62f",
+  "wheel_sha256": "395c43f03eed9638b48fc229a86e34fd594ccea5e2ad47b7110d27b49aa76308",
+  "package_member_count": 17,
+  "all_package_bytes_equal_git_and_installed": true,
+  "package_sources": {
+    "iris_sliders/__init__.py": "92b9df60b1f0d8fe383afc857bd6e1fd0e57f0f2dc5c1b9023e0c3a55e81d990",
+    "iris_sliders/adapters.py": "5f0299a411c90510542f4eddd9042a5e7a68cf1ab5feee49c5217fa67fb5325a",
+    "iris_sliders/card.py": "fe19962aeda3a94faad6d4dcaea22d902f5b1a10483e1e694d2e0ad38e8c6d7c",
+    "iris_sliders/checkpoint.py": "ddf3d09fffb91f60503e33bbd1ab317b3f9256a1482c571d2fd33dcb13ca29b1",
+    "iris_sliders/diagnostics.py": "b7170dfba4388ccc5260ca1de112fc47425c3a9cb2d321269618389288647e9d",
+    "iris_sliders/flow.py": "e2392e48001150ef9eb1db59ca8e64ad05ecd6e5b8c8e5b8a8f1583d88cd70e9",
+    "iris_sliders/formulation.py": "759e52f1040b6c0f4dd710260aa22c9ff9058924ca8ba2a0d1873c2e2842db6b",
+    "iris_sliders/infer.py": "1d901610d1f3ef7fb5eb36634ca50ae5ef99146c42686056b5191fa9465a44db",
+    "iris_sliders/legacy_train.py": "2bb1eed64b9246dfd96f18fa29343360dfe7e2322165b7af608e2aaa1583b270",
+    "iris_sliders/projection.py": "6a1bb9dcaaeea11e1ba50edf21fc75d5a36781fb6d90d6f5ecd954cd6f1bc4d1",
+    "iris_sliders/prompts.json": "071e71387c672e6c148c334cef7406ebc4e6364b540c0d6bc1df758ee5bde20c",
+    "iris_sliders/response.py": "be5bc418f32fd10acb20c8844ca4d2d6cf10384a1ccad2f9f8041fb684ad1313",
+    "iris_sliders/runtime.py": "97d27cdd19e40d03dd20053570d8726d561c332d1efa76267a6d7b33ea362e62",
+    "iris_sliders/teacher.py": "e92cb94d164269012f5c0119ebee553ad49288110e98aee963f4fd2a76de83fc",
+    "iris_sliders/text-files.json": "a472f3466167fb64d1ee1ca69248041ef059bc8343d7cb6e6c7374fb6f169485",
+    "iris_sliders/tiny.py": "754b73ec437860a795f8ea9156705b19da064080af6c281cce41ae1c540fa007",
+    "iris_sliders/train.py": "731d0f1e18dae7dce5c25872e8420ff2c4c93202e13b18342fe10ea42f98ce14"
+  }
+}

@@ -40,7 +40,8 @@ class RoutedProjection(nn.Module):
 class AdapterBank(nn.Module):
     """Hooks preserve Iris's module/forward API and never modify frozen base tensors.
 
-    Particles are owned by FormulationGame during training and exported separately.
+    The shared response network owns the actual particles once during GAN training.
+    Legacy FormulationGame exports its bank separately.
     Strength zero returns the original tensor without arithmetic.
     """
 
@@ -54,8 +55,12 @@ class AdapterBank(nn.Module):
         object.__setattr__(self, "_particles", None)
         self.particle_shape = (int(stamp.spec["parts"]), int(stamp.spec["particle_dim"]))
         self.handles = []
-        for index, (_, module) in enumerate(targets):
-            self.handles.append(module.register_forward_hook(self._hook(index)))
+        try:
+            for index, (_, module) in enumerate(targets):
+                self.handles.append(module.register_forward_hook(self._hook(index)))
+        except BaseException:
+            self.close()
+            raise
 
     def _hook(self, index):
         def hook(module, inputs, output):

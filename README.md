@@ -1,144 +1,157 @@
+Common lifecycle draft: **60 selected CPU checks passed** on the tested runtime below. See [publication and qualification status](PUBLICATION-STATUS.md); native/pretrained limits remain explicit.
+
+For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
+
 # Iris particle sliders
 
-Native Iris-3B concept sliders for HyperGAN. Source/package release is prepared locally;
-no repository or registry upload has happened. Proposed source: `HyperGAN/iris-particle-sliders`
-(public, matching siblings). Python distribution: `iris-particle-sliders`; import `iris_sliders`.
-No adapter Hub repository or registry publication is proposed by this task.
-
-This is a native pixel-space integration. It uses IrisDiT and FlowDPMSolver, a frozen
-Qwen3-VL-4B-Instruct encoder with Iris's chat template and selected hidden layers, and
-`particle_sliders.winning_formulation()` plus `FormulationGame`. There is no VAE or
-Diffusers pipeline. Source pins and model file hashes are in [backend.lock.json](backend.lock.json).
+Native Iris-3B routed particle adapters trained through the installed
+`particle-sliders-core` API and released **ParticleGAN 0.9.1**. The default
+`iris-slider-train` command executes `particle_sliders.pg09.ConditionalPG09`.
+It trains on actual `[1,3,H,W]` RGB velocity fields through the existing Iris hooks;
+it has no pixel MSE, reconstruction loss, local optimizer or vendored GAN loop.
 
 ## Install
 
-Python >=3.11. Install your selected PyTorch >=2.7.1 build first, then:
+Python >=3.11; install your selected PyTorch >=2.7.1 build first:
 
 ```bash
-python -m pip install -e '.[dev]'
-iris-slider-card
+python -m pip install '.[dev]'
+iris-slider-train --print-card
 ```
 
-The core is pinned to the current `HyperGAN/particle-sliders` monorepo subdirectory,
-not the historical `concept-slider-core` alias. ParticleGAN is a transitive, pinned
-MIT dependency. Native Iris code is an Apache-2.0 dependency. No dependency code,
-base weights or Qwen weights are vendored into this package.
+The shared package and upstream `speridlabs/iris-3b` are immutable Git dependencies.
+No native runtime, model weights or shared implementation is vendored here.
+[backend.lock.json](backend.lock.json) records source/model pins. The original
+inspection head was `6a226126623fb17c87fe22b86173fe2fcff4bf3e`, verified against
+GitHub `main` on 2026-10-17; this proposal uses an isolated checkout.
 
-## Bounded CPU check
+## CPU software check
 
 ```bash
-OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 TMPDIR=/ml2/iris-check/tmp \
-  iris-slider-train --dummy --steps 4 --outdir /ml2/iris-check/run
-python -m pytest -q
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  iris-slider-train --dummy --steps 5 --stop-after 2 --outdir outputs/iris-check
+iris-slider-train --dummy --steps 5 --resume outputs/iris-check/training.pt \
+  --outdir outputs/iris-check
+iris-slider-response --dummy --adapter outputs/iris-check/response-adapter.pt \
+  --row 0 --out outputs/iris-check/velocity.pt
+python -m pytest -q --basetemp="$(pwd)/test-tmp"
 ```
 
-Create `/ml2/iris-check/tmp` first. `--dummy` runs actual upstream IrisDiT with a
-two-block hybrid trunk, GQA, masked layer-attention text aggregation and a PiT head.
-The weights are random and text states synthetic. The fixture's normally zero
-output head is initialized nonzero to test adapter gradients. It downloads nothing,
-uses only CPU and is marked `tiny-native-synthetic-text` in every checkpoint.
+`--dummy` uses actual upstream tiny IrisDiT with random weights and synthetic
+text, on CPU, without downloads. It proves native forward/gradient/serialization
+wiring only. It does not train an Iris-3B model or establish image quality.
+Use a `/ml2` checkout for the old loader path tests, which enforce that model
+caches live under `/ml2`.
 
-## Native training
+The total `--steps` budget is part of the shared recipe/checkpoint signature.
+Keep it unchanged on resume; use `--stop-after` for an earlier checkpoint within
+that budget. Both public `bispf` and `bispf_optimized` presets are supported.
+Shared balanced sampling, independent D/G row/noise streams, optimizer state,
+critic penalty, particle prior and actual participating bank are restored by the
+shared checkpoint API. Old gmix checkpoints cannot silently resume this objective.
 
-First inspect free device/host memory and existing model caches. Do not use a shared
-GPU or download weights until resources and the exact download plan are reviewed.
-The restricted task view has no NVIDIA device nodes; its `nvidia-smi` failure is
-not a host driver failure. Read-only host queries show a working 580.173.02 driver
-and two RTX A6000s using about45 GiB each, with roughly3 GiB free. The task venv is
-CPU-only by design. The exact recovered Atlas runtime
-(`/home/mikkel/Documents/Codex/2026-10-07/task-18/runtime/matched-env/bin/python`)
-reports CUDA 12.6 and two host devices, but zero in the restricted task view. It was
-inspected read-only and has not been changed or used to run Iris. No matching model cache appeared in the locations inspected.
-Full Iris/Qwen validation has **not run**; no shared GPU allocation is authorized.
+## Native response training
 
-The pinned Iris weight file is 11,950,112,680 bytes. Qwen's two shards total
-8,875,719,344 bytes. Combined weight-only download: 20,825,832,024 bytes (19.396 GiB),
-plus tokenizer/config files and temporary loading memory. A conservative initial
-budget is 32 GiB free GPU memory and 32 GiB available host RAM for a batch-one,
-512px adapter run with the encoder on CPU; this is an unmeasured budget, not a fit
-claim. CPU-only full loading also needs substantially more RAM than tiny tests.
+Full Iris/Qwen model loading, GPU memory fit, convergence and quality remain
+unmeasured. Device admission belongs to the training coordinator. No GPU job,
+service or active source checkout was changed for this proposal.
 
-Use locally staged official snapshot directories by default:
+After the coordinator stages the pinned model snapshots and admits a device:
 
 ```bash
 iris-slider-train --checkpoint /ml2/models/iris-3b \
   --text-dir /ml2/models/Qwen3-VL-4B-Instruct \
   --cache-dir /ml2/iris-sliders/cache --device cuda:0 --text-device cpu \
-  --height 512 --width 512 --batch 1 --steps 1600 \
-  --outdir /ml2/iris-sliders/warm-light
+  --height 512 --width 512 --batch 2 --steps 1600 \
+  --outdir /ml2/iris-sliders/pg091
 ```
 
-These paths must contain the pinned official files. The encoder index, every referenced shard and load-relevant configuration are
-verified; competing/unverified weight or adapter files are rejected before allocation. `--allow-hub` explicitly permits pinned snapshot downloads when
-local paths are omitted; it never downloads the depth/upscaler models. This package
-accepts the official exported directory (`model.safetensors` + `config.yaml`), not
-training `.pth` files or downstream depth/upscaler weights.
+Local official snapshots are the default. `--allow-hub` explicitly permits pinned
+snapshot downloads. The loader validates the Iris config/weight hashes and every
+load-relevant Qwen file before allocating the model. Weight-only download size is
+20,825,832,024 bytes; no memory-fit claim follows from that size.
 
-Prompt cards are JSON with `rows` containing `neutral`/`positive`, plus optional
-`controls`. See [the example](configs/iris/prompts-warm-light.json). Teachers and students use native guided velocities (CFG=3 by default), including
-the null branch and native strict guidance interval, at matched neutral trajectory states. The trajectory
-uses native DPM-Solver++ order 2, shift 4 and time `1000*sigma`, running from noise
-to image. A positive teacher changes the prompt; controls use identical prompts.
-The default retains two states per prompt from a 100-step trajectory, bounded in CPU
-memory. No training images or unshifted reverse-time conventions are introduced.
+Prompt JSON contains at least two `neutral`/`positive` rows plus optional identical
+prompt `controls`; see [the example](configs/iris/prompts-warm-light.json).
+The collector runs the native neutral FlowDPMSolver trajectory, retaining only
+selected x/t states. Shared `IrisResponseAdapter.prepare` evaluates frozen positive
+and neutral teachers at those same states. Full text-layer embeddings, masks, null
+conditioning, times and native fields are bound in the shared checkpoint signature.
+The runtime computes null text through the pinned encoder instead of trusting its
+unchecked external null-embedding cache.
 
-`train.jsonl` can be tailed. `training.pt` stores raw generator/critic/optimizer,
-particles, projection, RNG, EMA and run configuration for:
+The student uses neutral text, with its adapter active on the conditional branch
+only. CFG uses the native strict open interval `0 < t/1000 < 1`, and the null branch
+stays at adapter strength zero. Targets are unipolar positive-prompt velocities;
+negative strengths are rejected. Global `image_condition_features` and its collision
+gate cover the complete response dataset before game construction.
+
+`particle_sliders.field_critic.FieldCritic` is the shared spatial raw-logit critic,
+extracted from the historical campaign without changing its math. The shared GAN compares
+Gaussian response noise against noise plus `(student - target) / response_scale`,
+with the public adversarial objectives, critic penalty and prior regularizer.
+The old sketch, isotropic calibration and FormulationGame do not run on this path.
+
+The optional `--critic hndl` arm calls the shared
+`HNDLConditionalReadoutCritic` and released HNDL 0.8.2 resolver/builder. Only that
+critic flattens native responses; the public PG penalty keeps the RGB field.
+Its source, resolved plan and HNDL sources bind the checkpoint. Changing critic
+requires a fresh cohort. Missing/wrong optional dependencies fail before native
+runtime allocation. The spatial field critic is the default.
 
 ```bash
-iris-slider-train <same original options> --steps 2000 \
-  --resume /ml2/iris-sliders/warm-light/training.pt
+python -m pip install '.[hndl,diagnostics]'
+iris-slider-train --dummy --steps 5 --critic hndl --outdir outputs/iris-hndl
+iris-slider-response --dummy --adapter outputs/iris-hndl/response-adapter.pt \
+  --out outputs/iris-hndl/velocity.pt --diversity-report outputs/iris-hndl/diversity.json \
+  --latent-seeds 13 17
 ```
 
-`adapter.safetensors` stores only the routed projection modules and EMA particles,
-with strict source/config/base/formulation metadata. The error projection is a changing, deterministic rank-eight Rademacher sketch
-of every RGB coordinate, fixed across each D/G update. It includes high-frequency
-errors and has full pixel error energy coverage in expectation; a finite run is not
-a pixel-matching or quality guarantee. Critic scales are calibrated from an exact
-isotropic moment bank derived from full pixel edit RMS, so fresh directions retain
-the declared error-to-noise ratio. See [FORMULATION.md](FORMULATION.md).
+`--diversity-report` calls the shared HyperGAN observer using the reviewed
+HyperGAN `develop` source at `a879c4fbff903ccefeba2194bcc7a13fe7b5abb7`.
+It varies at least two private normal latent samples while keeping one explicit
+native prompt/null/timestep/CFG/scale/geometry context fixed. Each reference is
+the frozen positive teacher at that matching latent. HyperGAN owns the streaming
+moment/diversity calculations; product glue preserves model state, modes and all
+RNG/training streams. This observes raw response variation, with no denoising
+trajectory, quality judgment, semantic-coverage claim or loss change.
 
-## Inference
+## Exports and inference limits
 
-```bash
-iris-slider-infer --adapter /ml2/iris-sliders/warm-light/adapter.safetensors \
-  --checkpoint /ml2/models/iris-3b --text-dir /ml2/models/Qwen3-VL-4B-Instruct \
-  --cache-dir /ml2/iris-sliders/cache --device cuda:0 --text-device cpu \
-  --prompt 'A red fox standing in a meadow, photograph.' --strength 1 \
-  --seed 42 --out /ml2/iris-sliders/warm-light/example.png
-```
+`training.pt` is the strict resumable shared checkpoint. `response-adapter.pt`
+contains only the shared export (actual hooked adapter parameters and the same
+128x4 particle bank), fixed configuration and signature. Exported weights are the
+last shared update, with no product-specific EMA added. `train.jsonl` logs actual
+GAN metrics, and `run.json` records the exact resolved recipe and source signature.
 
-Official sample card: 1024px, 100 DPM-Solver++ order-2 steps, CFG 3, shift 4.
-Dimensions must be patch-aligned and <=1,048,576 pixels. PNG sidecars record the
-prompt, seed, shape, sample card and adapter/base hashes. Strength is unipolar 0–1;
-zero bypasses hooks without arithmetic. The complete saved protocol must match the independently constructed native
-protocol, including CFG, before models are loaded. Artifact format v3 rejects the
-unreleased earlier local formats. Routed adapters remain active at inference;
-they are nonlinear and cannot be merged into an ordinary LoRA.
+`iris-slider-response` rebuilds the bound native contexts and loads the export
+through `ConditionalPG09.load_export_state_dict`, then returns a native RGB
+velocity tensor for one bound row. It is a response evaluation, not an image.
+It requires the same runtime, native source, base, conditioning and recipe.
 
-Native projection targets are exactly `blocks.0..7.attn.proj_x` (dual-stream image
-outputs) and `blocks.8..23.attn_proj` (single-stream outputs, jointly affecting image
-and text tokens). The Qwen encoder, learned text aggregator, pixel head and all base
-weights stay frozen. Model-sized meta tests enumerate all 24 real targets without
-allocating the 3B weights. Tiny native tests exercise hooks and the real forward API
-`IrisDiT(x, t, y, y_mask=mask).x`, including 4-D layer states and required masks.
+**Native FlowDPMSolver image rendering of these new GAN exports is unqualified.**
+`iris-slider-infer` rejects `.pt` exports before model allocation. The shared image
+binding also rejects Iris trajectory rendering; no unrelated sampler is used to
+make a claimed image-generation result. Pretrained-model sampling and held-out
+quality checks require a separate coordinator-approved qualification.
 
-## Validation and release
+The archived `iris-native-routed-particle-v3` safetensors format remains available
+to `iris-slider-infer` for historical use with matching source pins. Earlier core
+pins are rejected; retain the original pinned source/environment for those artifacts.
 
-[VALIDATION.md](VALIDATION.md) separates native CPU checks, mocks and missing
-real-weight evidence. [PROVENANCE.md](PROVENANCE.md) records authoritative sources,
-current sibling/release conventions, available access and immutable pins.
-[FORMULATION.md](FORMULATION.md) explains the shared-game connection and its limits.
-No ComfyUI runtime or ordinary-LoRA export is claimed. A native Python API is included;
-a ComfyUI integration should follow real-model validation because there is no current
-native Iris Comfy pipeline established by the inspected upstream/siblings.
+The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
+or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CPU.
+All archived raw resume and real-model training requests fail before checkpoint
+reads or model allocation/mutation. The fixture writes EMA `adapter.safetensors`
+and `run.json`, marks `resume_supported=false`, and writes no `training.pt`.
+Use the default PG0.9.1 trainer for supported training/resume.
+See [FORMULATION.md](FORMULATION.md) for the archived formulation.
 
-Before public source release: review the requested HyperGAN repository identity
-and visibility. Real model/registry artifacts are outside this task unless specifically
-requested later. Any future adapter release needs bounded real-weight train/inference
-checks on an explicitly available device and paired held-out subject/control evidence.
-`scripts/prepare_release.py` is an optional local staging utility and never publishes.
-No PyPI upload convention was found in the inspected siblings.
+Adapter setup closes its hooks if a device transfer, later registration, or
+inference initialization fails. A clean retry can reuse the same native runtime;
+unrelated pre-existing hooks are preserved. This repair changes the source-bound
+checkpoint identity: new qualification uses a new cohort, with no automatic
+rebind of historical checkpoints or active training sources.
 
-Source license: Apache-2.0. Iris code/weights and Qwen encoder: Apache-2.0. Shared
-core/ParticleGAN: MIT. See [NOTICE](NOTICE). No base weights are redistributed.
+Source: Apache-2.0. Native Iris/Qwen: Apache-2.0. Shared core/ParticleGAN: MIT.
+No model/adapter publication or merge is performed by this audit.

@@ -4,7 +4,7 @@ import json
 import math
 from importlib.resources import files
 
-CORE_COMMIT = "20fdf98d25455582e7e7191eef8ef51cf73173ae"
+CORE_COMMIT = "32f6830f6402e85aa77b6631db64fcbbb2131f6b"
 IRIS_COMMIT = "a8d15239dea469aba042cfa56ca3bb4e450d5ebc"
 MODEL_ID = "speridlabs/iris-3b"
 MODEL_REVISION = "7445443349bc9abe3c96f01ff793e2098ca012b3"
@@ -72,4 +72,6 @@ def default_prompts():
 
 
 def main():
-    print(json.dumps(card(), indent=2))
+    from .train import training_card
+
+    print(json.dumps(training_card(), indent=2))

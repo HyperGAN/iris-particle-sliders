@@ -1,0 +1,187 @@
+{
+  "schema": "iris-derivative-audit-v1",
+  "generated_utc": "2026-10-17T20:02:42.356314+00:00",
+  "repository": "https://github.com/HyperGAN/iris-particle-sliders",
+  "base_head": "6a226126623fb17c87fe22b86173fe2fcff4bf3e",
+  "implementation_head": "e7f979928b4aa1726735325ef0386752e991c62f",
+  "branch": "audit/iris-shared-gan-20261017",
+  "shared_core": {
+    "proposed_commit": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+    "version": "0.6.0",
+    "wheel_sha256": "4abc83988fdeb6d7478de830e7ee8ec5d9bd99c20d52f89e4ce594d50dfd39a3",
+    "build": "canonical task14 exact Git archive wheel; build-receipt.json verified",
+    "status": "authoritative frozen published proposal; exact public Git dependency resolves/builds; not Ada-approved",
+    "public_git_dependency_verified": true,
+    "public_ref": "refs/heads/audit/shared-core-contracts-20261017",
+    "draft_pull_request": "https://github.com/HyperGAN/particle-sliders/pull/141",
+    "public_git_build_receipt": "public-git-dependency-build.json"
+  },
+  "product_wheel": {
+    "version": "0.2.0",
+    "sha256": "395c43f03eed9638b48fc229a86e34fd594ccea5e2ad47b7110d27b49aa76308",
+    "build": "exact e7f9799 Git archive",
+    "package_bytes": "repaired-wheel-source.json"
+  },
+  "native_iris": {
+    "commit": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
+    "wheel_sha256": "555ef4809868bfd3872b38e7824ff5d7223f636cea2c67ad770ae59839c3c3d1"
+  },
+  "tests": {
+    "installed_cpu": 143,
+    "failures": 0,
+    "errors": 0,
+    "shared_candidate": "cdfb80a76b882b4b73861b12f555263bd64ffeb7",
+    "sourcefree_cwd": "/tmp",
+    "pythonpath": "empty",
+    "fixture": "actual tiny native Iris with random weights and synthetic text; no accelerator or model download",
+    "transactional_regressions_in_installed_suite": 7,
+    "earlier_source_focused_counts": {
+      "transactional_setup": 7,
+      "legacy_failclosed": 51,
+      "note": "also included in installed suite; do not sum these overlapping counts"
+    },
+    "field_and_hndl": [
+      "bispf",
+      "bispf_optimized"
+    ],
+    "fresh_process_resume": "all four repaired-source arms:5updates ==2+3 exactly for full state, metrics, export and native response",
+    "public_hypergan_observer": "actual fixed-context private-latent observation; model/RNG unchanged; no loss change",
+    "no_diffusers_required": true,
+    "old_source_export_accepted": false,
+    "pip_check": "No broken requirements found",
+    "ruff": "passed",
+    "diff_check": "passed"
+  },
+  "imports": {
+    "iris_sliders.train": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/train.py",
+      "sha256": "731d0f1e18dae7dce5c25872e8420ff2c4c93202e13b18342fe10ea42f98ce14"
+    },
+    "iris_sliders.response": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/response.py",
+      "sha256": "be5bc418f32fd10acb20c8844ca4d2d6cf10384a1ccad2f9f8041fb684ad1313"
+    },
+    "iris_sliders.diagnostics": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/diagnostics.py",
+      "sha256": "b7170dfba4388ccc5260ca1de112fc47425c3a9cb2d321269618389288647e9d"
+    },
+    "iris_sliders.adapters": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/adapters.py",
+      "sha256": "5f0299a411c90510542f4eddd9042a5e7a68cf1ab5feee49c5217fa67fb5325a"
+    },
+    "iris_sliders.infer": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/infer.py",
+      "sha256": "1d901610d1f3ef7fb5eb36634ca50ae5ef99146c42686056b5191fa9465a44db"
+    },
+    "iris_sliders.legacy_train": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/legacy_train.py",
+      "sha256": "2bb1eed64b9246dfd96f18fa29343360dfe7e2322165b7af608e2aaa1583b270"
+    },
+    "particle_sliders.pg09": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09.py",
+      "sha256": "190a7e6c3a8b53d7d495a577183deacce5c8a1250b674de87c349fb7aead84b3"
+    },
+    "particle_sliders.pg09_images": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_images.py",
+      "sha256": "f37ef7db2e43a33a20389a4695e78c44be3c231057ea71ec24909aa08d02ae65"
+    },
+    "particle_sliders.pg09_moss_campaign": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_moss_campaign.py",
+      "sha256": "29ab37cc00a1d3785a90630071c286275be1710c9134f8d05581bb3f28c5f0c5"
+    },
+    "particle_sliders.pg09_hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/pg09_hndl.py",
+      "sha256": "437b0915264ef6ab886408d2bee8817e7dd47f63a46dbf998fa10a06960bc31e"
+    },
+    "particle_sliders.hypergan_diagnostics": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/particle_sliders/hypergan_diagnostics.py",
+      "sha256": "4c525a555d8d2f664442e5635b3dd13ecb7e675b06d2d5a6be8f0561950960bc"
+    },
+    "iris3b.models.dit": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris3b/models/dit.py",
+      "sha256": "c7ffdf46a466765995ffdd057f491bb5c52055d6ebc5e1b287db73f654a467fd"
+    },
+    "hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/hndl/__init__.py",
+      "sha256": "9f7ea08e4d13e5ba3c6aed68c302dde6d15d32e7b1ba3d65b89cbfdc324ede83"
+    },
+    "hypergan.diversity_metrics": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/hypergan/diversity_metrics.py",
+      "sha256": "966a3aa4aab5cf833ff2632878e47a3aea2243781ff5c4699497159fada552f9"
+    }
+  },
+  "restrictions": {
+    "gpu_jobs": false,
+    "models_published": false,
+    "services_or_permissions_changed": false,
+    "active_source_pins_modified": false,
+    "merged": false
+  },
+  "remaining_gates": [
+    {
+      "action": "Ada exact-head review then parent merge",
+      "target": "HyperGAN/iris-particle-sliders main",
+      "status": "pending",
+      "reason": "Delegation forbids independent merges"
+    },
+    {
+      "action": "NativeFlowDPMSolver PGexport sampling, pretrained Iris/Qwen fit/convergence/quality",
+      "target": "new Iris PG0.9.1 cohort",
+      "status": "not_attempted",
+      "reason": "Raw-response qualification only; coordinator owns device/admission"
+    }
+  ],
+  "resolved_gates": [
+    {
+      "action": "Publish the frozen shared commit so Iris immutable Git dependency resolves",
+      "target": "HyperGAN/particle-sliders commitcdfb80a76b882b4b73861b12f555263bd64ffeb7",
+      "status": "completed",
+      "reason": "Exact public ref and commit verified; immutable Git dependency fetched/built; all 34 packaged files match canonical producer sources; initial422 retained as history",
+      "evidence": [
+        "source-availability.json",
+        "public-git-dependency-build.json"
+      ]
+    }
+  ],
+  "qualification_history": [
+    {
+      "held_head": "64dbe5988220eec4ba7bcf1e5c218a4de58d88dd",
+      "implementation_head": "ca479e7f0328b6f9bb6cb32de7461d61d056e58e",
+      "product_wheel_sha256": "f896111c05bbdf4dede489674d34d4058deeb33d1c886bc69d2e9d4fba3df998",
+      "receipt": "history/64dbe5988220eec4ba7bcf1e5c218a4de58d88dd/audit-receipt.json",
+      "status": "historical; source superseded by transactional repair, with no checkpoint rebind"
+    }
+  ],
+  "acceptance_repair": {
+    "reviewed_head": "64dbe5988220eec4ba7bcf1e5c218a4de58d88dd",
+    "review_receipt_sha256": "0385d99a5d6e84365693974b238a6608e34c4b7877a55eb38f37038cbc3792fd",
+    "findings": {
+      "IRIS-DEVICE-TRANSFER-HOOK-CLEANUP": {
+        "status": "fixed, pending exact repaired-head review",
+        "changes": "retain bank before transfer; roll back own partial registrations; inference cleanup encloses all setup",
+        "before_attached_hooks": 2,
+        "after_attached_hooks": 0,
+        "same_runtime_retry_update": 1,
+        "evidence": [
+          "transfer-leak-before-fix.json",
+          "transfer-leak-after-fix.json",
+          "transactional-setup-tests.xml",
+          "installed-tests.xml"
+        ]
+      },
+      "IRIS-RAW-RESUME-PREFLIGHT": {
+        "status": "resolved by fail-closed archive boundaries, pending exact repaired-head review",
+        "changes": "all raw resume and real archived training reject before checkpoint/model access; only CPU TinyRuntime fixture remains; no rawstate reader/writer",
+        "evidence": [
+          "legacy-failclosed-tests.xml",
+          "installed-tests.xml"
+        ]
+      }
+    },
+    "source_lineage": "repair-source-lineage.json",
+    "new_cohort_required": true,
+    "active_pins_modified": false,
+    "shared_core_pin_changed": false,
+    "not_ada_approved": true
+  }
+}

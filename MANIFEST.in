@@ -2,3 +2,5 @@ include README.md FORMULATION.md PROVENANCE.md VALIDATION.md REVIEW.md backend.l
 recursive-include configs *.json
 recursive-include scripts *.py
 recursive-include tests *.py *.yaml
+include LIFECYCLE.md
+include INTEGRATION-AUDIT.md CORE081-ADOPTION.md

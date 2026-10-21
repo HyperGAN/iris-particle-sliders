@@ -1,386 +1,365 @@
-"""Train native Iris projections through the pinned shared FormulationGame."""
+"""Train native Iris response fields with the installed shared ParticleGAN API."""
 
 import argparse
+import importlib
 import json
+import math
+from dataclasses import asdict
+from importlib.metadata import version
 from pathlib import Path
 
 import torch
-from iris3b.flow.solver import FlowDPMSolver
-from iris3b.text.base import TextEncoding
-from particle_sliders import FormulationGame
+from particle_sliders.lifecycle import updates, atomic_save
+from particle_sliders import winning_formulation
+from particle_sliders.pg09 import ConditionalPG09, validate_pg09_domain
+from particle_sliders.pg09_images import IrisResponseAdapter, image_condition_features
+from particle_sliders.field_critic import FieldCritic
 
 from .adapters import AdapterBank, new_particles
-from .card import card, default_prompts, native_protocol
-from .checkpoint import metadata, save_adapter
-from .flow import guided_velocity
-from .formulation import load_stamp
-from .projection import IrisErrorBridge, VelocityProjection, isotropic_calibration_bank
+from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION, card
+from .checkpoint import config_digest
 from .runtime import validate_shape
+from .teacher import collect_response_rows, load_prompts
+
+TRAINING_SCHEMA = "iris-conditional-pg09-training-v1"
+EXPORT_SCHEMA = "iris-conditional-pg09-response-v1"
 
 
-def load_prompts(path=None):
-    data = json.loads(Path(path).read_text()) if path else default_prompts()
-    rows = data.get("rows", [])
-    if len(rows) < 2:
-        raise ValueError("at least two paired prompt rows are required for critic normalization")
-    for row in rows:
-        if not all(isinstance(row.get(k), str) and row[k].strip() for k in ("neutral", "positive")):
-            raise ValueError("each prompt row needs neutral and positive text")
-    controls = data.get("controls", [])
-    if not all(isinstance(p, str) and p.strip() for p in controls):
-        raise ValueError("controls must be nonempty strings")
-    return rows + [{"neutral": prompt, "positive": prompt, "control": True} for prompt in controls]
-
-
-@torch.no_grad()
-def paired_records(runtime, rows, *, seed, height, width, trajectory_steps, records_per_pair, cfg_scale=3.0):
-    """Matched positive/neutral velocities on native conditional neutral trajectories.
-
-    CFG is the native guidance used at inference, including its null branch and strict time interval.
-    One seed and bounded states per row; no unbounded trajectory or text cache.
-    """
-    validate_shape(height, width, runtime.model.cfg.patch_size)
-    if not 1 <= records_per_pair <= trajectory_steps:
-        raise ValueError("records-per-pair must be between 1 and trajectory-steps")
-    selected = set(torch.linspace(0, trajectory_steps - 1, records_per_pair).round().int().tolist())
-    records = []
-    null = runtime.encode_null()
-    null_cpu = TextEncoding(null.embeddings.cpu(), null.mask.cpu())
-    for row in rows:
-        neutral, positive = runtime.encode(row["neutral"]), runtime.encode(row["positive"])
-        neutral_cpu = TextEncoding(neutral.embeddings.cpu(), neutral.mask.cpu())
-        cfg_mask = torch.cat([null.mask, neutral.mask])
-        states = []
-        call_index = 0
-
-        def model_fn(
-            x, t, y, *, _states=states, _mask=neutral.mask, _cfg_mask=cfg_mask, _cond=neutral.embeddings
-        ):
-            nonlocal call_index
-            if call_index in selected:
-                _states.append((x[:1].detach().cpu().clone(), t[:1].detach().cpu().clone()))
-            call_index += 1
-            return runtime.model(x, t, y, y_mask=_mask if y is _cond else _cfg_mask).x.float()
-
-        generator = torch.Generator(device=runtime.device).manual_seed(seed)
-        x = torch.randn(1, 3, height, width, device=runtime.device, generator=generator)
-        solver = FlowDPMSolver(model_fn, num_timesteps=1000, cfg_scale=cfg_scale, prediction="v")
-        with torch.autocast(runtime.device.type, dtype=torch.bfloat16, enabled=runtime.device.type == "cuda"):
-            solver.sample(x, neutral.embeddings, null.embeddings, steps=trajectory_steps, order=2, shift=4.0)
-            for x_cpu, t_cpu in states:
-                x, t = x_cpu.to(runtime.device), t_cpu.to(runtime.device)
-                v_neu = guided_velocity(runtime.model, x, t, neutral, null, cfg_scale=cfg_scale)
-                v_pos = guided_velocity(runtime.model, x, t, positive, null, cfg_scale=cfg_scale)
-                records.append(
-                    {
-                        "x": x_cpu,
-                        "t": t_cpu,
-                        "encoding": neutral_cpu,
-                        "null_encoding": null_cpu,
-                        "cfg_scale": float(cfg_scale),
-                        "neutral": v_neu.cpu(),
-                        "target": v_pos.cpu(),
-                        "control": bool(row.get("control", False)),
-                    }
-                )
-    runtime.offload_encoder()
-    return records
-
-
-def build_game(runtime, records, stamp, declared, seed=7):
-    torch.manual_seed(seed)
-    runtime.device = next(runtime.model.parameters()).device
-    projector = VelocityProjection(int(stamp.spec["adapter_rank"])).to(runtime.device)
-    edit_rms = []
-    for row in records:
-        delta = row["target"] - row["neutral"]
-        if not torch.isfinite(delta).all():
-            raise ValueError("teacher bank contains non-finite velocity edits")
-        rms = delta.double().square().mean().sqrt()
-        if not row.get("control", False) and float(rms) > 1e-8:
-            edit_rms.append(rms)
-    if len(edit_rms) < 2:
-        raise ValueError("critic normalization requires at least two edit-bearing teacher records")
-    # Coordinates are refreshed every step: calibrate their exact isotropic
-    # moments, never fixed per-coordinate scales from a few sampled directions.
-    targets = isotropic_calibration_bank(torch.stack(edit_rms), projector.rank).to(runtime.device)
-    neutrals = torch.zeros_like(targets)
-    bank = AdapterBank(runtime.model, stamp).to(runtime.device)
-    bridge = IrisErrorBridge(runtime.model, bank, projector)
-    game = FormulationGame(
-        stamp,
-        declared,
-        seed=seed,
-        device=runtime.device,
-        bridge=bridge,
-        particles=new_particles(stamp, runtime.device),
-        critic_targets=targets,
-        critic_neutrals=neutrals,
-    )
-    if not torch.isfinite(game.critic.target_std).all() or not (game.critic.target_std > 0).all():
-        bank.close()
-        raise ValueError("non-finite or non-positive paired edit normalization")
-    game.normalization_records = len(edit_rms)
-    return game
-
-
-def step_context(game, records, index, batch):
-    chosen = [records[((index - 1) * batch + i) % len(records)] for i in range(batch)]
-    device = game.device
-    x, t, target = [torch.cat([row[key] for row in chosen]).to(device) for key in ("x", "t", "target")]
-    encoding = TextEncoding(
-        torch.cat([row["encoding"].embeddings for row in chosen]).to(device),
-        torch.cat([row["encoding"].mask for row in chosen]).to(device),
-    )
-    null = TextEncoding(
-        torch.cat([row["null_encoding"].embeddings for row in chosen]).to(device),
-        torch.cat([row["null_encoding"].mask for row in chosen]).to(device),
-    )
-    cfg_scales = {row["cfg_scale"] for row in chosen}
-    if len(cfg_scales) != 1:
-        raise ValueError("paired batch contains different guidance protocols")
-    projection_seed = game.bridge.projector.seed_for_step(index)
-    game.bridge.set_context(
-        x,
-        t,
-        encoding,
-        target,
-        game.critic.target_std.detach(),
-        null_encoding=null,
-        cfg_scale=cfg_scales.pop(),
-        projection_seed=projection_seed,
-    )
-    # Features carry the batch/rank contract; IrisErrorBridge evaluates the bound native context.
-    features = game.bridge.projector(
-        torch.cat([row["neutral"] for row in chosen]).to(device), seed=projection_seed
-    )
-    stats = game.step(index, features)
-    stats["projected_error_rms_before_update"] = game.bridge.last_error_rms
-    return stats
-
-
-def restore_declared(meta):
-    stamp, template = load_stamp()
-    actual = meta["formulation"]["declared"]
-    declared = {
-        key: tuple(actual[key]) if isinstance(value, tuple) else actual[key]
-        for key, value in template.items()
+def training_card():
+    return {
+        **card(),
+        "format": EXPORT_SCHEMA,
+        "shared_core_version": version("particle-sliders-core"),
+        "trainer": "particle_sliders.pg09.ConditionalPG09",
+        "particlegan": "0.9.1",
+        "protocol": {
+            "response": "native RGB velocity [1,3,H,W]",
+            "student_conditioning": "neutral",
+            "cfg_adapter_branch": "conditional_only",
+            "objective": "g_adv+public_prior;d_adv+public_penalty",
+            "rendering": "unqualified; raw response evaluation only",
+        },
     }
-    stamp.require(declared)
-    return stamp, declared
 
 
-def train(
-    runtime,
+def configuration(
     rows,
-    outdir,
     *,
-    steps=4,
+    steps=1600,
     seed=7,
-    batch=1,
-    height=16,
-    width=16,
-    trajectory_steps=4,
+    batch=2,
+    height=512,
+    width=512,
+    trajectory_steps=100,
     records_per_pair=2,
-    g_lr=None,
-    resume=None,
-    dummy=False,
     teacher_cfg=3.0,
+    preset="bispf_optimized",
+    response_scale=1.0,
+    sigma=1.0,
+    critic_hidden=16,
+    critic="field",
 ):
-    if not 0 <= teacher_cfg <= 20:
-        raise ValueError("teacher CFG must be finite and in [0, 20]")
-    if steps < 1:
-        raise ValueError("steps must be positive")
-    stamp, declared = load_stamp(batch=batch, g_lr=g_lr)
-    records = paired_records(
-        runtime,
-        rows,
-        seed=seed,
-        height=height,
-        width=width,
-        trajectory_steps=trajectory_steps,
-        records_per_pair=records_per_pair,
-        cfg_scale=teacher_cfg,
-    )
-    game = build_game(runtime, records, stamp, declared, seed)
-    try:
-        model_config = runtime.raw["model"]
-        validation = {
-            "kind": "tiny-native-synthetic-text" if dummy else "real-weights-training",
-            "real_weight_validation": False,
-            "dummy": dummy,
-        }
-        meta = metadata(
-            game.bridge.bank,
-            stamp,
-            declared,
-            model_config,
-            base_sha256=runtime.base_sha256,
-            validation=validation,
-            protocol=native_protocol(teacher_cfg),
+    """The total update budget and all data/architecture choices bind resume."""
+    if critic not in ("field", "hndl"):
+        raise ValueError("critic must be field or hndl; a changed critic requires a fresh cohort")
+    if critic == "hndl":
+        try:
+            actual_hndl = version("hndl")
+            importlib.import_module("hndl")
+        except ImportError as exc:
+            raise ImportError("install iris-particle-sliders[hndl] before selecting --critic hndl") from exc
+        if actual_hndl != "0.8.2":
+            raise RuntimeError("the qualified optional HNDL critic requires hndl==0.8.2")
+    if type(critic_hidden) is not int or not 1 <= critic_hidden <= 1024:
+        raise ValueError("critic_hidden must be an integer in [1,1024]")
+    if (
+        not isinstance(rows, list)
+        or len(rows) < 2
+        or any(
+            not isinstance(row, dict)
+            or not all(isinstance(row.get(key), str) and row[key].strip() for key in ("neutral", "positive"))
+            for row in rows
         )
+    ):
+        raise ValueError("at least two valid paired prompt rows are required")
+    if not math.isfinite(teacher_cfg) or not 0 <= teacher_cfg <= 20:
+        raise ValueError("teacher CFG must be finite and in [0,20]")
+    if (
+        type(trajectory_steps) is not int
+        or trajectory_steps < 1
+        or type(records_per_pair) is not int
+        or not 1 <= records_per_pair <= trajectory_steps
+    ):
+        raise ValueError("records_per_pair must be in [1,trajectory_steps]")
+    if height * width > 1048576:
+        raise ValueError("this Iris release is limited to one megapixel")
+    # Reject the wrong PG release/domain before any native model forward.
+    validate_pg09_domain((1, 3, height, width), response_domain="continuous_field")
+    if type(steps) is not int or steps < 1 or type(batch) is not int or not 2 <= batch <= 512:
+        raise ValueError("positive total steps and a batch in [2,512] are required")
+    if type(seed) is not int or not 0 <= seed < 2**63 - 100:
+        raise ValueError("invalid seed")
+    if preset not in ("bispf", "bispf_optimized"):
+        raise ValueError("choose an explicitly qualified public BISPF preset")
+    if any(not math.isfinite(v) or v <= 0 for v in (response_scale, sigma)):
+        raise ValueError("response_scale and sigma must be finite and positive")
+    return {
+        "rows": json.loads(json.dumps(rows)),
+        "steps": steps,
+        "seed": seed,
+        "batch": batch,
+        "height": height,
+        "width": width,
+        "trajectory_steps": trajectory_steps,
+        "records_per_pair": records_per_pair,
+        "teacher_cfg": teacher_cfg,
+        "preset": preset,
+        "response_scale": float(response_scale),
+        "sigma": float(sigma),
+        "critic_hidden": critic_hidden,
+        "critic": critic,
+    }
+
+
+def build_game(runtime, config):
+    """Bind the actual hooked bank once; shared core owns every GAN update."""
+    runtime.device = next(runtime.model.parameters()).device
+    devices = [runtime.device.index or 0] if runtime.device.type == "cuda" else []
+    bank = None
+    try:
+        with torch.random.fork_rng(devices=devices):
+            torch.set_rng_state(torch.Generator().manual_seed(config["seed"]).get_state())
+            if devices:
+                torch.cuda.set_rng_state(
+                    torch.Generator(device=runtime.device).manual_seed(config["seed"]).get_state(),
+                    runtime.device,
+                )
+            response_rows = collect_response_rows(
+                runtime,
+                config["rows"],
+                seed=config["seed"],
+                height=config["height"],
+                width=config["width"],
+                trajectory_steps=config["trajectory_steps"],
+                records_per_pair=config["records_per_pair"],
+                cfg_scale=config["teacher_cfg"],
+            )
+            # Retain the existing routed architecture only. Its historical
+            # FormulationGame, sketches and normalization never execute here.
+            stamp = winning_formulation()
+            bank = AdapterBank(runtime.model, stamp)
+            bank.to(runtime.device)
+            particles = new_particles(stamp, runtime.device)
+            identity = {
+                "iris_commit": IRIS_COMMIT,
+                "model_revision": MODEL_REVISION,
+                "text_revision": TEXT_REVISION,
+                "base_sha256": runtime.base_sha256,
+                "model_config_sha256": config_digest(runtime.raw["model"]),
+            }
+            backend = IrisResponseAdapter(runtime, bank, particles, model_identity=identity)
+            prepared = [backend.prepare(row) for row in response_rows]
+            conditions = image_condition_features(prepared)
+            if config["critic"] == "hndl":
+                from particle_sliders.pg09_hndl import HNDLConditionalReadoutCritic
+
+                critic = HNDLConditionalReadoutCritic(
+                    prepared[0].target.numel(), conditions.shape[1], hidden=config["critic_hidden"]
+                ).to(runtime.device)
+            else:
+                critic = FieldCritic(
+                    prepared[0].target.shape[1], conditions.shape[1], width=config["critic_hidden"]
+                ).to(runtime.device)
+            return ConditionalPG09(
+                backend,
+                prepared,
+                critic,
+                conditions=conditions,
+                particles=particles,
+                response_domain="continuous_field",
+                response_scale=config["response_scale"],
+                sigma=config["sigma"],
+                preset=config["preset"],
+                total_steps=config["steps"],
+                batch_size=config["batch"],
+                seed=config["seed"],
+                sampling="balanced",
+            )
+    except BaseException:
+        if bank is not None:
+            bank.close()
+        raise
+
+
+def load_packet(path, *, schema):
+    packet = torch.load(path, map_location="cpu", weights_only=True)
+    if not isinstance(packet, dict) or packet.get("schema") != schema:
+        raise ValueError(
+            "unsupported Iris checkpoint schema; legacy gmix checkpoints require the legacy trainer"
+        )
+    config = packet.get("config")
+    if not isinstance(config, dict) or configuration(**config) != config:
+        raise ValueError("invalid Iris checkpoint configuration")
+    return packet
+
+
+def preflight(config, *, resume=None, stop_after=None, dummy=False):
+    stop = config["steps"] if stop_after is None else stop_after
+    if type(stop) is not int or not 1 <= stop <= config["steps"]:
+        raise ValueError("stop_after must be in [1,total steps]")
+    packet = load_packet(resume, schema=TRAINING_SCHEMA) if resume else None
+    if packet is not None:
+        if packet["config"] != config or packet.get("dummy") != bool(dummy):
+            raise ValueError("resume configuration differs; the original total step budget must be retained")
+        completed = packet.get("game", {}).get("completed_steps")
+        if type(completed) is not int or not 0 <= completed < stop:
+            raise ValueError("stop_after must exceed the completed checkpoint step")
+    return stop, packet
+
+
+def train(runtime, rows, outdir, *, resume=None, stop_after=None, dummy=False, **options):
+    config = configuration(rows, **options)
+    stop, packet = preflight(config, resume=resume, stop_after=stop_after, dummy=dummy)
+    game = build_game(runtime, config)
+    try:
+        if packet is not None:
+            game.load_state_dict(packet["game"])
+        if stop <= game.completed_steps:
+            raise ValueError("stop_after must exceed the completed checkpoint step")
         outdir = Path(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
-        ema = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
-        ema_particles = game.particles.detach().clone()
-        start = 1
-        run_config = {
-            "rows": rows,
-            "seed": seed,
-            "batch": batch,
-            "height": height,
-            "width": width,
-            "trajectory_steps": trajectory_steps,
-            "records_per_pair": records_per_pair,
-            "teacher_cfg": teacher_cfg,
-        }
-        if resume:
-            state = torch.load(resume, map_location=game.device, weights_only=True)
-            if state["metadata"] != meta or state["run_config"] != run_config:
-                raise ValueError("resume model, formulation, or trajectory configuration differs")
-            game.bridge.load_state_dict(state["bridge"], strict=True)
-            game.critic.load_state_dict(state["critic"], strict=True)
-            with torch.no_grad():
-                game.particles.copy_(state["particles"])
-            game.opt_g.load_state_dict(state["opt_g"])
-            game.opt_d.load_state_dict(state["opt_d"])
-            torch.set_rng_state(state["rng"].cpu())
-            if game.device.type == "cuda":
-                torch.cuda.set_rng_state(state["cuda_rng"].cpu(), device=game.device)
-            ema, ema_particles = state["ema"], state["ema_particles"]
-            start = int(state["step"]) + 1
-            if steps < start:
-                raise ValueError("resume steps must exceed the checkpoint's completed step")
         history = []
-        decay = float(stamp.spec["ema"])
-        for index in range(start, steps + 1):
-            stats = step_context(game, records, index, batch)
+        for stats in updates(game, stop):
             history.append(stats)
-            with torch.no_grad():
-                for key, tensor in game.bridge.bank.state_dict().items():
-                    ema[key].lerp_(tensor, 1.0 - decay)
-                ema_particles.lerp_(game.particles, 1.0 - decay)
-            with (outdir / "train.jsonl").open("a") as handle:
-                handle.write(json.dumps(stats) + "\n")
+            with (outdir / "train.jsonl").open("a") as stream:
+                stream.write(json.dumps(stats) + "\n")
             print(json.dumps(stats), flush=True)
-        meta["training"] = {
-            "steps": steps,
-            "seed": seed,
-            "height": height,
-            "width": width,
-            "trajectory_steps": trajectory_steps,
-            "records": len(records),
-            "normalization_records": game.normalization_records,
-            "controls_excluded_from_normalization": True,
-            "calibration": "exact-isotropic-pixel-edit-rms-moments",
-            "teacher_cfg": teacher_cfg,
-            "export": "EMA",
-            "ema": decay,
-            "projection": "all-RGB-coordinate Rademacher sketch, rank 8, fixed per D/G step and changing by step index",
-            "quality_validated": False,
-        }
-        # Raw state is resumable; only adapter/particle EMA is the inference export.
-        resume_meta = metadata(
-            game.bridge.bank,
-            stamp,
-            declared,
-            model_config,
-            base_sha256=runtime.base_sha256,
-            validation=validation,
-            protocol=native_protocol(teacher_cfg),
-        )
-        torch.save(
+        state = game.state_dict()
+        signature = state["config"]
+        atomic_save(outdir / "training.pt",
+            {"schema": TRAINING_SCHEMA, "config": config, "dummy": bool(dummy), "game": state})
+        atomic_save(outdir / "response-adapter.pt",
             {
-                "step": steps,
-                "metadata": resume_meta,
-                "run_config": run_config,
-                "bridge": game.bridge.state_dict(),
-                "critic": game.critic.state_dict(),
-                "particles": game.particles.detach(),
-                "opt_g": game.opt_g.state_dict(),
-                "opt_d": game.opt_d.state_dict(),
-                "rng": torch.get_rng_state(),
-                "cuda_rng": torch.cuda.get_rng_state(game.device) if game.device.type == "cuda" else None,
-                "ema": ema,
-                "ema_particles": ema_particles,
+                "schema": EXPORT_SCHEMA,
+                "config": config,
+                "dummy": bool(dummy),
+                "adapter": game.export_state_dict(),
             },
-            outdir / "training.pt",
         )
-        raw_state = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
-        try:
-            game.bridge.bank.load_state_dict(ema)
-            save_adapter(outdir / "adapter.safetensors", game.bridge.bank, ema_particles, meta)
-        finally:
-            game.bridge.bank.load_state_dict(raw_state)
-        (outdir / "run.json").write_text(
-            json.dumps({"metadata": meta, "config": run_config, "last": history[-1]}, indent=2) + "\n"
-        )
-        return meta
+        receipt = {
+            "schema": TRAINING_SCHEMA,
+            "config": config,
+            "completed_steps": game.completed_steps,
+            "pg_version": signature["pg_version"],
+            "recipe": asdict(game.recipe),
+            "objective": signature["objective"],
+            "generator_arm": signature["generator_arm"],
+            "response_shape": list(game.response_shape),
+            "source_signature": signature,
+            "validation": {
+                "dummy": dummy,
+                "real_weight_validation": False,
+                "quality_validated": False,
+                "rendering": "unqualified; raw native velocity responses only",
+            },
+            "last": history[-1],
+        }
+        (outdir / "run.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        return receipt
     finally:
-        game.bridge.bank.close()
+        game.backend.adapter.close()
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dummy", action="store_true", help="actual tiny Iris, synthetic text; no downloads")
-    parser.add_argument("--print-card", action="store_true")
-    parser.add_argument("--prompts", type=Path)
-    parser.add_argument("--steps", type=int, default=1600)
-    parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--batch", type=int, default=1)
-    parser.add_argument("--g-lr", type=float)
-    parser.add_argument("--teacher-cfg", type=float, default=3.0)
-    parser.add_argument("--height", type=int, default=512)
-    parser.add_argument("--width", type=int, default=512)
-    parser.add_argument("--trajectory-steps", type=int, default=100)
-    parser.add_argument("--records-per-pair", type=int, default=2)
-    parser.add_argument("--outdir", type=Path, default=Path("/ml2/iris-particle-sliders/outputs/warm-light"))
-    parser.add_argument("--cache-dir", type=Path, default=Path("/ml2/iris-particle-sliders/cache"))
-    parser.add_argument("--checkpoint", type=Path)
-    parser.add_argument("--text-dir", type=Path)
-    parser.add_argument("--device", default="cpu")
-    parser.add_argument("--text-device", default="cpu")
-    parser.add_argument("--allow-hub", action="store_true")
-    parser.add_argument("--resume", type=Path)
-    args = parser.parse_args(argv)
-    if args.print_card:
-        print(json.dumps(card(), indent=2))
-        return
-    if Path("/ml2") not in args.outdir.resolve().parents:
-        raise ValueError("training artifacts must live under /ml2")
-    rows = load_prompts(args.prompts)
+def parser():
+    result = argparse.ArgumentParser(description=__doc__)
+    result.add_argument("--dummy", action="store_true", help="actual tiny Iris on CPU; no downloads")
+    result.add_argument("--print-card", action="store_true")
+    result.add_argument("--prompts", type=Path)
+    result.add_argument("--steps", type=int, default=1600, help="fixed total budget; retain on resume")
+    result.add_argument("--stop-after", type=int, help="checkpoint early within the original total budget")
+    result.add_argument("--seed", type=int, default=7)
+    result.add_argument("--batch", type=int, default=2)
+    result.add_argument("--preset", choices=("bispf", "bispf_optimized"), default="bispf_optimized")
+    result.add_argument("--response-scale", type=float, default=1.0)
+    result.add_argument("--sigma", type=float, default=1.0)
+    result.add_argument("--critic", choices=("field", "hndl"), default="field")
+    result.add_argument("--critic-hidden", type=int, default=16)
+    result.add_argument("--teacher-cfg", type=float, default=3.0)
+    result.add_argument("--height", type=int, default=512)
+    result.add_argument("--width", type=int, default=512)
+    result.add_argument("--trajectory-steps", type=int, default=100)
+    result.add_argument("--records-per-pair", type=int, default=2)
+    result.add_argument("--outdir", type=Path, default=Path("outputs/iris-pg09"))
+    result.add_argument("--resume", type=Path)
+    result.add_argument("--cache-dir", type=Path, default=Path("/ml2/iris-particle-sliders/cache"))
+    result.add_argument("--checkpoint", type=Path)
+    result.add_argument("--text-dir", type=Path)
+    result.add_argument("--device", default="cpu")
+    result.add_argument("--text-device", default="cpu")
+    result.add_argument("--allow-hub", action="store_true")
+    return result
+
+
+def make_runtime(args):
     if args.dummy:
         if args.allow_hub or args.checkpoint or args.text_dir or args.device != "cpu":
             raise ValueError("--dummy accepts only the CPU tiny native fixture")
         from .tiny import TinyRuntime
 
-        runtime = TinyRuntime(args.seed)
-        args.height, args.width = 16, 16
-        args.steps, args.trajectory_steps = min(args.steps, 4), 4
-    else:
-        from .runtime import IrisRuntime
+        return TinyRuntime(args.seed)
+    from .runtime import IrisRuntime
 
-        runtime = IrisRuntime(
-            cache_dir=args.cache_dir,
-            checkpoint=args.checkpoint,
-            text_dir=args.text_dir,
-            allow_hub=args.allow_hub,
-            device=args.device,
-            text_device=args.text_device,
+    return IrisRuntime(
+        cache_dir=args.cache_dir,
+        checkpoint=args.checkpoint,
+        text_dir=args.text_dir,
+        allow_hub=args.allow_hub,
+        device=args.device,
+        text_device=args.text_device,
+    )
+
+
+def main(argv=None):
+    args = parser().parse_args(argv)
+    if args.print_card:
+        print(json.dumps(training_card(), indent=2))
+        return
+    rows = load_prompts(args.prompts)
+    if args.dummy:
+        args.height = args.width = 16
+        args.trajectory_steps = 4
+    options = {
+        key: getattr(args, key)
+        for key in (
+            "steps",
+            "seed",
+            "batch",
+            "height",
+            "width",
+            "trajectory_steps",
+            "records_per_pair",
+            "teacher_cfg",
+            "preset",
+            "response_scale",
+            "sigma",
+            "critic_hidden",
+            "critic",
         )
+    }
+    # Package/release and configuration gates run before native runtime allocation.
+    validate_shape(args.height, args.width)
+    config = configuration(rows, **options)
+    preflight(config, resume=args.resume, stop_after=args.stop_after, dummy=args.dummy)
     train(
-        runtime,
+        make_runtime(args),
         rows,
         args.outdir,
-        steps=args.steps,
-        seed=args.seed,
-        batch=args.batch,
-        height=args.height,
-        width=args.width,
-        trajectory_steps=args.trajectory_steps,
-        records_per_pair=args.records_per_pair,
-        g_lr=args.g_lr,
         resume=args.resume,
+        stop_after=args.stop_after,
         dummy=args.dummy,
-        teacher_cfg=args.teacher_cfg,
+        **options,
     )
+
+
+if __name__ == "__main__":
+    main()

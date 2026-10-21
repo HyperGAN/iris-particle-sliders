@@ -13,8 +13,8 @@ from omegaconf import OmegaConf
 from iris_sliders.adapters import AdapterBank, new_particles, target_modules
 from iris_sliders.checkpoint import load_adapter, metadata, read_metadata, save_adapter
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import build_game, load_prompts, paired_records, step_context, train
 from iris_sliders.tiny import TinyRuntime
-from iris_sliders.train import build_game, load_prompts, paired_records, step_context, train
 
 
 def test_official_model_meta_targets():
@@ -154,17 +154,13 @@ def test_native_solver_export_reload_equal(tmp_path):
     bank2.close()
 
 
-def test_resume_matches_uninterrupted_native_training(tmp_path):
+def test_legacy_dummy_fixture_exports_without_a_raw_resume_checkpoint(tmp_path):
     rows = load_prompts()
-    train(TinyRuntime(), rows, tmp_path / "full", steps=2, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=1, dummy=True)
-    train(TinyRuntime(), rows, tmp_path / "split", steps=2, dummy=True, resume=tmp_path / "split/training.pt")
-    full = torch.load(tmp_path / "full/training.pt", weights_only=True)
-    resumed = torch.load(tmp_path / "split/training.pt", weights_only=True)
-    assert torch.equal(full["particles"], resumed["particles"])
-    assert all(torch.equal(tensor, resumed["bridge"][name]) for name, tensor in full["bridge"].items())
-    assert all(torch.equal(tensor, resumed["ema"][name]) for name, tensor in full["ema"].items())
-    assert read_metadata(tmp_path / "full/adapter.safetensors")["validation"]["dummy"]
+    train(TinyRuntime(), rows, tmp_path / "fixture", steps=2, dummy=True, allow_legacy=True)
+    meta = read_metadata(tmp_path / "fixture/adapter.safetensors")
+    assert meta["validation"]["dummy"]
+    assert meta["training"]["resume_supported"] is False
+    assert not (tmp_path / "fixture/training.pt").exists()
 
 
 def test_stamp_rejects_local_game_drift():

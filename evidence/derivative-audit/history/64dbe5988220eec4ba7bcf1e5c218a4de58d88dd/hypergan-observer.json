@@ -1,0 +1,120 @@
+{
+  "schema": "particle-sliders-response-diversity-v1",
+  "implementation": {
+    "repository": "https://github.com/HyperGAN/HyperGAN",
+    "reviewed_commit": "a879c4fbff903ccefeba2194bcc7a13fe7b5abb7",
+    "module": "hypergan.diversity_metrics",
+    "source_sha256": "966a3aa4aab5cf833ff2632878e47a3aea2243781ff5c4699497159fada552f9"
+  },
+  "pool_size": null,
+  "groups": {
+    "iris-fixed-condition-20d8396d5f1270b8487318d522bbe85f450d94740bfd375828523f1b35cad45c": {
+      "generated_count": 2,
+      "reference_count": 2,
+      "generated_shape": [
+        3,
+        16,
+        16
+      ],
+      "reference_shape": [
+        3,
+        16,
+        16
+      ],
+      "metrics": {
+        "generated_rms": 0.06580126956267061,
+        "reference_rms": 0.0660766853429835,
+        "ratio": 0.9958318765706348
+      },
+      "unavailable": {}
+    }
+  },
+  "observation": {
+    "kind": "within-condition native RGB velocity variation",
+    "row_index": 0,
+    "latent_seeds": [
+      13,
+      17
+    ],
+    "latent_distribution": "standard normal at fixed native timestep; no denoising trajectory",
+    "fixed_context": {
+      "neutral": {
+        "embeds": {
+          "shape": [
+            1,
+            8,
+            2,
+            32
+          ],
+          "dtype": "torch.float32",
+          "sha256": "5224652be14d7b68d18995669dd5100ac0648edcedcd21c42734e8e4799b2c0e"
+        },
+        "mask": {
+          "shape": [
+            1,
+            8
+          ],
+          "dtype": "torch.int64",
+          "sha256": "2e22639c5a402b8aa6def3e41fdc3d8c37de2d1315e018e3c58e812156c248f2"
+        }
+      },
+      "positive": {
+        "embeds": {
+          "shape": [
+            1,
+            8,
+            2,
+            32
+          ],
+          "dtype": "torch.float32",
+          "sha256": "ca49cdffef1ac4b528d569c0fe40222df7e0374cecf8e35d960d4585a3b509e0"
+        },
+        "mask": {
+          "shape": [
+            1,
+            8
+          ],
+          "dtype": "torch.int64",
+          "sha256": "2e22639c5a402b8aa6def3e41fdc3d8c37de2d1315e018e3c58e812156c248f2"
+        }
+      },
+      "negative": {
+        "embeds": {
+          "shape": [
+            1,
+            8,
+            2,
+            32
+          ],
+          "dtype": "torch.float32",
+          "sha256": "fb74875d7f33698d2ab2f4ea30e0801b104e869e814605d561ef58155338b6c0"
+        },
+        "mask": {
+          "shape": [
+            1,
+            8
+          ],
+          "dtype": "torch.int64",
+          "sha256": "2e22639c5a402b8aa6def3e41fdc3d8c37de2d1315e018e3c58e812156c248f2"
+        }
+      },
+      "timestep": [
+        999.7498168945312
+      ],
+      "guidance": 3.0,
+      "adapter_scale": 1.0,
+      "strength": 1.0,
+      "native_latent_shape": [
+        1,
+        3,
+        16,
+        16
+      ],
+      "native_latent_dtype": "torch.float32"
+    },
+    "fixed_context_sha256": "20d8396d5f1270b8487318d522bbe85f450d94740bfd375828523f1b35cad45c",
+    "reference": "frozen positive prompt response at each matching replacement latent",
+    "quality_validated": false,
+    "semantic_coverage_validated": false
+  }
+}

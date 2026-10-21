@@ -1,0 +1,12 @@
+{
+  "repaired_implementation_head": "e7f979928b4aa1726735325ef0386752e991c62f",
+  "installed_train_path": "/ml2/codex-storage/future-workspaces/2026-10-17/task-18/.venv/lib/python3.11/site-packages/iris_sliders/train.py",
+  "train_sha256": "731d0f1e18dae7dce5c25872e8420ff2c4c93202e13b18342fe10ea42f98ce14",
+  "hook_count_before": 0,
+  "exception": "injected CPU adapter-transfer failure",
+  "hook_count_after_failed_transfer": 0,
+  "bank_handles_closed": true,
+  "same_runtime_retry_update": 1,
+  "hook_count_after_retry_cleanup": 0,
+  "cuda_initialized": false
+}

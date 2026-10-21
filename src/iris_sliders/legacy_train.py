@@ -1,0 +1,408 @@
+"""Archived gmix CPU dummy fixture; real training and raw resume are unsupported."""
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import torch
+from iris3b.flow.solver import FlowDPMSolver
+from iris3b.text.base import TextEncoding
+from particle_sliders import FormulationGame
+
+from .adapters import AdapterBank, new_particles, target_modules
+from .card import card, default_prompts, native_protocol
+from .checkpoint import metadata, save_adapter
+from .flow import guided_velocity
+from .formulation import load_stamp
+from .projection import IrisErrorBridge, VelocityProjection, isotropic_calibration_bank
+from .runtime import validate_shape
+
+
+def load_prompts(path=None):
+    data = json.loads(Path(path).read_text()) if path else default_prompts()
+    rows = data.get("rows", [])
+    if len(rows) < 2:
+        raise ValueError("at least two paired prompt rows are required for critic normalization")
+    for row in rows:
+        if not all(isinstance(row.get(k), str) and row[k].strip() for k in ("neutral", "positive")):
+            raise ValueError("each prompt row needs neutral and positive text")
+    controls = data.get("controls", [])
+    if not all(isinstance(p, str) and p.strip() for p in controls):
+        raise ValueError("controls must be nonempty strings")
+    return rows + [{"neutral": prompt, "positive": prompt, "control": True} for prompt in controls]
+
+
+@torch.no_grad()
+def paired_records(runtime, rows, *, seed, height, width, trajectory_steps, records_per_pair, cfg_scale=3.0):
+    """Matched positive/neutral velocities on native conditional neutral trajectories.
+
+    CFG is the native guidance used at inference, including its null branch and strict time interval.
+    One seed and bounded states per row; no unbounded trajectory or text cache.
+    """
+    validate_shape(height, width, runtime.model.cfg.patch_size)
+    if not 1 <= records_per_pair <= trajectory_steps:
+        raise ValueError("records-per-pair must be between 1 and trajectory-steps")
+    selected = set(torch.linspace(0, trajectory_steps - 1, records_per_pair).round().int().tolist())
+    records = []
+    null = runtime.encode_null()
+    null_cpu = TextEncoding(null.embeddings.cpu(), null.mask.cpu())
+    for row in rows:
+        neutral, positive = runtime.encode(row["neutral"]), runtime.encode(row["positive"])
+        neutral_cpu = TextEncoding(neutral.embeddings.cpu(), neutral.mask.cpu())
+        cfg_mask = torch.cat([null.mask, neutral.mask])
+        states = []
+        call_index = 0
+
+        def model_fn(
+            x, t, y, *, _states=states, _mask=neutral.mask, _cfg_mask=cfg_mask, _cond=neutral.embeddings
+        ):
+            nonlocal call_index
+            if call_index in selected:
+                _states.append((x[:1].detach().cpu().clone(), t[:1].detach().cpu().clone()))
+            call_index += 1
+            return runtime.model(x, t, y, y_mask=_mask if y is _cond else _cfg_mask).x.float()
+
+        generator = torch.Generator(device=runtime.device).manual_seed(seed)
+        x = torch.randn(1, 3, height, width, device=runtime.device, generator=generator)
+        solver = FlowDPMSolver(model_fn, num_timesteps=1000, cfg_scale=cfg_scale, prediction="v")
+        with torch.autocast(runtime.device.type, dtype=torch.bfloat16, enabled=runtime.device.type == "cuda"):
+            solver.sample(x, neutral.embeddings, null.embeddings, steps=trajectory_steps, order=2, shift=4.0)
+            for x_cpu, t_cpu in states:
+                x, t = x_cpu.to(runtime.device), t_cpu.to(runtime.device)
+                v_neu = guided_velocity(runtime.model, x, t, neutral, null, cfg_scale=cfg_scale)
+                v_pos = guided_velocity(runtime.model, x, t, positive, null, cfg_scale=cfg_scale)
+                records.append(
+                    {
+                        "x": x_cpu,
+                        "t": t_cpu,
+                        "encoding": neutral_cpu,
+                        "null_encoding": null_cpu,
+                        "cfg_scale": float(cfg_scale),
+                        "neutral": v_neu.cpu(),
+                        "target": v_pos.cpu(),
+                        "control": bool(row.get("control", False)),
+                    }
+                )
+    runtime.offload_encoder()
+    return records
+
+
+def build_game(runtime, records, stamp, declared, seed=7):
+    _require_fixture_runtime(runtime)
+    torch.manual_seed(seed)
+    runtime.device = next(runtime.model.parameters()).device
+    projector = VelocityProjection(int(stamp.spec["adapter_rank"])).to(runtime.device)
+    edit_rms = []
+    for row in records:
+        delta = row["target"] - row["neutral"]
+        if not torch.isfinite(delta).all():
+            raise ValueError("teacher bank contains non-finite velocity edits")
+        rms = delta.double().square().mean().sqrt()
+        if not row.get("control", False) and float(rms) > 1e-8:
+            edit_rms.append(rms)
+    if len(edit_rms) < 2:
+        raise ValueError("critic normalization requires at least two edit-bearing teacher records")
+    # Coordinates are refreshed every step: calibrate their exact isotropic
+    # moments, never fixed per-coordinate scales from a few sampled directions.
+    targets = isotropic_calibration_bank(torch.stack(edit_rms), projector.rank).to(runtime.device)
+    neutrals = torch.zeros_like(targets)
+    bank = AdapterBank(runtime.model, stamp)
+    try:
+        bank.to(runtime.device)
+        bridge = IrisErrorBridge(runtime.model, bank, projector)
+        game = FormulationGame(
+            stamp,
+            declared,
+            seed=seed,
+            device=runtime.device,
+            bridge=bridge,
+            particles=new_particles(stamp, runtime.device),
+            critic_targets=targets,
+            critic_neutrals=neutrals,
+        )
+        if not torch.isfinite(game.critic.target_std).all() or not (game.critic.target_std > 0).all():
+            raise ValueError("non-finite or non-positive paired edit normalization")
+        game.normalization_records = len(edit_rms)
+        return game
+    except BaseException:
+        bank.close()
+        raise
+
+
+def step_context(game, records, index, batch):
+    chosen = [records[((index - 1) * batch + i) % len(records)] for i in range(batch)]
+    device = game.device
+    x, t, target = [torch.cat([row[key] for row in chosen]).to(device) for key in ("x", "t", "target")]
+    encoding = TextEncoding(
+        torch.cat([row["encoding"].embeddings for row in chosen]).to(device),
+        torch.cat([row["encoding"].mask for row in chosen]).to(device),
+    )
+    null = TextEncoding(
+        torch.cat([row["null_encoding"].embeddings for row in chosen]).to(device),
+        torch.cat([row["null_encoding"].mask for row in chosen]).to(device),
+    )
+    cfg_scales = {row["cfg_scale"] for row in chosen}
+    if len(cfg_scales) != 1:
+        raise ValueError("paired batch contains different guidance protocols")
+    projection_seed = game.bridge.projector.seed_for_step(index)
+    game.bridge.set_context(
+        x,
+        t,
+        encoding,
+        target,
+        game.critic.target_std.detach(),
+        null_encoding=null,
+        cfg_scale=cfg_scales.pop(),
+        projection_seed=projection_seed,
+    )
+    # Features carry the batch/rank contract; IrisErrorBridge evaluates the bound native context.
+    features = game.bridge.projector(
+        torch.cat([row["neutral"] for row in chosen]).to(device), seed=projection_seed
+    )
+    stats = game.step(index, features)
+    stats["projected_error_rms_before_update"] = game.bridge.last_error_rms
+    return stats
+
+
+def restore_declared(meta):
+    stamp, template = load_stamp()
+    actual = meta["formulation"]["declared"]
+    declared = {
+        key: tuple(actual[key]) if isinstance(value, tuple) else actual[key]
+        for key, value in template.items()
+    }
+    stamp.require(declared)
+    return stamp, declared
+
+
+def _runtime_identity(runtime):
+    """Record the CPU fixture's numerical runtime and actual model device."""
+    return {
+        "torch_version": str(torch.__version__),
+        "model_devices": sorted({str(p.device) for p in runtime.model.parameters()}),
+        "model_dtypes": sorted({str(p.dtype) for p in runtime.model.parameters()}),
+        "model_training": runtime.model.training,
+    }
+
+
+def _conditioning_digest(records):
+    """Bind the cached text/null states and teacher records consumed by updates."""
+    digest = hashlib.sha256()
+
+    def add_tensor(label, value):
+        tensor = value.detach().cpu().contiguous()
+        digest.update(json.dumps([label, str(tensor.dtype), list(tensor.shape)]).encode())
+        digest.update(tensor.view(torch.uint8).numpy().tobytes())
+
+    for row in records:
+        digest.update(json.dumps([row["cfg_scale"], row["control"]]).encode())
+        for key in ("x", "t", "neutral", "target"):
+            add_tensor(key, row[key])
+        for key in ("encoding", "null_encoding"):
+            for name in ("embeddings", "mask"):
+                add_tensor(key + "." + name, getattr(row[key], name))
+    return digest.hexdigest()
+
+
+def _require_fixture_mode(*, dummy, resume, allow_legacy):
+    if not allow_legacy:
+        raise ValueError("archived gmix fixture requires allow_legacy=True or --allow-legacy")
+    if resume is not None:
+        raise ValueError("archived raw resume is unsupported; use iris-slider-train for PG0.9.1")
+    if not dummy:
+        raise ValueError(
+            "archived real training is unsupported; only the explicit CPU dummy fixture is available"
+        )
+
+
+def _require_fixture_runtime(runtime):
+    from .tiny import TinyRuntime
+
+    if (
+        type(runtime) is not TinyRuntime
+        or torch.device(runtime.device).type != "cpu"
+        or torch.device(runtime.encoder.device).type != "cpu"
+        or any(parameter.device.type != "cpu" for parameter in runtime.model.parameters())
+        or any(buffer.device.type != "cpu" for buffer in runtime.model.buffers())
+    ):
+        raise ValueError("archived training accepts only the CPU TinyRuntime dummy fixture")
+
+
+def train(
+    runtime,
+    rows,
+    outdir,
+    *,
+    steps=4,
+    seed=7,
+    batch=1,
+    height=16,
+    width=16,
+    trajectory_steps=4,
+    records_per_pair=2,
+    g_lr=None,
+    resume=None,
+    dummy=False,
+    teacher_cfg=3.0,
+    allow_legacy=False,
+):
+    _require_fixture_mode(dummy=dummy, resume=resume, allow_legacy=allow_legacy)
+    _require_fixture_runtime(runtime)
+    if not 0 <= teacher_cfg <= 20:
+        raise ValueError("teacher CFG must be finite and in [0, 20]")
+    if steps < 1:
+        raise ValueError("steps must be positive")
+    stamp, declared = load_stamp(batch=batch, g_lr=g_lr)
+    model_config = runtime.raw["model"]
+    validation = {
+        "kind": "tiny-native-synthetic-text",
+        "real_weight_validation": False,
+        "dummy": True,
+    }
+    meta = metadata(
+        SimpleNamespace(names=[name for name, _ in target_modules(runtime.model)]),
+        stamp,
+        declared,
+        model_config,
+        base_sha256=runtime.base_sha256,
+        validation=validation,
+        protocol=native_protocol(teacher_cfg),
+    )
+    run_config = {
+        "rows": rows,
+        "seed": seed,
+        "batch": batch,
+        "height": height,
+        "width": width,
+        "trajectory_steps": trajectory_steps,
+        "records_per_pair": records_per_pair,
+        "teacher_cfg": teacher_cfg,
+        "runtime": _runtime_identity(runtime),
+    }
+    records = paired_records(
+        runtime,
+        rows,
+        seed=seed,
+        height=height,
+        width=width,
+        trajectory_steps=trajectory_steps,
+        records_per_pair=records_per_pair,
+        cfg_scale=teacher_cfg,
+    )
+    run_config["conditioning_sha256"] = _conditioning_digest(records)
+    game = build_game(runtime, records, stamp, declared, seed)
+    try:
+        outdir = Path(outdir)
+        outdir.mkdir(parents=True, exist_ok=True)
+        ema = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
+        ema_particles = game.particles.detach().clone()
+        history = []
+        decay = float(stamp.spec["ema"])
+        for index in range(1, steps + 1):
+            stats = step_context(game, records, index, batch)
+            history.append(stats)
+            with torch.no_grad():
+                for key, tensor in game.bridge.bank.state_dict().items():
+                    ema[key].lerp_(tensor, 1.0 - decay)
+                ema_particles.lerp_(game.particles, 1.0 - decay)
+            with (outdir / "train.jsonl").open("a") as handle:
+                handle.write(json.dumps(stats) + "\n")
+            print(json.dumps(stats), flush=True)
+        meta["training"] = {
+            "steps": steps,
+            "seed": seed,
+            "height": height,
+            "width": width,
+            "trajectory_steps": trajectory_steps,
+            "records": len(records),
+            "normalization_records": game.normalization_records,
+            "controls_excluded_from_normalization": True,
+            "calibration": "exact-isotropic-pixel-edit-rms-moments",
+            "teacher_cfg": teacher_cfg,
+            "export": "EMA",
+            "ema": decay,
+            "projection": "all-RGB-coordinate Rademacher sketch, rank 8, fixed per D/G step and changing by step index",
+            "quality_validated": False,
+            "resume_supported": False,
+        }
+        raw_state = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
+        try:
+            game.bridge.bank.load_state_dict(ema)
+            save_adapter(outdir / "adapter.safetensors", game.bridge.bank, ema_particles, meta)
+        finally:
+            game.bridge.bank.load_state_dict(raw_state)
+        (outdir / "run.json").write_text(
+            json.dumps({"metadata": meta, "config": run_config, "last": history[-1]}, indent=2) + "\n"
+        )
+        return meta
+    finally:
+        game.bridge.bank.close()
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--allow-legacy", action="store_true", help="explicitly permit the archived CPU dummy fixture"
+    )
+    parser.add_argument("--dummy", action="store_true", help="actual tiny Iris, synthetic text; no downloads")
+    parser.add_argument("--print-card", action="store_true")
+    parser.add_argument("--prompts", type=Path)
+    parser.add_argument("--steps", type=int, default=1600)
+    parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument("--batch", type=int, default=1)
+    parser.add_argument("--g-lr", type=float)
+    parser.add_argument("--teacher-cfg", type=float, default=3.0)
+    parser.add_argument("--height", type=int, default=512)
+    parser.add_argument("--width", type=int, default=512)
+    parser.add_argument("--trajectory-steps", type=int, default=100)
+    parser.add_argument("--records-per-pair", type=int, default=2)
+    parser.add_argument("--outdir", type=Path, default=Path("/ml2/iris-particle-sliders/outputs/warm-light"))
+    parser.add_argument("--cache-dir", type=Path, default=Path("/ml2/iris-particle-sliders/cache"))
+    parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--text-dir", type=Path)
+    parser.add_argument("--device", default="cpu")
+    parser.add_argument("--text-device", default="cpu")
+    parser.add_argument("--allow-hub", action="store_true")
+    parser.add_argument(
+        "--resume", type=Path, help="unsupported for the archived fixture; fails before allocation"
+    )
+    args = parser.parse_args(argv)
+    if args.print_card:
+        print(json.dumps(card(), indent=2))
+        return
+    _require_fixture_mode(dummy=args.dummy, resume=args.resume, allow_legacy=args.allow_legacy)
+    if (
+        args.allow_hub
+        or args.checkpoint
+        or args.text_dir
+        or args.device != "cpu"
+        or args.text_device != "cpu"
+    ):
+        raise ValueError("--dummy accepts only the CPU tiny native fixture")
+    if Path("/ml2") not in args.outdir.resolve().parents:
+        raise ValueError("training artifacts must live under /ml2")
+    rows = load_prompts(args.prompts)
+    from .tiny import TinyRuntime
+
+    runtime = TinyRuntime(args.seed)
+    args.height, args.width = 16, 16
+    args.steps, args.trajectory_steps = min(args.steps, 4), 4
+    train(
+        runtime,
+        rows,
+        args.outdir,
+        steps=args.steps,
+        seed=args.seed,
+        batch=args.batch,
+        height=args.height,
+        width=args.width,
+        trajectory_steps=args.trajectory_steps,
+        records_per_pair=args.records_per_pair,
+        g_lr=args.g_lr,
+        resume=args.resume,
+        dummy=args.dummy,
+        teacher_cfg=args.teacher_cfg,
+        allow_legacy=args.allow_legacy,
+    )

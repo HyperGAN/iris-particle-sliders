@@ -10,8 +10,8 @@ from PIL import Image
 from .adapters import AdapterBank, new_particles
 from .card import native_protocol
 from .checkpoint import load_adapter, metadata, read_metadata, sha256
+from .legacy_train import restore_declared
 from .runtime import IrisRuntime
-from .train import restore_declared
 
 
 def main(argv=None):
@@ -32,6 +32,8 @@ def main(argv=None):
     parser.add_argument("--text-device", default="cpu")
     parser.add_argument("--allow-hub", action="store_true")
     args = parser.parse_args(argv)
+    if args.adapter.suffix == ".pt":
+        raise ValueError("PG0.9.1 exports support iris-slider-response only; native FlowDPMSolver rendering is unqualified")
     if Path("/ml2") not in args.out.resolve().parents:
         raise ValueError("image outputs must live under /ml2")
     saved = read_metadata(args.adapter)
@@ -49,18 +51,19 @@ def main(argv=None):
         device=args.device,
         text_device=args.text_device,
     )
-    bank = AdapterBank(runtime.model, stamp).to(runtime.device)
-    particles = new_particles(stamp, runtime.device)
-    expected = metadata(
-        bank,
-        stamp,
-        declared,
-        runtime.raw["model"],
-        base_sha256=runtime.base_sha256,
-        validation=saved["validation"],
-        protocol=protocol,
-    )
+    bank = AdapterBank(runtime.model, stamp)
     try:
+        bank.to(runtime.device)
+        particles = new_particles(stamp, runtime.device)
+        expected = metadata(
+            bank,
+            stamp,
+            declared,
+            runtime.raw["model"],
+            base_sha256=runtime.base_sha256,
+            validation=saved["validation"],
+            protocol=protocol,
+        )
         load_adapter(args.adapter, bank, particles, expected)
         with bank.active(particles, args.strength), torch.no_grad():
             image = runtime.render(

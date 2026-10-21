@@ -11,10 +11,10 @@ from iris_sliders.adapters import AdapterBank, new_particles
 from iris_sliders.card import native_protocol
 from iris_sliders.checkpoint import load_adapter, metadata, save_adapter
 from iris_sliders.formulation import load_stamp
+from iris_sliders.legacy_train import build_game, paired_records, step_context, train
 from iris_sliders.projection import isotropic_calibration_bank
 from iris_sliders.runtime import verify_encoder_files
 from iris_sliders.tiny import SyntheticEncoder, TinyRuntime
-from iris_sliders.train import build_game, paired_records, step_context, train
 
 EDIT_ROWS = [
     {"neutral": "fox", "positive": "fox with golden light"},
@@ -162,10 +162,13 @@ def test_mock_runtime_canonicalizes_device_after_actual_tiny_transfer(monkeypatc
     assert runtime.device == next(runtime.model.parameters()).device == torch.device("cpu")
 
 
-def test_failed_resume_closes_native_hooks(tmp_path):
-    train(TinyRuntime(), EDIT_ROWS, tmp_path / "first", steps=1, dummy=True)
+def test_archived_raw_resume_fails_before_native_model_mutation(tmp_path):
+    checkpoint = tmp_path / "malformed-training.pt"
+    checkpoint.write_bytes(b"unsupported archived raw state")
     runtime = TinyRuntime()
-    with pytest.raises(ValueError, match="resume model"):
+    before = {name: tensor.clone() for name, tensor in runtime.model.state_dict().items()}
+    rng_before = torch.get_rng_state().clone()
+    with pytest.raises(ValueError, match="archived raw resume is unsupported"):
         train(
             runtime,
             EDIT_ROWS,
@@ -173,9 +176,13 @@ def test_failed_resume_closes_native_hooks(tmp_path):
             steps=2,
             width=8,
             dummy=True,
-            resume=tmp_path / "first/training.pt",
+            allow_legacy=True,
+            resume=checkpoint,
         )
     assert all(not module._forward_hooks for _, module in runtime.model.named_modules())
+    assert all(torch.equal(value, before[name]) for name, value in runtime.model.state_dict().items())
+    assert torch.equal(torch.get_rng_state(), rng_before)
+    assert not (tmp_path / "bad").exists()
 
 
 def test_refreshed_sketch_noise_matches_isotropic_calibration():
