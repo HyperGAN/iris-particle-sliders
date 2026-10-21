@@ -100,6 +100,8 @@ def test_native_factory_defaults_and_checkpoint_cleanup(monkeypatch):
 
     monkeypatch.setattr(runtime, 'IrisRuntime', load)
     monkeypatch.setattr(train, 'build_game', build)
+    monkeypatch.setattr(lifecycle, 'model_identity', lambda actual: {'fixture': 'mock-local-runtime'})
+    monkeypatch.setattr(lifecycle, 'INFERENCE_BACKEND', SimpleNamespace(specification=lambda *a, **k: None))
     binding = lifecycle.prepare(local_options())
     assert loaded == [dict(allow_hub=False, cache_dir='/ml2/iris-particle-sliders/cache')]
     binding.close()

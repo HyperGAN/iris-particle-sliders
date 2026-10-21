@@ -1,7 +1,9 @@
 # Iris common lifecycle
 
-Proposed local shared pin: `fd89e1c780ab5210cd1be98ec3b70977e6349379` / core 0.7.0.
-Unpublished; exact-head review is required before draft publication.
+Proposed local shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.
+Unpublished; adopted into this local PG0.9.1 proposal after parent reported the
+independent core review. Iris runtime conformance is pending its next CPU slot.
+The original `fd89e1c` / core 0.7.0 milestone and cohorts remain preserved.
 
 This derivative registers backend `iris` for `particle_sliders.lifecycle`.
 The core owns preparation dispatch, updates, EMA, checkpoints, export,
@@ -29,8 +31,11 @@ Iris PG image rendering fails closed until native FlowDPMSolver parity;
 `checkpoint`, `text_dir`, `cache_dir`, `device`, `text_device`; downloads remain disabled.
 The base loader supports `base_precision='float32'` only; its CUDA autocast
 does not change base storage precision. Adapters and routed particles stay FP32.
-CPU and CUDA devices are supported; the tiny fixture requires both devices to be
-`cpu` and rejects native model paths. Native `cache_dir` defaults to
+The model device may be CPU or CUDA; the common factory requires `text_device='cpu'`
+until shared RNG collection covers that separate option. The original product
+CLI remains available with its original device contract on its original pins.
+The tiny fixture requires both devices to be `cpu` and rejects native model paths.
+Native `cache_dir` defaults to
 `/ml2/iris-particle-sliders/cache`, matching the original product CLI, and must
 remain under `/ml2`. Explicit checkpoint/text paths must be local directories.
 These options are checked before the runtime factory is invoked.
@@ -55,3 +60,48 @@ packets and EMA selection; neither entrypoint silently converts the other's
 packets. Historical source receipts under `evidence/derivative-audit` describe
 their original PR1 cohort and are not qualification for a new lifecycle head.
 See `INTEGRATION-AUDIT.md` for the fresh integration inventory and deferred checks.
+
+## Native-only velocity inference (v2)
+
+`session.export_inference` creates a distinct v2 artifact with the selected
+adapter/particle tensors and verified native source/model/architecture identity.
+It omits training configuration, rows, teachers, critics and optimizers. Neither
+v1 exports nor historical product packets are promoted to v2 implicitly.
+
+```python
+from particle_sliders.inference import open_inference
+
+with open_session(config) as session:
+    session.train()
+    session.export_inference('new-run/native-ema.pt', selection='ema')
+
+# Later, without the training rows or teacher cache:
+with open_inference('new-run/native-ema.pt', operation='response') as inference:
+    velocity = inference.response(prompt='a red cup', height=16, width=16,
+                                  timestep=500, cfg_scale=3., strength=.5, seed=7)
+    assert inference.selection == 'ema'
+```
+
+The example continues the tiny fixture above. For native weights pass only local
+runtime `options`: `checkpoint`, `text_dir`, `cache_dir`, `device`, `text_device`,
+`base_precision`. The artifact fixes the tiny/native architecture and synthetic
+base seed; runtime options cannot override these. Defaults are 16x16 for tiny
+and 512x512 for native; empty prompt means native empty-text conditioning.
+`timestep` is an explicit native coordinate in [0,1000]. `cfg_scale` is [0,20].
+Each response uses seeded Gaussian RGB input at that coordinate and returns raw
+velocity, not an image or a denoised sample. The conditional adapter and frozen
+null branch retain the training CFG policy, including open interval endpoints.
+
+The registered `particle_sliders.inference_backends` factory constructs only
+the native runtime, hooks, routed bank and response adapter. It never falls back
+to training preparation. Use `particle-slider infer --mode response` with local
+runtime/request JSON for the same operation. Render refuses before allocation.
+
+Training preflight checks staged precision and rejects ignored native requests.
+The pure update hook checks frozen-base/FP32/parameter ownership before PG updates;
+rejection preserves the session. `native_cleanup` restores borrowed modes,
+gradient flags and checkpoint settings as hooks are removed. The native
+observation context restores registered model buffers and the prompt cache;
+core restores adapter state, modes and RNG. No pretrained parameter copy is made.
+
+See `CORE081-ADOPTION.md` for canonical hashes, adoption scope and remaining gates.

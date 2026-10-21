@@ -1,5 +1,9 @@
 # Fresh Iris lifecycle integration audit
 
+This records the initial phase at `99bed22059f13d915c90cbf3adf1efd606b1616a`.
+Its pin and remaining-work statements below are historical. The current local
+proposal adopts core 0.8.1; see `CORE081-ADOPTION.md` for the subsequent delta.
+
 Source review and light edits only, 2026-10-21. Not runtime qualification or
 migration approval. No test suites, installs, builds, model downloads, GPU work,
 public writes, merges or active pin changes were performed in this task.
