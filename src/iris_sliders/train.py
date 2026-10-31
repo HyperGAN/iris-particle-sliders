@@ -26,35 +26,21 @@ EXPORT_SCHEMA = "iris-conditional-pg09-response-v1"
 
 
 def training_card(network_profile=None):
-    from .hndl import default_profile
-    network_profile = default_profile() if network_profile is None else network_profile
-    if network_profile == "hypergan-hndl-v2":
-        from .hndl import verified_profile
-        _, identity = verified_profile()
-        from importlib.resources import files
-        profile = json.loads(files('iris_sliders').joinpath('hndl-profile.json').read_text())
-        return {**card(), "format": EXPORT_SCHEMA, "core_commit": profile['core_commit'],
-                "shared_core_version": version('particle-sliders-core'),
-                "particlegan": '0.9.4', "network_profile": identity,
-                "protocol": {"response": "native RGB velocity [1,3,H,W]",
-                             "student_conditioning": "neutral", "cfg_adapter_branch": "conditional_only",
-                             "objective": "g_adv+public_prior;d_adv+public_penalty",
-                             "rendering": "unqualified; raw response evaluation only"},
-                "rendering": "unqualified; raw native RGB velocity only"}
-    return {
-        **card(),
-        "format": EXPORT_SCHEMA,
-        "shared_core_version": version("particle-sliders-core"),
-        "trainer": "particle_sliders.pg09.ConditionalPG09",
-        "particlegan": "0.9.1",
-        "protocol": {
-            "response": "native RGB velocity [1,3,H,W]",
-            "student_conditioning": "neutral",
-            "cfg_adapter_branch": "conditional_only",
-            "objective": "g_adv+public_prior;d_adv+public_penalty",
-            "rendering": "unqualified; raw response evaluation only",
-        },
-    }
+    from .profiles import select_profile, verify_runtime
+    selected = select_profile(network_profile)
+    profile = verify_runtime()
+    result = {**card(), "format": EXPORT_SCHEMA, "core_commit": profile['core_commit'],
+              "shared_core_version": version('particle-sliders-core'),
+              "particlegan": version('particlegan'),
+              "trainer": "particle_sliders.pg09.ConditionalPG09",
+              "protocol": {"response": "native RGB velocity [1,3,H,W]",
+                           "student_conditioning": "neutral", "cfg_adapter_branch": "conditional_only",
+                           "objective": "g_adv+public_prior;d_adv+public_penalty",
+                           "rendering": "unqualified; raw response evaluation only"}}
+    if selected != 'legacy':
+        from iris_sliders_hndl import verified_profile
+        result['network_profile'] = verified_profile()[1]
+    return result
 
 
 def configuration(
@@ -76,12 +62,11 @@ def configuration(
     network_profile=None,
 ):
     """The total update budget and all data/architecture choices bind resume."""
-    from .hndl import default_profile
-    network_profile = default_profile() if network_profile is None else network_profile
-    if network_profile not in ("legacy", "hypergan-hndl-v2"):
-        raise ValueError("unknown Iris network profile")
+    from .profiles import select_profile, verify_runtime
+    network_profile = select_profile(network_profile)
+    verify_runtime()
     if network_profile == "hypergan-hndl-v2":
-        from .hndl import verified_profile
+        from iris_sliders_hndl import verified_profile
         verified_profile()
         if critic != "field":
             raise ValueError("hypergan-hndl-v2 uses the shared HNDL spatial field critic")
@@ -151,6 +136,9 @@ def configuration(
 
 def build_game(runtime, config):
     """Bind the actual hooked bank once; shared core owns every GAN update."""
+    from .profiles import select_profile, verify_runtime
+    profile = select_profile(config.get('network_profile'))
+    verify_runtime()
     runtime.device = next(runtime.model.parameters()).device
     devices = [runtime.device.index or 0] if runtime.device.type == "cuda" else []
     bank = None
@@ -175,8 +163,7 @@ def build_game(runtime, config):
             # Retain the existing routed architecture only. Its historical
             # FormulationGame, sketches and normalization never execute here.
             stamp = winning_formulation()
-            from .hndl import adapter_bank
-            profile = config.get("network_profile", "legacy")
+            from .profiles import adapter_bank
             bank = adapter_bank(runtime.model, stamp, profile)
             bank.to(runtime.device)
             particles = new_particles(stamp, runtime.device)
@@ -191,7 +178,7 @@ def build_game(runtime, config):
             prepared = [backend.prepare(row) for row in response_rows]
             conditions = image_condition_features(prepared)
             if profile == "hypergan-hndl-v2":
-                from .hndl import spatial_critic
+                from iris_sliders_hndl import spatial_critic
                 critic = spatial_critic(prepared[0].target.shape[1], conditions.shape[1],
                                         tuple(prepared[0].target.shape[2:]), config["critic_hidden"]).to(runtime.device)
             elif config["critic"] == "hndl":
@@ -219,9 +206,9 @@ def build_game(runtime, config):
                 seed=config["seed"],
                 sampling="balanced",
             )
-    except BaseException:
-        if bank is not None:
-            bank.close()
+    except BaseException as error:
+        from .cleanup import run_cleanup
+        run_cleanup([bank.close] if bank is not None else [], primary=error)
         raise
 
 
@@ -317,7 +304,8 @@ def parser():
     result.add_argument("--response-scale", type=float, default=1.0)
     result.add_argument("--sigma", type=float, default=1.0)
     result.add_argument("--critic", choices=("field", "hndl"), default="field")
-    result.add_argument("--network-profile", choices=("legacy", "hypergan-hndl-v2"), default=None)
+    from .profiles import default_profile
+    result.add_argument("--network-profile", choices=(default_profile(),), default=None)
     result.add_argument("--critic-hidden", type=int, default=16)
     result.add_argument("--teacher-cfg", type=float, default=3.0)
     result.add_argument("--height", type=int, default=512)

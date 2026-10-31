@@ -337,11 +337,18 @@ def test_optional_hndl_unavailable_rejects_before_runtime_allocation(monkeypatch
         training.main(["--critic", "hndl", "--outdir", str(tmp_path)])
 
 
-def test_response_cli_optional_observer_executes_public_hypergan(tmp_path, trained_packet):
+def test_response_cli_optional_observer_executes_public_hypergan(tmp_path, trained_packet, monkeypatch):
     pytest.importorskip("hypergan.diversity_metrics")
     path = tmp_path / "adapter.pt"
     torch.save(trained_packet, path)
     report = tmp_path / "diversity.json"
+    from importlib.util import find_spec
+    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+        monkeypatch.setattr(response, 'make_runtime', lambda *a: pytest.fail('missing observer allocated model'))
+        with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
+            response.main(['--dummy', '--adapter', str(path), '--out', str(tmp_path / 'velocity.pt'),
+                           '--diversity-report', str(report), '--latent-seeds', '13', '17'])
+        return
     response.main(
         [
             "--dummy",
@@ -366,19 +373,19 @@ def test_response_cli_optional_observer_executes_public_hypergan(tmp_path, train
 def test_response_observer_missing_dependency_rejects_before_runtime_allocation(
     monkeypatch, tmp_path, trained_packet
 ):
-    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
+    from iris_sliders import diagnostics
 
     path = tmp_path / "adapter.pt"
     torch.save(trained_packet, path)
 
     def unavailable(groups, **kwargs):
-        raise hypergan_diagnostics.HyperGANDiagnosticsUnavailable("optional HyperGAN is unavailable")
+        raise RuntimeError("optional HyperGAN is unavailable")
 
-    monkeypatch.setattr(hypergan_diagnostics, "response_diversity", unavailable)
+    monkeypatch.setattr(diagnostics, "response_diversity", unavailable)
     monkeypatch.setattr(
         response, "make_runtime", lambda args: pytest.fail("missing observer allocated native runtime")
     )
-    with pytest.raises(hypergan_diagnostics.HyperGANDiagnosticsUnavailable):
+    with pytest.raises(RuntimeError, match="optional HyperGAN"):
         response.main(
             [
                 "--dummy",

@@ -1,5 +1,4 @@
-"""Iris-specific glue. The particle game lives in particle-sliders-core."""
+"""Iris glue; exactly one installed product profile owns this namespace."""
+from .profiles import installation
 
-from importlib.metadata import version
-
-__version__ = version("iris-particle-sliders")
+__version__ = installation()[0].version

@@ -135,5 +135,6 @@ def collect_response_rows(
                     )
                 )
     finally:
-        runtime.offload_encoder()
+        from .cleanup import run_cleanup
+        run_cleanup([runtime.offload_encoder])
     return result

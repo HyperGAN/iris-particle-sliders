@@ -1,82 +1,95 @@
-# Opt-in Iris HyperGAN/HNDL profile
+# Opt-in Iris HyperGAN/HNDL distribution
 
-The default `pyproject.toml` remains the exact supported S081 installer:
-core 0.8.1 / PG 0.9.1. The new profile is a separate **0.3.0rc1 build**, selected
-explicitly. Do not install it into an existing checkpoint environment.
-`requirements-s081.txt` recreates the original public product at
-`a191c999e931dc9bd7d1f9dcb8f2c200048d342d` for historical packets.
+The supported default is **iris-particle-sliders 0.2.0**, using exact core 0.8.1 /
+PG 0.9.1 (S081). The separate **iris-particle-sliders-hndl 0.3.0rc1** distribution
+uses real shared core 0.12.0 / PG 0.9.4 / HyperGAN develop / HNDL 0.10.0 graphs.
+Use one distribution per fresh virtual environment. Their common Iris namespace
+has an ownership guard that refuses coinstallation before any native work.
 
-The candidate uses real shared core 0.12.0 at
-`4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231`, official PG 0.9.4,
-HyperGAN develop `5f368a3770cf5bdae0448995c9f76e29af8049f7`, and HNDL 0.10.0.
-That core commit is currently a local coordinated candidate; public installation
-is blocked until the core owner publishes the exact commit. Do not replace it
-with another 0.12 build. The installed runtime checks selected core source hashes,
-the full shared HNDL/HyperGAN builder closure and clean HyperGAN build provenance.
-The packaged `hndl-profile.json` is the machine-readable profile receipt.
+The modern core commit `4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231` is public in
+[draft core PR148](https://github.com/HyperGAN/particle-sliders/pull/148).
+HyperGAN is `5f368a3770cf5bdae0448995c9f76e29af8049f7`; HNDL is 0.10.0.
+Modern native code and its manifest live in `iris_sliders_hndl`, which the stable
+wheel excludes. The stable CLI cannot select the modern profile, and the modern
+CLI/config/card cannot select legacy. A stale build directory cannot leak the
+previous HNDL module/assets into the stable wheel.
 
-## Build and install in a fresh environment
+## Build in a fresh environment
+
+From a source checkout:
 
 ```bash
-python -m pip install 'build>=1' 'setuptools>=84.2.1'
-python scripts/build_hndl_profile.py --outdir dist-hndl
-python -m pip install 'dist-hndl/iris_particle_sliders-0.3.0rc1-py3-none-any.whl'
-iris-slider-train --print-card
-iris-slider-train --dummy --steps 5 --outdir outputs/hndl-cpu
+python3.12 -m venv .venv-hndl
+.venv-hndl/bin/python -m pip install 'build>=1' 'setuptools>=84.2.1'
+.venv-hndl/bin/python scripts/build_hndl_profile.py --outdir dist-hndl
+.venv-hndl/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu' 'torchvision==0.29.1+cpu'
+.venv-hndl/bin/python -m pip install 'dist-hndl/iris_particle_sliders_hndl-0.3.0rc1-py3-none-any.whl[dev]'
+.venv-hndl/bin/iris-slider-train --print-card
+.venv-hndl/bin/iris-slider-train --dummy --steps 5 --outdir outputs/hndl-cpu
 ```
 
-The emitted sdist includes the exact modified pyproject and profile marker, so a
-wheel rebuilt from that sdist retains these dependencies and defaults. The
-ordinary root build stays S081. The profile constrains Python to >=3.11,<3.15,
-as required by the shared builder. Local qualification installs prebuilt exact
-shared wheels with `--no-deps`; this is not a clean native dependency-resolution
-claim. The stable requirements and historical manifests are not rewritten.
+These CPU Torch builds match the qualified Python 3.12 lane. No GPU/model download
+is needed for `--dummy`. The complete emitted modern sdist retains its distinct
+name, exact dependencies, HNDL module/assets and this profile-specific long
+description. Its active lock describes the modern full source closure; the
+original S081 lock is included byte-for-byte as `backend-s081.lock.json`.
+Ordinary root builds remain stable. Python is >=3.11,<3.15 for modern; only 3.12
+was exercised here. No other Python/native runtime combination is qualified.
 
-## Actual integration and ownership
+`requirements-s081.txt` restores the historical public Iris source at
+`a191c999e931dc9bd7d1f9dcb8f2c200048d342d`. Keep historical packets with that exact
+original product/core environment. This change does not convert or relabel them.
 
-`iris_sliders.hndl.HNDLRoutedProjection` reuses the shared
-`HNDLParticleProjection` graph/initialization with `attach=False`, then binds Iris
-hook tensors to its `value` and `particles` inputs. It adds no GAN mathematics.
-The same shared HNDL routed graph executes the down/router/bridge/up operations.
-The critic is the real shared `HNDLFieldCritic`, built through
-`hypergan.hndl_networks.build_network`. Matched-weight tests compare the original
-Iris projection with the HNDL projection, including input and particle gradients.
+## Actual integration and source admission
 
-The existing hooked bank owns only its adapter weights. Shared `AdapterParameters`
-owns those exact leaves plus the single 128x4 particle parameter once; the frozen
-Iris base is excluded from both optimizers. The actual `ConditionalPG09` owns all
-losses, priors, penalties, optimizers and updates. The original optional HNDL 0.8.2
-readout arm remains in the S081 environment; this new profile uses the spatial
-HNDL field critic and rejects the old `--critic hndl` choice before loading.
+`iris_sliders_hndl.HNDLRoutedProjection` reuses the shared
+`HNDLParticleProjection` graph/initialization with `attach=False`; it binds Iris
+hook tensors to the shared graph's `value` and `particles` inputs. The shared
+`HNDLFieldCritic` is built by `hypergan.hndl_networks.build_network`. Matched-weight
+output/input/particle VJP tests prove the original Iris projection is preserved.
+There is no copied GAN loss, regularizer, optimizer or update loop here.
 
-Common sessions use the same registered `iris` backend. The profile build defaults
-to `network_profile='hypergan-hndl-v2'`. The network profile binds the training
-configuration and native v2 inference descriptor; source hashes and graph identity
-bind restore. Old packets are rejected rather than translated or relabeled.
-The native-only inference factory builds the same HNDL bank without teachers,
-training rows, critic or optimizer. Strength zero preserves the exact base output.
+Shared `AdapterParameters` owns the actual FP32 adapter leaves and single 128x4
+particle parameter once; frozen Iris parameters are excluded. `ConditionalPG09`
+owns all GAN updates. Genuine native RGB `[1,3,H,W]` fields stay in the admitted
+PG image penalty domain. Flat continuous widths >=170 remain refused; no domain
+selector or width guard is bypassed.
 
-Responses remain native `[1,3,H,W]` RGB velocity fields. They retain PG's admitted
-image penalty domain. No arbitrary vector is reshaped into an image, and flat
-continuous widths >=170 remain refused. This work makes no claim about upstream
-explicit continuous-domain changes.
+Before native mutation, admission verifies exactly one product distribution and
+its imported package bytes/origins against RECORD; exact core VCS commit/version;
+the complete non-cache core source/data closure; actual PG version and complete
+source bytes; and actual imported module origins. Modern additionally verifies
+exact HyperGAN VCS provenance, clean build provenance, the shared builder closure
+and complete HNDL Python closure. Admission is deliberately uncached. A bare
+version or locally built core wheel lacking exact VCS metadata is insufficient.
+Cards report versions only after these gates pass.
 
-## Qualification boundary and observer gap
+Profile, source, architecture and model identities bind checkpoint restore.
+Wrong-profile and historical packets refuse before mutation. Native-only
+inference loads the same HNDL bank without teachers, training rows, critic or
+optimizer; tests forbid both FieldCritic and HNDLFieldCritic construction.
+Strength zero returns the exact base output. Cleanup restores borrowed modes,
+requires_grad and checkpoint flags; attempts all owned cleanup actions; and
+preserves a primary failure while attaching secondary cleanup errors as notes.
 
-CPU receipts cover the actual random tiny Iris model and synthetic text, both
-public BISPF presets, routed gradients/ownership, native zero bypass, split resume,
-EMA/native-only inference, source/profile rejection and complete profile packaging.
-These checks do not qualify pretrained loading, GPU memory/gradient behavior,
-convergence, semantic quality, or native FlowDPMSolver rendering. Rendering stays
-unavailable. No weights, training job, service, release or deployment was published.
+## Qualification and limits
 
-Neither the S081 core nor this core 0.12 candidate ships
-`particle_sliders.hypergan_diagnostics`. Installing the old diagnostics extra does
-not supply that missing API. Diversity-report requests now fail with an explicit
-product error before native allocation; the old observer tests are recorded as
-skipped when its shared API is absent. The required HyperGAN integration above is
-the actual network builder; no observer result is invented or counted as tested.
+Normal clean public dependency installation succeeds for both distributions,
+including stable's pinned HyperGAN diagnostic/HNDL extras. Both `pip check` calls
+pass. The modern suite, stable suite, mixed-install refusal, sdist rebuild and
+fresh-process resume/export receipts are indexed in
+[CLAUDE-FIXES.md](CLAUDE-FIXES.md). The earlier public qualification of source
+`2e54a08` remains in [its historical receipt](CLEAN-PUBLIC-QUALIFICATION.md).
 
-The draft PR adds source and build plumbing only. There are no release/deployment
-workflows in this repository, and merging does not publish a package or weights.
-The profile remains opt-in until independent review and native qualification.
+Neither exact core provides `particle_sliders.hypergan_diagnostics`. Requests for
+diversity reports explicitly refuse before native allocation. Both lanes test
+this behavior with HyperGAN installed; missing shared imports are not converted
+into skips. The absent observer is a feature gap, not a qualified observation.
+HyperGAN integration here is the actual network builder above.
+
+All native execution uses random tiny Iris and synthetic text on CPU. Pretrained
+loading, GPU behavior/memory, convergence, semantic quality and native
+FlowDPMSolver rendering remain unqualified. Rendering stays disabled. No weights,
+GPU job, package/model release, deployment or merge was performed. This repository
+has no automatic release/deployment workflow. Root retains independent review and
+merge routing.

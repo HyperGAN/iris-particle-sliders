@@ -1,0 +1,20 @@
+{
+  "stable": {
+    "wheel_sha256": "e60df30a11be031232506867bab9d42250a434b3ee4b9fc1d6eba517d49ec218",
+    "name": "iris-particle-sliders",
+    "version": "0.2.0",
+    "stable_excludes_modern_modules_assets": true,
+    "modern_long_description_matches_profile": false
+  },
+  "modern": {
+    "wheel_sha256": "7e8faaabe903f04dbc1f912435e645b0b2bdb99d81047968206164a50c0ed131",
+    "name": "iris-particle-sliders-hndl",
+    "version": "0.3.0rc1",
+    "stable_excludes_modern_modules_assets": false,
+    "modern_long_description_matches_profile": true
+  },
+  "rebuilt_sdist_package_and_metadata_equal": true,
+  "comparison_entries": 26,
+  "modern_distribution": "iris-particle-sliders-hndl",
+  "modern_core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231"
+}

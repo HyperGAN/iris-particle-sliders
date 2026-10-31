@@ -79,7 +79,14 @@ def test_optional_observation_module_import_is_lazy(monkeypatch):
 
 def test_real_observation_varies_only_private_latents_in_one_explicit_condition_group(game, monkeypatch):
     pytest.importorskip("hypergan.diversity_metrics")
-    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
+    from importlib.util import find_spec
+    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+        before = snapshot(game)
+        with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
+            diagnostics.observe_response_diversity(game, seeds=(13, 17))
+        assert equal_tree(before, snapshot(game))
+        return
+    from particle_sliders import hypergan_diagnostics
 
     batches, contexts = [], []
     observe = hypergan_diagnostics.response_diversity
@@ -131,6 +138,12 @@ def test_real_observation_varies_only_private_latents_in_one_explicit_condition_
 def test_real_observation_is_deterministic_and_preserves_exact_export(game):
     pytest.importorskip("hypergan.diversity_metrics")
     before = snapshot(game)
+    from importlib.util import find_spec
+    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+        with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
+            diagnostics.observe_response_diversity(game, index=1, seeds=(23, 29), pool_size=4)
+        assert equal_tree(before, snapshot(game))
+        return
     first = diagnostics.observe_response_diversity(game, index=1, seeds=(23, 29), pool_size=4)
     second = diagnostics.observe_response_diversity(game, index=1, seeds=(23, 29), pool_size=4)
     assert first == second and equal_tree(before, snapshot(game))
@@ -138,14 +151,12 @@ def test_real_observation_is_deterministic_and_preserves_exact_export(game):
 
 
 def test_observation_failure_restores_model_modes_and_all_rng(game, monkeypatch):
-    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
-
     def fail(groups, **kwargs):
         next(iter(next(iter(groups.values()))))
         torch.randn(5)
         raise RuntimeError("observation failed after the first response")
 
-    monkeypatch.setattr(hypergan_diagnostics, "response_diversity", fail)
+    monkeypatch.setattr(diagnostics, "response_diversity", fail)
     game.backend.adapter.layers[1].eval()
     before = snapshot(game)
     with pytest.raises(RuntimeError, match="observation failed"):

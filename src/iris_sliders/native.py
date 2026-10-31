@@ -11,13 +11,14 @@ from pathlib import Path
 import torch
 from particle_sliders import winning_formulation
 from particle_sliders.inference import InferenceBackend, InferenceBinding, native_identity
-from particle_sliders.lifecycle import Capabilities, UnsupportedOperation, native_cleanup
+from particle_sliders.lifecycle import Capabilities, UnsupportedOperation
 from particle_sliders.pg09_backends import ResponseRow
 from particle_sliders.pg09_images import IrisResponseAdapter
 
 from .adapters import new_particles
 from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION
 from .checkpoint import config_digest
+from .cleanup import native_cleanup, run_cleanup
 
 RUNTIME_KEYS = {'checkpoint', 'text_dir', 'cache_dir', 'device', 'text_device'}
 CACHE_DIR = '/ml2/iris-particle-sliders/cache'
@@ -100,24 +101,26 @@ def observation(runtime):
         runtime.model.eval()
         yield
     finally:
-        try:
+        def restore_buffer(value, saved):
             with torch.no_grad():
-                for value, saved in buffers.values():
-                    if (value.shape, value.dtype, value.device) == (saved.shape, saved.dtype, saved.device):
-                        value.copy_(saved)
-                    else:
-                        value.data = saved.clone()
-                for module, registered, nonpersistent in modules:
-                    module._buffers.clear()
-                    module._buffers.update(registered)
-                    module._non_persistent_buffers_set.clear()
-                    module._non_persistent_buffers_set.update(nonpersistent)
+                if (value.shape, value.dtype, value.device) == (saved.shape, saved.dtype, saved.device):
+                    value.copy_(saved)
+                else:
+                    value.data = saved.clone()
+        def restore_registered(module, registered, nonpersistent):
+            module._buffers.clear()
+            module._buffers.update(registered)
+            module._non_persistent_buffers_set.clear()
+            module._non_persistent_buffers_set.update(nonpersistent)
+        def restore_cache():
             if cache is not None:
                 cache.clear()
                 cache.update(cached)
                 runtime.encoding_cache = cache
-        finally:
-            restore()
+        actions = [lambda value=value, saved=saved: restore_buffer(value, saved)
+                   for value, saved in buffers.values()]
+        actions.extend(lambda m=m, r=r, n=n: restore_registered(m, r, n) for m, r, n in modules)
+        run_cleanup(actions + [restore_cache, restore])
 
 
 def validate_inference(options, spec):
@@ -128,13 +131,15 @@ def validate_inference(options, spec):
             or type(architecture['dummy']) is not bool
             or type(architecture['seed']) is not int or not 0 <= architecture['seed'] < 2**63 - 100):
         raise ValueError('invalid Iris native adapter configuration')
-    from .hndl import default_profile
+    from .profiles import default_profile, select_profile, verify_runtime
+    select_profile(architecture.get('network_profile'))
+    verify_runtime()
     if default_profile() != 'legacy' and 'network_profile' not in architecture:
         raise ValueError('S081 inference artifacts require their original pinned environment')
     if 'network_profile' in architecture:
         if architecture['network_profile'] != 'hypergan-hndl-v2':
             raise ValueError('invalid Iris network profile')
-        from .hndl import verified_profile
+        from iris_sliders_hndl import verified_profile
         verified_profile()
     validate_runtime(dict(options, dummy=architecture['dummy']))
 
@@ -167,7 +172,7 @@ def prepare_inference(options, spec):
         if any(p.dtype != torch.float32 for p in runtime.model.parameters()):
             raise ValueError('the staged Iris base must use float32 weights')
         stamp = winning_formulation()
-        from .hndl import adapter_bank
+        from .profiles import adapter_bank
         bank = adapter_bank(runtime.model, stamp, architecture.get('network_profile', 'legacy'))
         bank.to(runtime.device)
         particles = new_particles(stamp, runtime.device)
@@ -188,18 +193,11 @@ def prepare_inference(options, spec):
             return native.cfg(row, latent, time, scale=strength).detach().clone()
 
         def close():
-            try:
-                bank.close()
-            finally:
-                restore()
+            run_cleanup([bank.close, restore])
         return InferenceBinding(native.network, identity, close, response=response,
                                 observation=lambda: observation(runtime))
-    except BaseException:
-        try:
-            if bank is not None:
-                bank.close()
-        finally:
-            restore()
+    except BaseException as error:
+        run_cleanup(([bank.close] if bank is not None else []) + [restore], primary=error)
         raise
 
 

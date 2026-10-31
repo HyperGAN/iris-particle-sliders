@@ -33,13 +33,13 @@ Repository = "https://github.com/HyperGAN/iris-particle-sliders"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["iris_sliders_hndl*"]
 
 [tool.setuptools.package-data]
 iris_sliders = ["*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
 
 [tool.ruff]
 line-length = 110

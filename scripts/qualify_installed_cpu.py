@@ -61,8 +61,10 @@ def main():
         if "site-packages" not in path.parts:
             raise RuntimeError("source-free test imported a source checkout: " + str(path))
         imports[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-    from iris_sliders.hndl import default_profile, verified_profile
-    expected_pg = '0.9.4' if default_profile() == 'hypergan-hndl-v2' else '0.9.1'
+    from iris_sliders.profiles import default_profile, installation, verify_runtime
+    if default_profile() != 'legacy':
+        from iris_sliders_hndl import verified_profile
+    expected_pg = verify_runtime()['particlegan_version']
     if version('particlegan') != expected_pg:
         raise RuntimeError('wrong ParticleGAN release for the installed profile')
     network_identity = verified_profile()[1] if expected_pg == '0.9.4' else None
@@ -143,7 +145,7 @@ def main():
         "interpreter": sys.executable,
         "versions": {
             name: version(name)
-            for name in ("iris-particle-sliders", "particle-sliders-core", "particlegan", "iris-3b", "torch")
+            for name in (installation()[0].metadata["Name"], "particle-sliders-core", "particlegan", "iris-3b", "torch")
         },
         "imports": imports,
         "commands": commands,

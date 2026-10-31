@@ -8,34 +8,21 @@ from copy import deepcopy
 import torch
 from torch import nn
 
-from .adapters import AdapterBank
+from iris_sliders.adapters import AdapterBank
 
 PROFILE = 'hypergan-hndl-v2'
 
 
-def default_profile():
-    import json
-    from importlib.resources import files
-    marker = files('iris_sliders').joinpath('installed-profile.json')
-    if not marker.is_file():
-        return 'legacy'
-    if json.loads(marker.read_text()) != {'network_profile': PROFILE}:
-        raise ValueError('invalid Iris installed profile marker')
-    return PROFILE
-
-
 def verified_profile():
-    from importlib.metadata import version
-    if version('particle-sliders-core') != '0.12.0':
-        raise RuntimeError('Iris hypergan-hndl-v2 requires the exact core 0.12 profile build')
-    import hashlib
+    from iris_sliders.profiles import PROFILE, _origin, select_profile, verify_runtime
+    select_profile(PROFILE)
+    expected = verify_runtime()
+    _origin('hndl', 'hndl')
+    hypergan, _ = _origin('hypergan', 'hypergan')
     import json
-    from importlib.resources import files
-    expected = json.loads(files('iris_sliders').joinpath('hndl-profile.json').read_text())
-    core = files('particle_sliders')
-    if any(hashlib.sha256(core.joinpath(name).read_bytes()).hexdigest() != digest
-           for name, digest in expected['core_sources_sha256'].items()):
-        raise ValueError('Iris HNDL core sources differ from the exact candidate')
+    direct = json.loads(hypergan.read_text('direct_url.json') or '{}')
+    if direct.get('vcs_info', {}).get('commit_id') != expected['hypergan_commit']:
+        raise RuntimeError('Iris requires the exact public HyperGAN VCS commit')
     from particle_sliders.fibo_hndl import verified_builder
     builder, identity = verified_builder()
     if identity != expected['network_identity']:
@@ -79,8 +66,6 @@ class HNDLRoutedProjection(nn.Module):
 
 
 def adapter_bank(model, stamp, profile='legacy'):
-    if profile == 'legacy':
-        return AdapterBank(model, stamp)
     if profile != PROFILE:
         raise ValueError('unknown Iris network profile')
     verified_profile()

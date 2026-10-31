@@ -1,9 +1,18 @@
-# Iris inventory maintenance review
+# Initial Iris inventory maintenance review
+
+Current corrections and qualification supersede the initial limitations below;
+see [CLAUDE-FIXES.md](CLAUDE-FIXES.md).
 
 Base: public `a191c999e931dc9bd7d1f9dcb8f2c200048d342d` (verified immediately
 before publication); no existing open Iris PR. Work is isolated in a task-local
 clone and `maintenance/iris-integration-20261031` branch. Original owner checkout
 remains on main `6a226126623fb17c87fe22b86173fe2fcff4bf3e` without edits.
+
+The [clean public continuation](CLEAN-PUBLIC-QUALIFICATION.md) supersedes the
+publication/dependency-installation blockers recorded below. Exact core PR148 is
+public; all declared dependencies install in a fresh environment, `pip check`
+passes, and the same 64 CPU checks plus fresh-process checks pass. The original
+local environment's limitations below remain its historical receipt.
 
 ## Actual changes
 

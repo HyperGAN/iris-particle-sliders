@@ -1,0 +1,6 @@
+{
+  "actual_two_wheels_installed": true,
+  "import_returncode": 1,
+  "refused_before_native_load": true,
+  "error": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/ml2/codex-storage/future-workspaces/2026-10-31/task-13/evidence/review-mixed-install/iris_sliders/__init__.py\", line 4, in <module>\n    __version__ = installation()[0].version\n                  ^^^^^^^^^^^^^^\n  File \"/ml2/codex-storage/future-workspaces/2026-10-31/task-13/evidence/review-mixed-install/iris_sliders/profiles.py\", line 29, in installation\n    raise RuntimeError('install exactly one Iris distribution in a fresh environment; mixed profiles are refused')\nRuntimeError: install exactly one Iris distribution in a fresh environment; mixed profiles are refused\n"
+}
