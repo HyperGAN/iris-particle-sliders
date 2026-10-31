@@ -7,6 +7,19 @@ from dataclasses import replace
 import torch
 
 
+def response_diversity(*args, **kwargs):
+    """Resolve the shared observer before allocating a native model.
+
+    S081 and the current core 0.12 candidate do not ship this observer. An
+    optional HyperGAN install alone cannot supply a missing shared API.
+    """
+    try:
+        from particle_sliders.hypergan_diagnostics import response_diversity as observe
+    except ImportError as exc:
+        raise RuntimeError('the pinned shared core has no qualified HyperGAN diversity observer') from exc
+    return observe(*args, **kwargs)
+
+
 def _condition_identity(condition):
     result = {}
     for key, tensor in sorted(condition.items()):
@@ -89,7 +102,6 @@ def observe_response_diversity(game, *, index=0, seeds=(3, 5, 7), pool_size=None
 
     # Optional package discovery and import occur only when this observation is
     # requested; ordinary training and response evaluation keep their base imports.
-    from particle_sliders.hypergan_diagnostics import response_diversity
 
     try:
         for root in roots:

@@ -7,7 +7,7 @@ from .native import (CAPABILITIES, INFERENCE_BACKEND, PROTOCOL, RUNTIME_KEYS, ad
 
 _TRAIN = {'rows', 'steps', 'seed', 'batch', 'height', 'width', 'trajectory_steps',
           'records_per_pair', 'teacher_cfg', 'preset', 'response_scale', 'sigma',
-          'critic_hidden', 'critic'}
+          'critic_hidden', 'critic', 'network_profile'}
 _RUNTIME = RUNTIME_KEYS
 
 
@@ -40,7 +40,8 @@ def prepare(options, *, runtime=None):
         spec = INFERENCE_BACKEND.specification(
             game.backend, model_identity=model_identity(runtime),
             protocol=PROTOCOL,
-            configuration=dict(dummy=options.get('dummy', False), seed=config['seed']))
+            configuration=dict(dummy=options.get('dummy', False), seed=config['seed'],
+                               **({'network_profile': config['network_profile']} if 'network_profile' in config else {})))
     except BaseException:
         try:
             if game is not None:

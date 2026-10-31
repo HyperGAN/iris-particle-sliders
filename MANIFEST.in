@@ -4,3 +4,7 @@ recursive-include scripts *.py
 recursive-include tests *.py *.yaml
 include LIFECYCLE.md
 include INTEGRATION-AUDIT.md CORE081-ADOPTION.md
+
+include PUBLICATION-STATUS.md HYPERGAN-HNDL.md requirements-s081.txt
+
+include INVENTORY-REVIEW.md

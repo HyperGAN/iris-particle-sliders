@@ -79,7 +79,7 @@ def test_optional_observation_module_import_is_lazy(monkeypatch):
 
 def test_real_observation_varies_only_private_latents_in_one_explicit_condition_group(game, monkeypatch):
     pytest.importorskip("hypergan.diversity_metrics")
-    from particle_sliders import hypergan_diagnostics
+    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
 
     batches, contexts = [], []
     observe = hypergan_diagnostics.response_diversity
@@ -138,7 +138,7 @@ def test_real_observation_is_deterministic_and_preserves_exact_export(game):
 
 
 def test_observation_failure_restores_model_modes_and_all_rng(game, monkeypatch):
-    from particle_sliders import hypergan_diagnostics
+    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
 
     def fail(groups, **kwargs):
         next(iter(next(iter(groups.values()))))

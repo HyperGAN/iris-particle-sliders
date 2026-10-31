@@ -366,7 +366,7 @@ def test_response_cli_optional_observer_executes_public_hypergan(tmp_path, train
 def test_response_observer_missing_dependency_rejects_before_runtime_allocation(
     monkeypatch, tmp_path, trained_packet
 ):
-    from particle_sliders import hypergan_diagnostics
+    hypergan_diagnostics = pytest.importorskip('particle_sliders.hypergan_diagnostics')
 
     path = tmp_path / "adapter.pt"
     torch.save(trained_packet, path)

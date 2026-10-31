@@ -58,7 +58,7 @@ def main(argv=None):
             raise ValueError(
                 "diversity observation requires at least two distinct integer latent seeds in [0,2**63)"
             )
-        from particle_sliders.hypergan_diagnostics import response_diversity
+        from .diagnostics import response_diversity
 
         # Verify the optional reviewed implementation before native allocation.
         # An empty group reports unavailable moments and does no model work.

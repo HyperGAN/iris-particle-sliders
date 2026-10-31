@@ -1,4 +1,7 @@
-Common lifecycle draft: **60 selected CPU checks passed** on the tested runtime below. See [publication and qualification status](PUBLICATION-STATUS.md); native/pretrained limits remain explicit.
+The supported default remains S081 (core 0.8.1 / PG 0.9.1).
+A separate opt-in build now connects the actual native Iris hooks to shared
+HyperGAN develop/HNDL projection and spatial critic graphs. See
+[the profile, exact pins and qualification limits](HYPERGAN-HNDL.md).
 
 For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
 
@@ -61,7 +64,7 @@ After the coordinator stages the pinned model snapshots and admits a device:
 ```bash
 iris-slider-train --checkpoint /ml2/models/iris-3b \
   --text-dir /ml2/models/Qwen3-VL-4B-Instruct \
-  --cache-dir /ml2/iris-sliders/cache --device cuda:0 --text-device cpu \
+  --cache-dir /ml2/iris-sliders/cache --device cuda:DEVICE --text-device cpu \
   --height 512 --width 512 --batch 2 --steps 1600 \
   --outdir /ml2/iris-sliders/pg091
 ```
@@ -92,7 +95,7 @@ Gaussian response noise against noise plus `(student - target) / response_scale`
 with the public adversarial objectives, critic penalty and prior regularizer.
 The old sketch, isotropic calibration and FormulationGame do not run on this path.
 
-The optional `--critic hndl` arm calls the shared
+In the S081 environment, the optional `--critic hndl` arm calls the shared
 `HNDLConditionalReadoutCritic` and released HNDL 0.8.2 resolver/builder. Only that
 critic flattens native responses; the public PG penalty keeps the RGB field.
 Its source, resolved plan and HNDL sources bind the checkpoint. Changing critic
@@ -100,21 +103,16 @@ requires a fresh cohort. Missing/wrong optional dependencies fail before native
 runtime allocation. The spatial field critic is the default.
 
 ```bash
-python -m pip install '.[hndl,diagnostics]'
+python -m pip install '.[hndl]'
 iris-slider-train --dummy --steps 5 --critic hndl --outdir outputs/iris-hndl
 iris-slider-response --dummy --adapter outputs/iris-hndl/response-adapter.pt \
-  --out outputs/iris-hndl/velocity.pt --diversity-report outputs/iris-hndl/diversity.json \
-  --latent-seeds 13 17
+  --out outputs/iris-hndl/velocity.pt
 ```
 
-`--diversity-report` calls the shared HyperGAN observer using the reviewed
-HyperGAN `develop` source at `a879c4fbff903ccefeba2194bcc7a13fe7b5abb7`.
-It varies at least two private normal latent samples while keeping one explicit
-native prompt/null/timestep/CFG/scale/geometry context fixed. Each reference is
-the frozen positive teacher at that matching latent. HyperGAN owns the streaming
-moment/diversity calculations; product glue preserves model state, modes and all
-RNG/training streams. This observes raw response variation, with no denoising
-trajectory, quality judgment, semantic-coverage claim or loss change.
+`--diversity-report` requires a shared observer API that neither the pinned S081
+core nor the current 0.12 candidate supplies. It now refuses explicitly before
+native allocation. The diagnostics extra alone does not qualify this operation.
+See [the current integration limits](HYPERGAN-HNDL.md).
 
 ## Exports and inference limits
 

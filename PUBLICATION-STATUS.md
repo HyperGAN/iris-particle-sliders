@@ -1,4 +1,22 @@
-# Publication and qualification status
+# Current inventory maintenance status
+
+The supported default installer remains core 0.8.1 / ParticleGAN 0.9.1. The new
+[HyperGAN/HNDL profile](HYPERGAN-HNDL.md) builds separately as 0.3.0rc1 and uses
+real shared projection/critic graphs on the actual tiny Iris CPU fixture.
+This new source requires a new cohort; historical packets retain their original
+environments through `requirements-s081.txt`.
+
+The shared 0.12 candidate is not yet published. Profile dependency installation,
+pretrained loading, GPU behavior, quality and native FlowDPMSolver rendering
+remain unqualified. Render capability stays false. The common diversity-observer
+API is absent from both exact shared pins and now fails before allocation.
+
+Current installed CPU/build receipts will be indexed in `evidence/inventory-20261031`.
+Earlier PR1 was merged; the historical statement below is retained only as its
+original qualification receipt. It does not describe the new opt-in profile.
+There is no automatic package/model release or deployment workflow.
+
+## Historical S081 publication receipt
 
 This source is proposed through [the existing draft PR](https://github.com/HyperGAN/iris-particle-sliders/pull/1).
 Its qualified candidate is `fb5acc391ae7e32ad077364df2b1cbfc4c9ae158`; tested runtime is

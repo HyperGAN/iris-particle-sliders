@@ -1,0 +1,3 @@
+# Historical S081 environment: install into its own virtual environment.
+# Never relabel a training packet with a newer core/profile identity.
+iris-particle-sliders @ git+https://github.com/HyperGAN/iris-particle-sliders.git@a191c999e931dc9bd7d1f9dcb8f2c200048d342d

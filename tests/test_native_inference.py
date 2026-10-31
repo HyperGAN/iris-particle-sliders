@@ -36,7 +36,9 @@ def test_native_only_factory_without_training_construction(exports, monkeypatch)
     monkeypatch.setattr(ConditionalPG09, '__init__', forbidden)
     before = torch.get_rng_state().clone()
     for selection, packet in exports.items():
-        assert set(packet['specification']['configuration']) == {'dummy', 'seed'}
+        from iris_sliders.hndl import default_profile
+        expected_keys = {'dummy', 'seed'} | ({'network_profile'} if default_profile() != 'legacy' else set())
+        assert set(packet['specification']['configuration']) == expected_keys
         assert not {'game', 'rows', 'optimizer', 'critic'} & packet.keys()
         with open_inference(packet, backend=native.INFERENCE_BACKEND, operation='response') as session:
             assert session.selection == selection

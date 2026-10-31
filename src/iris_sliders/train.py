@@ -9,13 +9,13 @@ from importlib.metadata import version
 from pathlib import Path
 
 import torch
-from particle_sliders.lifecycle import updates, atomic_save
 from particle_sliders import winning_formulation
+from particle_sliders.field_critic import FieldCritic
+from particle_sliders.lifecycle import atomic_save, updates
 from particle_sliders.pg09 import ConditionalPG09, validate_pg09_domain
 from particle_sliders.pg09_images import IrisResponseAdapter, image_condition_features
-from particle_sliders.field_critic import FieldCritic
 
-from .adapters import AdapterBank, new_particles
+from .adapters import new_particles
 from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION, card
 from .checkpoint import config_digest
 from .runtime import validate_shape
@@ -25,7 +25,22 @@ TRAINING_SCHEMA = "iris-conditional-pg09-training-v1"
 EXPORT_SCHEMA = "iris-conditional-pg09-response-v1"
 
 
-def training_card():
+def training_card(network_profile=None):
+    from .hndl import default_profile
+    network_profile = default_profile() if network_profile is None else network_profile
+    if network_profile == "hypergan-hndl-v2":
+        from .hndl import verified_profile
+        _, identity = verified_profile()
+        from importlib.resources import files
+        profile = json.loads(files('iris_sliders').joinpath('hndl-profile.json').read_text())
+        return {**card(), "format": EXPORT_SCHEMA, "core_commit": profile['core_commit'],
+                "shared_core_version": version('particle-sliders-core'),
+                "particlegan": '0.9.4', "network_profile": identity,
+                "protocol": {"response": "native RGB velocity [1,3,H,W]",
+                             "student_conditioning": "neutral", "cfg_adapter_branch": "conditional_only",
+                             "objective": "g_adv+public_prior;d_adv+public_penalty",
+                             "rendering": "unqualified; raw response evaluation only"},
+                "rendering": "unqualified; raw native RGB velocity only"}
     return {
         **card(),
         "format": EXPORT_SCHEMA,
@@ -58,8 +73,18 @@ def configuration(
     sigma=1.0,
     critic_hidden=16,
     critic="field",
+    network_profile=None,
 ):
     """The total update budget and all data/architecture choices bind resume."""
+    from .hndl import default_profile
+    network_profile = default_profile() if network_profile is None else network_profile
+    if network_profile not in ("legacy", "hypergan-hndl-v2"):
+        raise ValueError("unknown Iris network profile")
+    if network_profile == "hypergan-hndl-v2":
+        from .hndl import verified_profile
+        verified_profile()
+        if critic != "field":
+            raise ValueError("hypergan-hndl-v2 uses the shared HNDL spatial field critic")
     if critic not in ("field", "hndl"):
         raise ValueError("critic must be field or hndl; a changed critic requires a fresh cohort")
     if critic == "hndl":
@@ -103,7 +128,7 @@ def configuration(
         raise ValueError("choose an explicitly qualified public BISPF preset")
     if any(not math.isfinite(v) or v <= 0 for v in (response_scale, sigma)):
         raise ValueError("response_scale and sigma must be finite and positive")
-    return {
+    result = {
         "rows": json.loads(json.dumps(rows)),
         "steps": steps,
         "seed": seed,
@@ -119,6 +144,9 @@ def configuration(
         "critic_hidden": critic_hidden,
         "critic": critic,
     }
+    if network_profile != "legacy":
+        result["network_profile"] = network_profile
+    return result
 
 
 def build_game(runtime, config):
@@ -147,7 +175,9 @@ def build_game(runtime, config):
             # Retain the existing routed architecture only. Its historical
             # FormulationGame, sketches and normalization never execute here.
             stamp = winning_formulation()
-            bank = AdapterBank(runtime.model, stamp)
+            from .hndl import adapter_bank
+            profile = config.get("network_profile", "legacy")
+            bank = adapter_bank(runtime.model, stamp, profile)
             bank.to(runtime.device)
             particles = new_particles(stamp, runtime.device)
             identity = {
@@ -160,7 +190,11 @@ def build_game(runtime, config):
             backend = IrisResponseAdapter(runtime, bank, particles, model_identity=identity)
             prepared = [backend.prepare(row) for row in response_rows]
             conditions = image_condition_features(prepared)
-            if config["critic"] == "hndl":
+            if profile == "hypergan-hndl-v2":
+                from .hndl import spatial_critic
+                critic = spatial_critic(prepared[0].target.shape[1], conditions.shape[1],
+                                        tuple(prepared[0].target.shape[2:]), config["critic_hidden"]).to(runtime.device)
+            elif config["critic"] == "hndl":
                 from particle_sliders.pg09_hndl import HNDLConditionalReadoutCritic
 
                 critic = HNDLConditionalReadoutCritic(
@@ -283,6 +317,7 @@ def parser():
     result.add_argument("--response-scale", type=float, default=1.0)
     result.add_argument("--sigma", type=float, default=1.0)
     result.add_argument("--critic", choices=("field", "hndl"), default="field")
+    result.add_argument("--network-profile", choices=("legacy", "hypergan-hndl-v2"), default=None)
     result.add_argument("--critic-hidden", type=int, default=16)
     result.add_argument("--teacher-cfg", type=float, default=3.0)
     result.add_argument("--height", type=int, default=512)
@@ -322,7 +357,7 @@ def make_runtime(args):
 def main(argv=None):
     args = parser().parse_args(argv)
     if args.print_card:
-        print(json.dumps(training_card(), indent=2))
+        print(json.dumps(training_card(args.network_profile), indent=2))
         return
     rows = load_prompts(args.prompts)
     if args.dummy:
@@ -344,6 +379,7 @@ def main(argv=None):
             "sigma",
             "critic_hidden",
             "critic",
+            "network_profile",
         )
     }
     # Package/release and configuration gates run before native runtime allocation.

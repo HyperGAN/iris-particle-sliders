@@ -1,3 +1,8 @@
+For the separate HyperGAN develop/HNDL profile, use the opt-in build described in
+[HYPERGAN-HNDL.md](HYPERGAN-HNDL.md). It adds a signed network profile to the same
+session and native-inference contracts. The S081 pin and receipts below remain
+historical evidence for that environment; packets are not migrated implicitly.
+
 # Iris common lifecycle
 
 Exact tested shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.

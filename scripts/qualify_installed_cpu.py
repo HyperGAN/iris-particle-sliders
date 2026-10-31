@@ -56,14 +56,16 @@ def main():
         "particlegan",
         "particle_sliders.pg09",
         "particle_sliders.pg09_images",
-        "particle_sliders.pg09_moss_campaign",
     ):
         path = Path(import_module(name).__file__).resolve()
         if "site-packages" not in path.parts:
             raise RuntimeError("source-free test imported a source checkout: " + str(path))
         imports[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-    if version("particlegan") != "0.9.1":
-        raise RuntimeError("the released PG0.9.1 wheel is required")
+    from iris_sliders.hndl import default_profile, verified_profile
+    expected_pg = '0.9.4' if default_profile() == 'hypergan-hndl-v2' else '0.9.1'
+    if version('particlegan') != expected_pg:
+        raise RuntimeError('wrong ParticleGAN release for the installed profile')
+    network_identity = verified_profile()[1] if expected_pg == '0.9.4' else None
     commands, arms = [], {}
     for preset in ("bispf", "bispf_optimized"):
         root = output / preset
@@ -135,6 +137,7 @@ def main():
     result = {
         "schema": "iris-installed-cpu-qualification-v1",
         "critic": args.critic,
+        "network_identity": network_identity,
         "cwd": str(output),
         "pythonpath": os.environ.get("PYTHONPATH"),
         "interpreter": sys.executable,

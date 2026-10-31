@@ -3,9 +3,9 @@
 No training factory, teacher collection, game, critic or optimizer is imported.
 This is not a denoising sampler or an image rendering implementation.
 """
+import math
 from contextlib import contextmanager
 from dataclasses import replace
-import math
 from pathlib import Path
 
 import torch
@@ -15,7 +15,7 @@ from particle_sliders.lifecycle import Capabilities, UnsupportedOperation, nativ
 from particle_sliders.pg09_backends import ResponseRow
 from particle_sliders.pg09_images import IrisResponseAdapter
 
-from .adapters import AdapterBank, new_particles
+from .adapters import new_particles
 from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION
 from .checkpoint import config_digest
 
@@ -124,9 +124,18 @@ def validate_inference(options, spec):
     if set(options) - (RUNTIME_KEYS | {'base_precision'}):
         raise ValueError('native Iris inference accepts only local runtime options')
     architecture = spec.configuration
-    if (set(architecture) != {'dummy', 'seed'} or type(architecture['dummy']) is not bool
+    if (set(architecture) not in ({'dummy', 'seed'}, {'dummy', 'seed', 'network_profile'})
+            or type(architecture['dummy']) is not bool
             or type(architecture['seed']) is not int or not 0 <= architecture['seed'] < 2**63 - 100):
         raise ValueError('invalid Iris native adapter configuration')
+    from .hndl import default_profile
+    if default_profile() != 'legacy' and 'network_profile' not in architecture:
+        raise ValueError('S081 inference artifacts require their original pinned environment')
+    if 'network_profile' in architecture:
+        if architecture['network_profile'] != 'hypergan-hndl-v2':
+            raise ValueError('invalid Iris network profile')
+        from .hndl import verified_profile
+        verified_profile()
     validate_runtime(dict(options, dummy=architecture['dummy']))
 
 
@@ -158,7 +167,8 @@ def prepare_inference(options, spec):
         if any(p.dtype != torch.float32 for p in runtime.model.parameters()):
             raise ValueError('the staged Iris base must use float32 weights')
         stamp = winning_formulation()
-        bank = AdapterBank(runtime.model, stamp)
+        from .hndl import adapter_bank
+        bank = adapter_bank(runtime.model, stamp, architecture.get('network_profile', 'legacy'))
         bank.to(runtime.device)
         particles = new_particles(stamp, runtime.device)
         native = IrisResponseAdapter(runtime, bank, particles, model_identity=model_identity(runtime))

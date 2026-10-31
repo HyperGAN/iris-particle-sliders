@@ -45,12 +45,12 @@ class AdapterBank(nn.Module):
     Strength zero returns the original tensor without arithmetic.
     """
 
-    def __init__(self, model, stamp):
+    def __init__(self, model, stamp, *, projection=RoutedProjection):
         super().__init__()
         model.requires_grad_(False)
         targets = target_modules(model)
         self.names = [name for name, _ in targets]
-        self.layers = nn.ModuleList([RoutedProjection(module, stamp) for _, module in targets])
+        self.layers = nn.ModuleList([projection(module, stamp) for _, module in targets])
         self.strength = 0.0
         object.__setattr__(self, "_particles", None)
         self.particle_shape = (int(stamp.spec["parts"]), int(stamp.spec["particle_dim"]))
