@@ -1,18 +1,23 @@
 # Opt-in Iris HyperGAN/HNDL distribution
 
 The supported default is **iris-particle-sliders 0.2.0**, using exact core 0.8.1 /
-PG 0.9.1 (S081). The separate **iris-particle-sliders-hndl 0.3.0rc1** distribution
+PG 0.9.1 (S081). The separate **iris-particle-sliders-hndl 0.3.0rc2** distribution
 uses real shared core 0.12.0 / PG 0.9.4 / HyperGAN develop / HNDL 0.10.0 graphs.
 Use one distribution per fresh virtual environment. Their common Iris namespace
 has an ownership guard that refuses coinstallation before any native work.
 
-The modern core commit `4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231` is public in
-[draft core PR148](https://github.com/HyperGAN/particle-sliders/pull/148).
+The active modern core commit `a794e3b4a8813b012f2c4faa3da82b78d4a90214` is public in
+[the public shared core commit](https://github.com/HyperGAN/particle-sliders/commit/a794e3b4a8813b012f2c4faa3da82b78d4a90214).
 HyperGAN is `5f368a3770cf5bdae0448995c9f76e29af8049f7`; HNDL is 0.10.0.
 Modern native code and its manifest live in `iris_sliders_hndl`, which the stable
 wheel excludes. The stable CLI cannot select the modern profile, and the modern
 CLI/config/card cannot select legacy. A stale build directory cannot leak the
 previous HNDL module/assets into the stable wheel.
+
+The active migration receipt is [A794-MIGRATION.md](A794-MIGRATION.md). Earlier
+4abc preview packets retain their original cohort and environment; they are not
+relabelled or silently restored under this pin. The new modern artifact is
+0.3.0rc2; the stable package remains 0.2.0.
 
 ## Build in a fresh environment
 
@@ -23,7 +28,7 @@ python3.12 -m venv .venv-hndl
 .venv-hndl/bin/python -m pip install 'build>=1' 'setuptools>=84.2.1'
 .venv-hndl/bin/python scripts/build_hndl_profile.py --outdir dist-hndl
 .venv-hndl/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu' 'torchvision==0.29.1+cpu'
-.venv-hndl/bin/python -m pip install 'dist-hndl/iris_particle_sliders_hndl-0.3.0rc1-py3-none-any.whl[dev]'
+.venv-hndl/bin/python -m pip install 'dist-hndl/iris_particle_sliders_hndl-0.3.0rc2-py3-none-any.whl[dev]'
 .venv-hndl/bin/iris-slider-train --print-card
 .venv-hndl/bin/iris-slider-train --dummy --steps 5 --outdir outputs/hndl-cpu
 ```

@@ -23,9 +23,10 @@ def stage(root, destination):
            + core + '#subdirectory=packages/particle-sliders-core')
     if text.count(old) != 1:
         raise ValueError('ambiguous core dependency')
-    text = text.replace(old, new).replace('version = "0.2.0"', 'version = "0.3.0rc1"')
+    text = text.replace(old, new).replace('version = "0.2.0"', 'version = "0.3.0rc2"')
     text = text.replace('name = "iris-particle-sliders"', 'name = "iris-particle-sliders-hndl"')
     text = text.replace('readme = "README.md"', 'readme = "HYPERGAN-HNDL.md"')
+    text = text.replace('iris-slider-train-legacy = "iris_sliders.legacy_train:main"\n', '')
     text = text.replace('exclude = ["iris_sliders_hndl*"]', 'exclude = []')
     text = text.replace('iris_sliders = ["*.json"]', 'iris_sliders = ["*.json"]\niris_sliders_hndl = ["*.json"]')
     text = text.replace('requires-python = ">=3.11"', 'requires-python = ">=3.11,<3.15"')
@@ -56,7 +57,7 @@ def stage(root, destination):
         manifest.write('\ninclude backend-s081.lock.json\n')
     (destination / 'pyproject.toml').write_text(text)
     metadata = tomllib.loads(text)['project']
-    if (metadata['version'], metadata['requires-python']) != ('0.3.0rc1', '>=3.11,<3.15'):
+    if (metadata['version'], metadata['requires-python']) != ('0.3.0rc2', '>=3.11,<3.15'):
         raise ValueError('profile version/Python metadata did not bind')
 
 

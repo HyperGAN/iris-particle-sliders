@@ -1,3 +1,11 @@
+# Active modern core migration
+
+The current modern candidate is `iris-particle-sliders-hndl` 0.3.0rc2 at exact
+core `a794e3b4a8813b012f2c4faa3da82b78d4a90214`. See
+[A794-MIGRATION.md](A794-MIGRATION.md) for current locks, installed CPU checks,
+preview refusal, the three deferred correctness fixes and the Claude RETURN gate.
+The stable/default pins and prior review notes below remain unchanged.
+
 # Current review corrections
 
 See [CLAUDE-FIXES.md](CLAUDE-FIXES.md) for the issue-by-issue corrections,

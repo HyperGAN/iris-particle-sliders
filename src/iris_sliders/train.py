@@ -242,6 +242,7 @@ def train(runtime, rows, outdir, *, resume=None, stop_after=None, dummy=False, *
     config = configuration(rows, **options)
     stop, packet = preflight(config, resume=resume, stop_after=stop_after, dummy=dummy)
     game = build_game(runtime, config)
+    primary = None
     try:
         if packet is not None:
             game.load_state_dict(packet["game"])
@@ -287,8 +288,12 @@ def train(runtime, rows, outdir, *, resume=None, stop_after=None, dummy=False, *
         }
         (outdir / "run.json").write_text(json.dumps(receipt, indent=2) + "\n")
         return receipt
+    except BaseException as error:
+        primary = error
+        raise
     finally:
-        game.backend.adapter.close()
+        from .cleanup import run_cleanup
+        run_cleanup([game.backend.adapter.close], primary=primary)
 
 
 def parser():

@@ -97,9 +97,13 @@ def observation(runtime):
                for _, registered, _ in modules for value in registered.values() if value is not None}
     cache = getattr(runtime, 'encoding_cache', None)
     cached = dict(cache) if cache is not None else None
+    primary = None
     try:
         runtime.model.eval()
         yield
+    except BaseException as error:
+        primary = error
+        raise
     finally:
         def restore_buffer(value, saved):
             with torch.no_grad():
@@ -120,7 +124,7 @@ def observation(runtime):
         actions = [lambda value=value, saved=saved: restore_buffer(value, saved)
                    for value, saved in buffers.values()]
         actions.extend(lambda m=m, r=r, n=n: restore_registered(m, r, n) for m, r, n in modules)
-        run_cleanup(actions + [restore_cache, restore])
+        run_cleanup(actions + [restore_cache, restore], primary=primary)
 
 
 def validate_inference(options, spec):

@@ -1,0 +1,14 @@
+{
+  "old_core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "new_core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+  "old_files_unchanged": true,
+  "training_restore_no_mutation": true,
+  "rejected_files": {
+    "training.pt": "packet kind, source, capabilities or cohort differs; no implicit rebinding",
+    "raw-v1.pt": "packet kind, source, capabilities or cohort differs; no implicit rebinding",
+    "raw-native.pt": "native factory source, protocol or capabilities differ",
+    "ema-v1.pt": "packet kind, source, capabilities or cohort differs; no implicit rebinding",
+    "ema-native.pt": "native factory source, protocol or capabilities differ"
+  },
+  "native_and_export_refusal_preserves_rng": true
+}

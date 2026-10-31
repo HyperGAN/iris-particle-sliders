@@ -1,0 +1,26 @@
+{
+  "target_core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+  "core_version": "0.12.0",
+  "actual_core_origin": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/particle_sliders",
+  "vcs_direct_url": {
+    "subdirectory": "packages/particle-sliders-core",
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "vcs_info": {
+      "commit_id": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+      "requested_revision": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+      "vcs": "git"
+    }
+  },
+  "core_closure_files": 51,
+  "pg_closure_files": 51,
+  "network_identity_unchanged": true,
+  "pg_bytes_unchanged": true,
+  "installed_bytes_match_exact_public_source": true,
+  "changed_core_files": [
+    "particle_sliders/inference.py",
+    "particle_sliders/lifecycle.py",
+    "particle_sliders/pg09.py"
+  ],
+  "before_manifest_sha256": "2be025ab9cb29928db010402f3b57cfb4205aa7d01a385320139cf1d6993f903",
+  "after_manifest_sha256": "5f25020cd2845da3c6c5fe8875e9031a0b776d95e7bdf1fb11057d4f7c3c96ec"
+}

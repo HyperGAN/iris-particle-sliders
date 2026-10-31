@@ -51,6 +51,7 @@ class AdapterBank(nn.Module):
         from .cleanup import native_cleanup, run_cleanup
         verify_runtime()
         self.handles = []
+        self._close_cleanup = None
         self._restore_native = native_cleanup(model)
         try:
             model.requires_grad_(False)
@@ -97,9 +98,14 @@ class AdapterBank(nn.Module):
             self.strength = previous[1]
 
     def close(self):
-        from .cleanup import run_cleanup
-        handles, self.handles = self.handles, []
-        run_cleanup([handle.remove for handle in handles] + [self._restore_native])
+        from .cleanup import Cleanup
+        if self._close_cleanup is None:
+            def remove(handle):
+                handle.remove()
+                self.handles.remove(handle)
+            self._close_cleanup = Cleanup([lambda h=h: remove(h) for h in self.handles]
+                                          + [self._restore_native])
+        self._close_cleanup()
 
 
 def new_particles(stamp, device="cpu"):

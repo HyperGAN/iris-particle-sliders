@@ -1,7 +1,7 @@
 {
   "schema": "iris-hypergan-hndl-profile-v1",
   "profile": "hypergan-hndl-v2",
-  "core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
   "core_version": "0.12.0",
   "particlegan_version": "0.9.4",
   "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
@@ -16,7 +16,7 @@
     "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707"
   },
   "core_sources_sha256": {
-    "pg09.py": "e580a9339630bea7cf3aa82e34c2d08a3e231b8df0aa408b29baa08b8de01671",
+    "pg09.py": "8d347665884fc371505e39819d6ee1081d893a8b2a8bbf8e5842b0d11f54c895",
     "pg094_release.json": "c2405c54312f279ecfe070c555f8900d9865e7f0e32463f84712f160300ab186",
     "fibo_hndl.py": "ff170b5ca321b6eac1db10f6f82b79abc60fd983409f9c8ada7513101de9b6a4",
     "fibo_hndl_010_sources.json": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
@@ -25,8 +25,8 @@
     "pg09_images.py": "15a2c36014d4c2cc878adf4d97388083cb9418e5c951df9b45f4d789d071f23a",
     "pg09_backends.py": "2301cd70b2b0f99f64821ae378f0926a3b23e3695a33e38b54a4406697b201c9",
     "reference.py": "2c5809edd3818fab9efdd0c5234ea6b5027de5fc0130155e537950471018a371",
-    "lifecycle.py": "cc94be191c5810f79642349c9258c466553c41e509df2e28622bfac82bc802c0",
-    "inference.py": "945f11cb3c465627da686483ecf1d137e81c272bf5dcb81c05da8c6482ec6830"
+    "lifecycle.py": "ec27ef58ba544ddaf4f5e51ff48dd08d73686bf81df4e500d822500a297f2c29",
+    "inference.py": "a44ad31b8976f5ad4519f658e4d5ab3c0ab875c4345696eba728835971be914a"
   },
   "qualification": "CPU fixture only; pretrained/GPU/render unqualified",
   "core_full_sources_sha256": {
@@ -55,9 +55,9 @@
     "particle_sliders/pg093.py": "61bcd076d0c79dc47ae041d79d45defee25d326fee34fd2cc5b6b42d6e878b8d",
     "particle_sliders/pg09_readout_critic.py": "b83322a2ef2192ac3693fe136d019259c7fd8bf26fba25bb254931ba25462a57",
     "particle_sliders/fibo_hndl_010_sources.json": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
-    "particle_sliders/pg09.py": "e580a9339630bea7cf3aa82e34c2d08a3e231b8df0aa408b29baa08b8de01671",
-    "particle_sliders/lifecycle.py": "cc94be191c5810f79642349c9258c466553c41e509df2e28622bfac82bc802c0",
-    "particle_sliders/inference.py": "945f11cb3c465627da686483ecf1d137e81c272bf5dcb81c05da8c6482ec6830",
+    "particle_sliders/pg09.py": "8d347665884fc371505e39819d6ee1081d893a8b2a8bbf8e5842b0d11f54c895",
+    "particle_sliders/lifecycle.py": "ec27ef58ba544ddaf4f5e51ff48dd08d73686bf81df4e500d822500a297f2c29",
+    "particle_sliders/inference.py": "a44ad31b8976f5ad4519f658e4d5ab3c0ab875c4345696eba728835971be914a",
     "particle_sliders/optimizer_policy.py": "9ae5fd84987d9a2ae4c202801a9f24b2fe4cebc6d0c8bdc737341a895a79b9a9",
     "particle_sliders/endpoint_game.py": "78ace462127468dff98eb2eccfbdae442d188999cace8f72137fefc2a4924f45",
     "particle_sliders/fibo_provenance.json": "710929d0b34a188a7327269cd765b69014cdd3f3987a37c5216679b1b67fc1e1",
