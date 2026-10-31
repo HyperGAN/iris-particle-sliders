@@ -13,3 +13,5 @@ recursive-include src/iris_sliders_hndl *.py *.json
 include CLEAN-PUBLIC-QUALIFICATION.md
 
 include CLAUDE-FIXES.md
+
+include PUBLIC-RETURN-REVIEW.md

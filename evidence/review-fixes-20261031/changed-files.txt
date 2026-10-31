@@ -4,6 +4,7 @@ HYPERGAN-HNDL.md
 INVENTORY-REVIEW.md
 LIFECYCLE.md
 MANIFEST.in
+PUBLIC-RETURN-REVIEW.md
 PUBLICATION-STATUS.md
 README.md
 evidence/inventory-20261031/actual-s081-checkpoint-rejection.json
@@ -36,6 +37,16 @@ evidence/public-qualification-20261031/public-source-verification.json
 evidence/public-qualification-20261031/public-tests.log
 evidence/public-qualification-20261031/sha256.json
 evidence/public-qualification-20261031/stable-skip-explanation.json
+evidence/review-fixes-20261031/changed-files.txt
+evidence/review-fixes-20261031/core-remote-final.json
+evidence/review-fixes-20261031/final-clean-build.log
+evidence/review-fixes-20261031/final-clean-fresh.log
+evidence/review-fixes-20261031/final-clean-install-summary.json
+evidence/review-fixes-20261031/final-clean-install.log
+evidence/review-fixes-20261031/final-clean-installed-wheel-smoke.json
+evidence/review-fixes-20261031/final-clean-pip-check.log
+evidence/review-fixes-20261031/final-clean-provenance.json
+evidence/review-fixes-20261031/final-clean-tests.log
 evidence/review-fixes-20261031/modern-installed-wheel-smoke.json
 evidence/review-fixes-20261031/review-lint-final.log
 evidence/review-fixes-20261031/review-mixed-refusal.json
@@ -47,6 +58,8 @@ evidence/review-fixes-20261031/review-modern-pip-check.log
 evidence/review-fixes-20261031/review-modern-provenance.json
 evidence/review-fixes-20261031/review-modern-tests-final.log
 evidence/review-fixes-20261031/review-packaging-final.json
+evidence/review-fixes-20261031/review-public-source-verification.json
+evidence/review-fixes-20261031/review-remote-final.json
 evidence/review-fixes-20261031/review-sdist-rebuild.log
 evidence/review-fixes-20261031/review-stable-build.log
 evidence/review-fixes-20261031/review-stable-fresh-final2.log

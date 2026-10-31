@@ -1,0 +1,8 @@
+{
+  "head": "cb94aebe1ae2788f991f91ffd54a63197c4092c6",
+  "tracked_files": 153,
+  "all_public_bytes_equal_tested_local_files": true,
+  "normalized_public_diff_equal_local_diff": true,
+  "public_diff_sha256": "849e6624231cad0e3a2febfe954d2bb02fb163325f79c71f567a8e76e22d64f1",
+  "local_diff_sha256": "224af2df50b306c51c259fd4821c09013de138b2f03d1c6a5c0924c71cccd9b8"
+}
