@@ -60,8 +60,13 @@ def configuration(
     critic_hidden=16,
     critic="field",
     network_profile=None,
+    lr=None,
+    d_lr_mult=None,
+    prior_lr_mult=None,
 ):
     """The total update budget and all data/architecture choices bind resume."""
+    from .learning_rates import recipe_overrides
+    rates = recipe_overrides(lr=lr, d_lr_mult=d_lr_mult, prior_lr_mult=prior_lr_mult)
     from .profiles import select_profile, verify_runtime
     network_profile = select_profile(network_profile)
     verify_runtime()
@@ -129,6 +134,7 @@ def configuration(
         "critic_hidden": critic_hidden,
         "critic": critic,
     }
+    result.update(rates)
     if network_profile != "native-pg094-v1":
         result["network_profile"] = network_profile
     return result
@@ -205,6 +211,7 @@ def build_game(runtime, config):
                 batch_size=config["batch"],
                 seed=config["seed"],
                 sampling="balanced",
+                recipe_overrides={key: config[key] for key in ("lr", "d_lr_mult", "prior_lr_mult") if key in config},
             )
     except BaseException as error:
         from .cleanup import run_cleanup
@@ -308,6 +315,9 @@ def parser():
     result.add_argument("--preset", choices=("bispf", "bispf_optimized"), default="bispf_optimized")
     result.add_argument("--response-scale", type=float, default=1.0)
     result.add_argument("--sigma", type=float, default=1.0)
+    result.add_argument("--lr", type=float, help="PG base/G rate; omitted uses preset")
+    result.add_argument("--d-lr-mult", type=float, help="D rate = lr * multiplier")
+    result.add_argument("--prior-lr-mult", type=float, help="routed bank rate = lr * multiplier")
     result.add_argument("--critic", choices=("field", "hndl"), default="field")
     from .profiles import default_profile
     result.add_argument("--network-profile", choices=(default_profile(),), default=None)
@@ -373,6 +383,9 @@ def main(argv=None):
             "critic_hidden",
             "critic",
             "network_profile",
+            "lr",
+            "d_lr_mult",
+            "prior_lr_mult",
         )
     }
     # Package/release and configuration gates run before native runtime allocation.

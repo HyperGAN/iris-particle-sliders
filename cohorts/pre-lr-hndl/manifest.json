@@ -1,0 +1,7 @@
+{
+  "source_commit": "235c6654115d646a82f63c5b184fedb2e721e8a3",
+  "files": {
+    "src/iris_sliders/train.py": "fdba614e7da16252735202026984356606727192129b172e67365c17139f9f2a",
+    "src/iris_sliders/lifecycle.py": "7d0a92a093f4012f827b39f142d533eadc57ca3d5bb82dab300abfa22c1eaea5"
+  }
+}

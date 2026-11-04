@@ -19,3 +19,6 @@ include PUBLIC-RETURN-REVIEW.md
 include A794-MIGRATION.md
 
 include backend-s081.lock.json PG094-ADOPTION.md
+
+recursive-include cohorts/pre-lr-hndl *.py *.json
+include LEARNING-RATES.md

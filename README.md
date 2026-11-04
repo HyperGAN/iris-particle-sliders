@@ -153,3 +153,5 @@ rebind of historical checkpoints or active training sources.
 
 Source: Apache-2.0. Native Iris/Qwen: Apache-2.0. Shared core/ParticleGAN: MIT.
 No model/adapter publication or merge is performed by this audit.
+
+Learning-rate controls and preserved defaults: [LEARNING-RATES.md](LEARNING-RATES.md).
