@@ -8,7 +8,7 @@ from .native import (CAPABILITIES, INFERENCE_BACKEND, PROTOCOL, RUNTIME_KEYS, ad
 
 _TRAIN = {'rows', 'steps', 'seed', 'batch', 'height', 'width', 'trajectory_steps',
           'records_per_pair', 'teacher_cfg', 'preset', 'response_scale', 'sigma',
-          'critic_hidden', 'critic', 'network_profile'}
+          'critic_hidden', 'critic', 'network_profile', 'lr', 'd_lr_mult', 'prior_lr_mult'}
 _RUNTIME = RUNTIME_KEYS
 
 

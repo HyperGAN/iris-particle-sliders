@@ -13,6 +13,24 @@ import tomllib
 from pathlib import Path
 
 
+def restore_pre_lr_runtime(root, destination):
+    """Keep the closed HNDL cohort's borrowed runtime bytes unchanged."""
+    import hashlib
+    import json
+    archive = root / 'cohorts/pre-lr-hndl'
+    manifest = json.loads((archive / 'manifest.json').read_text())
+    for relative, expected in manifest['files'].items():
+        data = (archive / relative).read_bytes()
+        if hashlib.sha256(data).hexdigest() != expected:
+            raise ValueError('archived HNDL runtime checksum differs: ' + relative)
+        (destination / relative).write_bytes(data)
+    (destination / 'src/iris_sliders/learning_rates.py').unlink(missing_ok=True)
+    # Archive ships in the sdist so its profile builder remains reproducible.
+    target = destination / 'cohorts/pre-lr-hndl'
+    if not target.exists():
+        shutil.copytree(archive, target)
+
+
 def stage(root, destination):
     profile = json.loads((root / 'src/iris_sliders_hndl/profile.json').read_text())
     text = (root / 'pyproject.toml').read_text()
@@ -39,6 +57,7 @@ def stage(root, destination):
         if path.is_file() and (path.suffix in ('.md', '.json', '.toml', '.txt')
                                or path.name in ('LICENSE', 'NOTICE', 'MANIFEST.in', 'setup.py')):
             shutil.copy2(path, destination / path.name)
+    restore_pre_lr_runtime(root, destination)
     # Keep the historical lock verbatim; the profile archive's active lock must
     # describe its actual dependencies rather than repeating S081 provenance.
     shutil.copy2(root / 'backend-s081.lock.json', destination / 'backend-s081.lock.json')
