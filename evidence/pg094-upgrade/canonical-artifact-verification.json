@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "artifact": "iris_particle_sliders-0.3.0-py3-none-any.whl",
+  "sha256": "d430a9f3f7523887bba0ef5c57c267c5b4b22d5674ebed7adf6647f49ece55bc",
+  "package_files_identical_to_tested_install": 23,
+  "dependencies_identical": true,
+  "sdist_sha256": "3d22197155a8e49307b059806d86408af6aef28d5162c81b20ae4521c402c347"
+}

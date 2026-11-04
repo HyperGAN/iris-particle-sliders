@@ -1,13 +1,14 @@
 """Iris factory for the common image lifecycle; response-only until solver parity."""
 import torch
-from particle_sliders.lifecycle import Backend, Binding, native_cleanup
+from particle_sliders.lifecycle import Backend, Binding
 
+from .cleanup import native_cleanup, run_cleanup
 from .native import (CAPABILITIES, INFERENCE_BACKEND, PROTOCOL, RUNTIME_KEYS, admitted,
                      load_runtime, model_identity, observation, validate_runtime)
 
 _TRAIN = {'rows', 'steps', 'seed', 'batch', 'height', 'width', 'trajectory_steps',
           'records_per_pair', 'teacher_cfg', 'preset', 'response_scale', 'sigma',
-          'critic_hidden', 'critic'}
+          'critic_hidden', 'critic', 'network_profile'}
 _RUNTIME = RUNTIME_KEYS
 
 
@@ -40,19 +41,13 @@ def prepare(options, *, runtime=None):
         spec = INFERENCE_BACKEND.specification(
             game.backend, model_identity=model_identity(runtime),
             protocol=PROTOCOL,
-            configuration=dict(dummy=options.get('dummy', False), seed=config['seed']))
-    except BaseException:
-        try:
-            if game is not None:
-                game.backend.adapter.close()
-        finally:
-            restore()
+            configuration=dict(dummy=options.get('dummy', False), seed=config['seed'],
+                               **({'network_profile': config['network_profile']} if 'network_profile' in config else {})))
+    except BaseException as error:
+        run_cleanup(([game.backend.adapter.close] if game is not None else []) + [restore], primary=error)
         raise
     def close():
-        try:
-            game.backend.adapter.close()
-        finally:
-            restore()
+        run_cleanup([game.backend.adapter.close, restore])
     def before_update(request):
         return admitted(game.backend) and game.prior.z is game.backend.particles
     return Binding(game, close, inference=spec, before_update=before_update,

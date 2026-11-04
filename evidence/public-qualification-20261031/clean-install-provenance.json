@@ -1,0 +1,126 @@
+{
+  "python": "3.12.15 (main, Oct  3 2026, 01:03:07) [Clang 22.1.3 ]",
+  "prefix": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public",
+  "no_system_site_packages": true,
+  "sys_path": [
+    "",
+    "/ml2/iris-particle-sliders-task-20261008/python/cpython-3.12.15-linux-x86_64-gnu/lib/python312.zip",
+    "/ml2/iris-particle-sliders-task-20261008/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12",
+    "/ml2/iris-particle-sliders-task-20261008/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/lib-dynload",
+    "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages"
+  ],
+  "imports": {
+    "iris_sliders.hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/iris_sliders/hndl.py",
+      "sha256": "aa10f109504f62988992b9ac10040abb98269246f4f96014e9d8ec2d70e006e6"
+    },
+    "iris_sliders.train": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/iris_sliders/train.py",
+      "sha256": "ba834b61f0a80ae035b5b6dfec450031bd9036197826b3107c3d34d467c9f445"
+    },
+    "particle_sliders.pg09": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/particle_sliders/pg09.py",
+      "sha256": "e580a9339630bea7cf3aa82e34c2d08a3e231b8df0aa408b29baa08b8de01671"
+    },
+    "particle_sliders.fibo_hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/particle_sliders/fibo_hndl.py",
+      "sha256": "ff170b5ca321b6eac1db10f6f82b79abc60fd983409f9c8ada7513101de9b6a4"
+    },
+    "hypergan.hndl_networks": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/hypergan/hndl_networks.py",
+      "sha256": "899293a128f71dc5d9a2579787b935e5fb696a82d28f26759af417c618269533"
+    },
+    "hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/hndl/__init__.py",
+      "sha256": "6f08e04b69254863d396dc26b317932d57ec490767f9a44c750988f73c989b38"
+    },
+    "iris3b.models.dit": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/iris3b/models/dit.py",
+      "sha256": "c7ffdf46a466765995ffdd057f491bb5c52055d6ebc5e1b287db73f654a467fd"
+    },
+    "torch": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/torch/__init__.py",
+      "sha256": "bd4a10ff16357ed78f45aaf4b46ce5b771fdc0e8549402206e324d0eb792c672"
+    },
+    "torchvision": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/torchvision/__init__.py",
+      "sha256": "9410a7e648ff07a695587173d09301d7da997a017cd8cef7b54e5b2f6dc8c342"
+    },
+    "dion": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/dion/__init__.py",
+      "sha256": "0463c8aa5c3783929bd40a20c12710b3800e35cd1fcd160dedb273d6ccf010db"
+    },
+    "wandb": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/wandb/__init__.py",
+      "sha256": "00d6270df256a8f462f77e1f1301d40e851adedca8122ccb3b176b7c5e42609d"
+    },
+    "matplotlib": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/lib/python3.12/site-packages/matplotlib/__init__.py",
+      "sha256": "37abb78e74e9e0085a4e306a919606ffa8ff3c263def80ae2f4d938cfa79cd32"
+    }
+  },
+  "vcs": {
+    "particle-sliders-core": {
+      "subdirectory": "packages/particle-sliders-core",
+      "url": "https://github.com/HyperGAN/particle-sliders.git",
+      "vcs_info": {
+        "commit_id": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+        "requested_revision": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+        "vcs": "git"
+      }
+    },
+    "hypergan": {
+      "url": "https://github.com/HyperGAN/HyperGAN.git",
+      "vcs_info": {
+        "commit_id": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+        "requested_revision": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+        "vcs": "git"
+      }
+    },
+    "iris-3b": {
+      "url": "https://github.com/speridlabs/iris-3b.git",
+      "vcs_info": {
+        "commit_id": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
+        "requested_revision": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
+        "vcs": "git"
+      }
+    },
+    "dion": {
+      "url": "https://github.com/microsoft/dion.git",
+      "vcs_info": {
+        "commit_id": "58d38adb5fcd403a116cb16157a5ca824f8538a5",
+        "requested_revision": "58d38adb5fcd403a116cb16157a5ca824f8538a5",
+        "vcs": "git"
+      }
+    }
+  },
+  "network_identity": {
+    "profile": "hypergan-hndl-v2",
+    "hndl_version": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707"
+  },
+  "hypergan_build_provenance": {
+    "commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "dirty": false,
+    "schema_version": 1
+  },
+  "public_profile_package_bytes_match_original_tested_wheel": true,
+  "package_entries_compared": 22,
+  "versions": {
+    "iris-particle-sliders": "0.3.0rc1",
+    "particle-sliders-core": "0.12.0",
+    "hypergan": "2.0.0",
+    "hndl": "0.10.0",
+    "particlegan": "0.9.4",
+    "torch": "2.14.1+cpu",
+    "torchvision": "0.29.1+cpu",
+    "pillow": "13.0.0",
+    "dion": "0.1.0",
+    "wandb": "0.31.0",
+    "matplotlib": "3.11.2"
+  }
+}

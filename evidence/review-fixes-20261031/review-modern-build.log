@@ -1,0 +1,239 @@
+* Getting build dependencies for sdist...
+running egg_info
+creating src/iris_particle_sliders_hndl.egg-info
+writing src/iris_particle_sliders_hndl.egg-info/PKG-INFO
+writing dependency_links to src/iris_particle_sliders_hndl.egg-info/dependency_links.txt
+writing entry points to src/iris_particle_sliders_hndl.egg-info/entry_points.txt
+writing requirements to src/iris_particle_sliders_hndl.egg-info/requires.txt
+writing top-level names to src/iris_particle_sliders_hndl.egg-info/top_level.txt
+writing manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+reading manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE'
+adding license file 'NOTICE'
+writing manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+* Building sdist...
+running sdist
+running egg_info
+writing src/iris_particle_sliders_hndl.egg-info/PKG-INFO
+writing dependency_links to src/iris_particle_sliders_hndl.egg-info/dependency_links.txt
+writing entry points to src/iris_particle_sliders_hndl.egg-info/entry_points.txt
+writing requirements to src/iris_particle_sliders_hndl.egg-info/requires.txt
+writing top-level names to src/iris_particle_sliders_hndl.egg-info/top_level.txt
+reading manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE'
+adding license file 'NOTICE'
+writing manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+running check
+creating iris_particle_sliders_hndl-0.3.0rc1
+creating iris_particle_sliders_hndl-0.3.0rc1/configs/iris
+creating iris_particle_sliders_hndl-0.3.0rc1/scripts
+creating iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+creating iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+creating iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders_hndl
+creating iris_particle_sliders_hndl-0.3.0rc1/tests
+creating iris_particle_sliders_hndl-0.3.0rc1/tests/fixtures
+copying files to iris_particle_sliders_hndl-0.3.0rc1...
+copying CLAUDE-FIXES.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying CLEAN-PUBLIC-QUALIFICATION.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying CORE081-ADOPTION.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying FORMULATION.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying HYPERGAN-HNDL.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying INTEGRATION-AUDIT.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying INVENTORY-REVIEW.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying LICENSE -> iris_particle_sliders_hndl-0.3.0rc1
+copying LIFECYCLE.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying MANIFEST.in -> iris_particle_sliders_hndl-0.3.0rc1
+copying NOTICE -> iris_particle_sliders_hndl-0.3.0rc1
+copying PROVENANCE.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying PUBLICATION-STATUS.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying README.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying REVIEW.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying VALIDATION.md -> iris_particle_sliders_hndl-0.3.0rc1
+copying backend-s081.lock.json -> iris_particle_sliders_hndl-0.3.0rc1
+copying backend.lock.json -> iris_particle_sliders_hndl-0.3.0rc1
+copying pyproject.toml -> iris_particle_sliders_hndl-0.3.0rc1
+copying requirements-s081.txt -> iris_particle_sliders_hndl-0.3.0rc1
+copying requirements.txt -> iris_particle_sliders_hndl-0.3.0rc1
+copying setup.py -> iris_particle_sliders_hndl-0.3.0rc1
+copying configs/iris/prompts-warm-light.json -> iris_particle_sliders_hndl-0.3.0rc1/configs/iris
+copying scripts/build_hndl_profile.py -> iris_particle_sliders_hndl-0.3.0rc1/scripts
+copying scripts/infer_iris.py -> iris_particle_sliders_hndl-0.3.0rc1/scripts
+copying scripts/prepare_release.py -> iris_particle_sliders_hndl-0.3.0rc1/scripts
+copying scripts/qualify_installed_cpu.py -> iris_particle_sliders_hndl-0.3.0rc1/scripts
+copying scripts/train_iris.py -> iris_particle_sliders_hndl-0.3.0rc1/scripts
+copying src/iris_particle_sliders_hndl.egg-info/PKG-INFO -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_particle_sliders_hndl.egg-info/SOURCES.txt -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_particle_sliders_hndl.egg-info/dependency_links.txt -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_particle_sliders_hndl.egg-info/entry_points.txt -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_particle_sliders_hndl.egg-info/requires.txt -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_particle_sliders_hndl.egg-info/top_level.txt -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_particle_sliders_hndl.egg-info
+copying src/iris_sliders/__init__.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/adapters.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/card.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/checkpoint.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/cleanup.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/diagnostics.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/flow.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/formulation.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/infer.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/legacy_train.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/lifecycle.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/native.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/profiles.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/projection.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/prompts.json -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/response.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/runtime.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/stable-profile.json -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/teacher.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/text-files.json -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/tiny.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders/train.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders
+copying src/iris_sliders_hndl/__init__.py -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders_hndl
+copying src/iris_sliders_hndl/profile.json -> iris_particle_sliders_hndl-0.3.0rc1/src/iris_sliders_hndl
+copying tests/conftest.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_adapter_transaction.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_contracts.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_diagnostics.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_hndl_profile.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_learning_protocol.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_legacy_safety.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_lifecycle.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_native.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_native_inference.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_null_cache.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_observer_gate.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_packaging_profiles.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_pg09_training.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_review_admission.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_review_regressions.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_shared_restore.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/test_teacher.py -> iris_particle_sliders_hndl-0.3.0rc1/tests
+copying tests/fixtures/iris-config.yaml -> iris_particle_sliders_hndl-0.3.0rc1/tests/fixtures
+Writing iris_particle_sliders_hndl-0.3.0rc1/setup.cfg
+Creating tar archive
+removing 'iris_particle_sliders_hndl-0.3.0rc1' (and everything under it)
+* Building wheel from sdist
+* Getting build dependencies for wheel...
+running egg_info
+writing src/iris_particle_sliders_hndl.egg-info/PKG-INFO
+writing dependency_links to src/iris_particle_sliders_hndl.egg-info/dependency_links.txt
+writing entry points to src/iris_particle_sliders_hndl.egg-info/entry_points.txt
+writing requirements to src/iris_particle_sliders_hndl.egg-info/requires.txt
+writing top-level names to src/iris_particle_sliders_hndl.egg-info/top_level.txt
+reading manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE'
+adding license file 'NOTICE'
+writing manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+* Building wheel...
+running bdist_wheel
+running build
+running build_py
+creating build/lib/iris_sliders
+copying src/iris_sliders/__init__.py -> build/lib/iris_sliders
+copying src/iris_sliders/profiles.py -> build/lib/iris_sliders
+copying src/iris_sliders/teacher.py -> build/lib/iris_sliders
+copying src/iris_sliders/adapters.py -> build/lib/iris_sliders
+copying src/iris_sliders/tiny.py -> build/lib/iris_sliders
+copying src/iris_sliders/card.py -> build/lib/iris_sliders
+copying src/iris_sliders/flow.py -> build/lib/iris_sliders
+copying src/iris_sliders/legacy_train.py -> build/lib/iris_sliders
+copying src/iris_sliders/checkpoint.py -> build/lib/iris_sliders
+copying src/iris_sliders/cleanup.py -> build/lib/iris_sliders
+copying src/iris_sliders/diagnostics.py -> build/lib/iris_sliders
+copying src/iris_sliders/projection.py -> build/lib/iris_sliders
+copying src/iris_sliders/native.py -> build/lib/iris_sliders
+copying src/iris_sliders/formulation.py -> build/lib/iris_sliders
+copying src/iris_sliders/lifecycle.py -> build/lib/iris_sliders
+copying src/iris_sliders/infer.py -> build/lib/iris_sliders
+copying src/iris_sliders/runtime.py -> build/lib/iris_sliders
+copying src/iris_sliders/train.py -> build/lib/iris_sliders
+copying src/iris_sliders/response.py -> build/lib/iris_sliders
+creating build/lib/iris_sliders_hndl
+copying src/iris_sliders_hndl/__init__.py -> build/lib/iris_sliders_hndl
+running egg_info
+writing src/iris_particle_sliders_hndl.egg-info/PKG-INFO
+writing dependency_links to src/iris_particle_sliders_hndl.egg-info/dependency_links.txt
+writing entry points to src/iris_particle_sliders_hndl.egg-info/entry_points.txt
+writing requirements to src/iris_particle_sliders_hndl.egg-info/requires.txt
+writing top-level names to src/iris_particle_sliders_hndl.egg-info/top_level.txt
+reading manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+adding license file 'LICENSE'
+adding license file 'NOTICE'
+writing manifest file 'src/iris_particle_sliders_hndl.egg-info/SOURCES.txt'
+copying src/iris_sliders/prompts.json -> build/lib/iris_sliders
+copying src/iris_sliders/stable-profile.json -> build/lib/iris_sliders
+copying src/iris_sliders/text-files.json -> build/lib/iris_sliders
+copying src/iris_sliders_hndl/profile.json -> build/lib/iris_sliders_hndl
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/iris_sliders
+copying build/lib/iris_sliders/__init__.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/profiles.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/teacher.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/text-files.json -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/adapters.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/tiny.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/card.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/prompts.json -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/flow.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/legacy_train.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/checkpoint.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/cleanup.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/diagnostics.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/projection.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/native.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/formulation.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/lifecycle.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/infer.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/runtime.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/stable-profile.json -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/train.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+copying build/lib/iris_sliders/response.py -> build/bdist.linux-x86_64/wheel/./iris_sliders
+creating build/bdist.linux-x86_64/wheel/iris_sliders_hndl
+copying build/lib/iris_sliders_hndl/__init__.py -> build/bdist.linux-x86_64/wheel/./iris_sliders_hndl
+copying build/lib/iris_sliders_hndl/profile.json -> build/bdist.linux-x86_64/wheel/./iris_sliders_hndl
+running install_egg_info
+Copying src/iris_particle_sliders_hndl.egg-info to build/bdist.linux-x86_64/wheel/./iris_particle_sliders_hndl-0.3.0rc1-py3.12.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/iris_particle_sliders_hndl-0.3.0rc1.dist-info/WHEEL
+creating '/ml2/codex-storage/future-workspaces/2026-10-31/task-13/wheels/review-modern/.tmp-fg6bu3zd/iris_particle_sliders_hndl-0.3.0rc1-py3-none-any.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/licenses/LICENSE'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/licenses/NOTICE'
+adding 'iris_sliders/__init__.py'
+adding 'iris_sliders/adapters.py'
+adding 'iris_sliders/card.py'
+adding 'iris_sliders/checkpoint.py'
+adding 'iris_sliders/cleanup.py'
+adding 'iris_sliders/diagnostics.py'
+adding 'iris_sliders/flow.py'
+adding 'iris_sliders/formulation.py'
+adding 'iris_sliders/infer.py'
+adding 'iris_sliders/legacy_train.py'
+adding 'iris_sliders/lifecycle.py'
+adding 'iris_sliders/native.py'
+adding 'iris_sliders/profiles.py'
+adding 'iris_sliders/projection.py'
+adding 'iris_sliders/prompts.json'
+adding 'iris_sliders/response.py'
+adding 'iris_sliders/runtime.py'
+adding 'iris_sliders/stable-profile.json'
+adding 'iris_sliders/teacher.py'
+adding 'iris_sliders/text-files.json'
+adding 'iris_sliders/tiny.py'
+adding 'iris_sliders/train.py'
+adding 'iris_sliders_hndl/__init__.py'
+adding 'iris_sliders_hndl/profile.json'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/METADATA'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/WHEEL'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/entry_points.txt'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/top_level.txt'
+adding 'iris_particle_sliders_hndl-0.3.0rc1.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+Successfully built iris_particle_sliders_hndl-0.3.0rc1.tar.gz and iris_particle_sliders_hndl-0.3.0rc1-py3-none-any.whl

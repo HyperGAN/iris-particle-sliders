@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "completed_steps": 2,
+  "checkpoint": "/ml2/particlesliders-working/pg094-upgrades/iris-unified-cli/run/artifacts/checkpoints/step-000002",
+  "adapter": "/ml2/particlesliders-working/pg094-upgrades/iris-unified-cli/run/artifacts/adapter.pt",
+  "rendered_images": 0,
+  "lr_search": false
+}

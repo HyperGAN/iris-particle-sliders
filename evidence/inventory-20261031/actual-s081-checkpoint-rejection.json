@@ -1,0 +1,8 @@
+{
+  "actual_s081_packet_sha256": "e0b8135a448a4487edb531e5b10dca0d43bc04b425f24565312ba58424ae5e27",
+  "s081_packet_pg_version": "0.9.1",
+  "modern_pg_version": "0.9.4",
+  "rejected_without_mutation": true,
+  "preallocation_rejection": "invalid Iris checkpoint configuration",
+  "game_rejection": "checkpoint PG source/cohort mismatch (PG 0.9.1, profile release); resume with the original pinned particle-sliders-core/ParticleGAN source environment. Use a fresh cohort for this release; automatic checkpoint migration is not supported"
+}

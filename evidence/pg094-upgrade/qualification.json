@@ -1,0 +1,86 @@
+{
+  "status": "passed",
+  "core_commit": "ddb41423bcefc1fe76cd94d0f9b367353b3ea137",
+  "core_version": "0.12.0",
+  "particlegan_version": "0.9.4",
+  "particlegan_release_commit": "330eb94ee748cdcad131b0275d8de75fd5a7f96f",
+  "native_source_commit": "a8d15239dea469aba042cfa56ca3bb4e450d5ebc",
+  "python": "3.11.17",
+  "torch": "2.14.1+cpu",
+  "canonical": {
+    "package": "iris-particle-sliders",
+    "version": "0.3.0",
+    "profile": "native-pg094-v1",
+    "tests": {
+      "passed": 193,
+      "skipped": 4
+    },
+    "skips": [
+      "separate modern-distribution module excluded from canonical wheel",
+      "three optional HyperGAN diversity-metrics checks; HyperGAN absent from canonical environment"
+    ],
+    "optional_hndl": "0.8.2",
+    "pip_check": "passed"
+  },
+  "hndl": {
+    "package": "iris-particle-sliders-hndl",
+    "version": "0.4.0rc1",
+    "profile": "hypergan-hndl-v2",
+    "tests": {
+      "passed": 62,
+      "skipped": 0
+    },
+    "official_recipe_real_bank_tests": {
+      "passed": 4,
+      "deselected": 24
+    },
+    "hndl": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "pip_check": "passed"
+  },
+  "fresh_process": {
+    "canonical": "passed; both BISPF presets; full5 == split2+resume3; export/response exact",
+    "hndl": "passed; both BISPF presets; full5 == split2+resume3; export/response exact"
+  },
+  "unified_dispatch": {
+    "status": "passed",
+    "profile_status": "fixture",
+    "dummy": true,
+    "check": "passed",
+    "updates": 2,
+    "checkpoint_every": 1,
+    "export_formats": [
+      "v1",
+      "v2"
+    ],
+    "rendered_images": 0
+  },
+  "history": {
+    "backend_s081_sha256": "970330cfa4edab277a1c26368fa3df9988f104f985bb47945588ba2463966aa7",
+    "s081_profile_sha256": "f40caa9db6d2db75c489887b6651e6152c31dd53ea9f61bc227b6f8baff57fb4",
+    "preserved": true
+  },
+  "limits": [
+    "actual tiny random IrisDiT and synthetic text on CPU only",
+    "no pretrained weights or GPU initialization/training",
+    "pretrained loading, GPU memory/behavior, convergence and image quality unqualified",
+    "native FlowDPMSolver rendering parity gate remains false",
+    "shared diversity observer remains unavailable and refused"
+  ],
+  "evidence_sha256": {
+    "canonical-artifact-verification.json": "2eba777b7a7d59c63b29eac2cbd82855b53fd53bae10049ad92066a6073e7c05",
+    "canonical-fresh-process.json": "fafdc22651768d8f4d446e992ac94de81818686f137ee745c8d6ffc2a89185a9",
+    "canonical-pip-check.log": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+    "canonical-pytest.log": "9eeea1382cdfa2d674ef378d4cab64342ced64d18964fba41f8a9abd34ed9bf6",
+    "hndl-artifact-verification.json": "c19e78d3307f94b67c0f0e7e2c1daf08bb198930b3733bcc5638a34e912c7df4",
+    "hndl-fresh-process.json": "75e3838ebb3d0727b5cfa54495fdd24b5a07c34e80c1d4dfd4783ab2690a5358",
+    "hndl-official-recipe-pytest.log": "99d31c8e2152dd914fa1fdabe4f40fa83407daadca5f48f6bb12eadb1c73f09a",
+    "hndl-pip-check.log": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+    "hndl-pytest.log": "4eb88284a5e208ef2cb290b1093a7dc0cc9be557fbfe13b7778ef1f2fbbcaf39",
+    "unified-check.json": "8d40a509f8191636e33c8b7f1543cc5b038d0464a0b8d7ec5db083d48effa1dd",
+    "unified-fixture-profile.json": "49dead9b0241acb0fef1fe6d3da41027006f36b4806b6486b86e8a4a1fd83ca1",
+    "unified-fixture-training.json": "1db623c038290ea009eebe0475b358bdf8ca9fc7d5da70f6ba32c4b114e0d906",
+    "unified-result.json": "83094283b47a31fcd213460e7c1c3744cf452ac36b2ef06b97a0a870fa973f8f",
+    "unified-train.json": "7de636cee50746abe4c8f318a95dc53749eb1b77a4707c430b8977d8ddf02b92"
+  }
+}

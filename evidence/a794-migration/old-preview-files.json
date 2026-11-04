@@ -1,0 +1,31 @@
+{
+  "core_commit": "4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231",
+  "cohort": "iris-pre-a794-preview-cpu",
+  "options": {
+    "dummy": true,
+    "steps": 4,
+    "seed": 7,
+    "height": 16,
+    "width": 16,
+    "trajectory_steps": 4,
+    "records_per_pair": 2,
+    "ema_decay": 0.9,
+    "rows": [
+      {
+        "neutral": "cup",
+        "positive": "shiny cup"
+      },
+      {
+        "neutral": "bowl",
+        "positive": "shiny bowl"
+      }
+    ]
+  },
+  "files": {
+    "training.pt": "665607f3ed80628ec0abc920e80033a237b4db6656cc7f9b2c621d4cefe0f14a",
+    "raw-native.pt": "5d2aee285e9a2d5a26874324583871a4cfad5b8e42f5cfc66fba0437807d0c9c",
+    "raw-v1.pt": "d9389d7185120671b7b0292150548c6f467e6187b9c8e4ae25c5f66b24a657b3",
+    "ema-v1.pt": "0b116e6ffc623d9b7dd7a89b528062055eba1eb46096ca699f672acdef5b8a59",
+    "ema-native.pt": "77942bc49b02042e1ca69804e1f742c6e8a32379f48153276fad98eca66e3a00"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "modern_name": "iris-particle-sliders-hndl",
+  "modern_version": "0.3.0rc2",
+  "exact_core_dependency": "particle-sliders-core[fibo-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core",
+  "legacy_entrypoint_absent": true,
+  "sdist_rebuild_package_and_metadata_equal": true,
+  "final_artifact_package_bytes_equal_installed_tested_bytes": true,
+  "comparison_entries": 26,
+  "original_stable_lock_preserved_in_sdist": true,
+  "active_lock_matches_manifest": true,
+  "wheel_sha256": "f92fbc30d12a5e06364621b056cd3ff6caeebbda9d59c240e0674124b52f234b",
+  "sdist_sha256": "9f5c5cd0fdbec368ee72513393a45a296b3d69ba470915e226372ae5a70739db",
+  "final_docs_and_preview_checker_in_sdist": true
+}

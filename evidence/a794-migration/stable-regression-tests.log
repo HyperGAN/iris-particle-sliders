@@ -1,0 +1,8 @@
+..........................................                               [100%]
+=============================== warnings summary ===============================
+test_review_admission.py::test_profile_choice_and_card_refuse_cross_profile_before_native
+  /ml2/iris-particle-sliders-task-20261008/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: DeprecationWarning: concept_slider_core is a deprecated alias of particle_sliders. Install particle-sliders-core from HyperGAN/particle-sliders and import particle_sliders. New native-response integrations use ConditionalPG09.
+    return _bootstrap._gcd_import(name[level:], package, level)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+42 passed, 1 warning in 4.10s

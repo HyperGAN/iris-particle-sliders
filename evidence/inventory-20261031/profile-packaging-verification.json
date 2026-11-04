@@ -1,0 +1,51 @@
+{
+  "profile_wheel_sha256": "f9836212babd413a2a0bcbc4eb418682961c5758dd5242856adee14994061c8e",
+  "rebuilt_sdist_sources_and_metadata_match": true,
+  "source_files_compared": 24,
+  "profile_archive_active_lock_correct": true,
+  "s081_lock_preserved_byte_for_byte": true,
+  "versions": {
+    "iris-particle-sliders": "0.3.0rc1",
+    "particle-sliders-core": "0.12.0",
+    "particlegan": "0.9.4",
+    "hndl": "0.10.0",
+    "hypergan": "2.0.0",
+    "torch": "2.14.1+cpu"
+  },
+  "imports": {
+    "iris_sliders.train": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/iris_sliders/train.py",
+      "sha256": "ba834b61f0a80ae035b5b6dfec450031bd9036197826b3107c3d34d467c9f445"
+    },
+    "iris_sliders.hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/iris_sliders/hndl.py",
+      "sha256": "aa10f109504f62988992b9ac10040abb98269246f4f96014e9d8ec2d70e006e6"
+    },
+    "iris3b.models.dit": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/iris3b/models/dit.py",
+      "sha256": "c7ffdf46a466765995ffdd057f491bb5c52055d6ebc5e1b287db73f654a467fd"
+    },
+    "particle_sliders.pg09": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/particle_sliders/pg09.py",
+      "sha256": "e580a9339630bea7cf3aa82e34c2d08a3e231b8df0aa408b29baa08b8de01671"
+    },
+    "particle_sliders.fibo_hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/particle_sliders/fibo_hndl.py",
+      "sha256": "ff170b5ca321b6eac1db10f6f82b79abc60fd983409f9c8ada7513101de9b6a4"
+    },
+    "particlegan": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/particlegan/__init__.py",
+      "sha256": "607c6bb12acd631ae1ff98f6e61d990ff4ab5b60ec86f5a8cb5864cda7c11864"
+    },
+    "hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv/lib/python3.12/site-packages/hndl/__init__.py",
+      "sha256": "6f08e04b69254863d396dc26b317932d57ec490767f9a44c750988f73c989b38"
+    },
+    "hypergan.hndl_networks": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-3/.venv094/lib/python3.12/site-packages/hypergan/hndl_networks.py",
+      "sha256": "899293a128f71dc5d9a2579787b935e5fb696a82d28f26759af417c618269533"
+    }
+  },
+  "qualification": "Actual tiny random Iris / synthetic text / CPU only; no pretrained or GPU qualification",
+  "installation_limit": "--no-deps; shared read-only CPU dependency libraries reused; full native extras dion/matplotlib/torchvision/wandb absent"
+}

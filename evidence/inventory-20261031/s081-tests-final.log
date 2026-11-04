@@ -1,0 +1,17 @@
+.............sss...........ssssssssss................................... [ 37%]
+.................................................................ss..... [ 75%]
+..............................................                           [100%]
+=========================== short test summary info ============================
+SKIPPED [1] repo/tests/test_diagnostics.py:81: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+SKIPPED [1] repo/tests/test_diagnostics.py:132: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+SKIPPED [1] repo/tests/test_diagnostics.py:141: could not import 'particle_sliders.hypergan_diagnostics': No module named 'particle_sliders.hypergan_diagnostics'
+SKIPPED [2] repo/tests/test_hndl_profile.py:31: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_hndl_profile.py:71: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_hndl_profile.py:94: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_hndl_profile.py:119: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [3] repo/tests/test_hndl_profile.py:126: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_hndl_profile.py:156: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_hndl_profile.py:167: requires separate exact HyperGAN/HNDL profile build
+SKIPPED [1] repo/tests/test_pg09_training.py:341: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+SKIPPED [1] repo/tests/test_pg09_training.py:369: could not import 'particle_sliders.hypergan_diagnostics': No module named 'particle_sliders.hypergan_diagnostics'
+175 passed, 15 skipped in 27.06s

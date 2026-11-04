@@ -11,6 +11,7 @@ from .train import EXPORT_SCHEMA, build_game, load_packet, make_runtime
 
 def evaluate(runtime, packet, *, index=0, seed=0, diversity_report=None, latent_seeds=(3, 5, 7)):
     game = build_game(runtime, packet["config"])
+    primary = None
     try:
         game.load_export_state_dict(packet["adapter"])
         if type(index) is not int or not 0 <= index < len(game.rows):
@@ -23,8 +24,12 @@ def evaluate(runtime, packet, *, index=0, seed=0, diversity_report=None, latent_
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
         return game.evaluate(index, seed=seed).cpu()
+    except BaseException as error:
+        primary = error
+        raise
     finally:
-        game.backend.adapter.close()
+        from .cleanup import run_cleanup
+        run_cleanup([game.backend.adapter.close], primary=primary)
 
 
 def main(argv=None):
@@ -58,7 +63,7 @@ def main(argv=None):
             raise ValueError(
                 "diversity observation requires at least two distinct integer latent seeds in [0,2**63)"
             )
-        from particle_sliders.hypergan_diagnostics import response_diversity
+        from .diagnostics import response_diversity
 
         # Verify the optional reviewed implementation before native allocation.
         # An empty group reports unavailable moments and does no model work.

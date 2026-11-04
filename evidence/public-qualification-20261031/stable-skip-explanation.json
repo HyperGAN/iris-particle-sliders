@@ -1,0 +1,83 @@
+{
+  "stable_passed": 175,
+  "stable_skipped": 15,
+  "modern_profile_skips": 10,
+  "optional_hypergan_not_installed": 3,
+  "missing_shared_observer_api": 2,
+  "observer_feature_status": "unqualified; explicit refusal before native allocation; installing HyperGAN alone cannot add missing shared API",
+  "modern_profile_status": "all 10 profile cases passed in modern lane; no skipped case counted as a pass",
+  "cases": [
+    {
+      "file": "test_diagnostics.py",
+      "test": "test_real_observation_varies_only_private_latents_in_one_explicit_condition_group",
+      "count": 1,
+      "reason": "hypergan.diversity_metrics unavailable: optional HyperGAN absent in S081 test environment"
+    },
+    {
+      "file": "test_diagnostics.py",
+      "test": "test_real_observation_is_deterministic_and_preserves_exact_export",
+      "count": 1,
+      "reason": "hypergan.diversity_metrics unavailable: optional HyperGAN absent in S081 test environment"
+    },
+    {
+      "file": "test_pg09_training.py",
+      "test": "test_response_cli_optional_observer_executes_public_hypergan",
+      "count": 1,
+      "reason": "hypergan.diversity_metrics unavailable: optional HyperGAN absent in S081 test environment"
+    },
+    {
+      "file": "test_diagnostics.py",
+      "test": "test_observation_failure_restores_model_modes_and_all_rng",
+      "count": 1,
+      "reason": "particle_sliders.hypergan_diagnostics API absent from pinned core; unsupported observer path"
+    },
+    {
+      "file": "test_pg09_training.py",
+      "test": "test_response_observer_missing_dependency_rejects_before_runtime_allocation",
+      "count": 1,
+      "reason": "particle_sliders.hypergan_diagnostics API absent from pinned core; unsupported observer path"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_real_graphs_own_updates_and_preserve_native_zero",
+      "count": 2,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_profile_and_corrupted_checkpoint_reject_before_mutation",
+      "count": 1,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_common_hndl_session_resume_and_data_free_inference",
+      "count": 1,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_wrong_profile_rejects_before_runtime",
+      "count": 1,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_iris_shared_hndl_projection_matches_original_outputs_and_gradients",
+      "count": 3,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_missing_shared_observer_refuses_before_native_load",
+      "count": 1,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    },
+    {
+      "file": "test_hndl_profile.py",
+      "test": "test_actual_builder_source_tamper_rejects_before_native_allocation",
+      "count": 1,
+      "reason": "intentional separate exact core0.12/HyperGAN/HNDL profile; S081 core0.8.1 cannot run this lane"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+  "actual_core_vcs": {
+    "subdirectory": "packages/particle-sliders-core",
+    "url": "https://github.com/HyperGAN/particle-sliders.git",
+    "vcs_info": {
+      "commit_id": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+      "requested_revision": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+      "vcs": "git"
+    }
+  },
+  "product_distribution": "iris-particle-sliders-hndl",
+  "product_version": "0.3.0rc2",
+  "python_prefix": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794",
+  "no_system_site_packages": true,
+  "core_closure_files": 51,
+  "pg_closure_files": 51,
+  "actual_imports": {
+    "iris_sliders": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/iris_sliders/__init__.py",
+      "sha256": "18860be7b2e0364c05dfd38f2799fc3d8aadd23838abe1eb156e8cc795b4d257"
+    },
+    "iris_sliders.cleanup": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/iris_sliders/cleanup.py",
+      "sha256": "4670eaafe00127ebd5db4a7eb4d28e951166e950fde123388129bf53766483f7"
+    },
+    "iris_sliders_hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/iris_sliders_hndl/__init__.py",
+      "sha256": "c5ca3fe1d378d8d3c279a0643d9330388ed22c370e725d9e9004b28b32f0fcb4"
+    },
+    "particle_sliders.pg09": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/particle_sliders/pg09.py",
+      "sha256": "8d347665884fc371505e39819d6ee1081d893a8b2a8bbf8e5842b0d11f54c895"
+    },
+    "particle_sliders.lifecycle": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/particle_sliders/lifecycle.py",
+      "sha256": "ec27ef58ba544ddaf4f5e51ff48dd08d73686bf81df4e500d822500a297f2c29"
+    },
+    "particle_sliders.inference": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/particle_sliders/inference.py",
+      "sha256": "a44ad31b8976f5ad4519f658e4d5ab3c0ab875c4345696eba728835971be914a"
+    },
+    "hypergan.hndl_networks": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/hypergan/hndl_networks.py",
+      "sha256": "899293a128f71dc5d9a2579787b935e5fb696a82d28f26759af417c618269533"
+    },
+    "hndl": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/hndl/__init__.py",
+      "sha256": "6f08e04b69254863d396dc26b317932d57ec490767f9a44c750988f73c989b38"
+    },
+    "particlegan": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/particlegan/__init__.py",
+      "sha256": "607c6bb12acd631ae1ff98f6e61d990ff4ab5b60ec86f5a8cb5864cda7c11864"
+    },
+    "iris3b.models.dit": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/iris3b/models/dit.py",
+      "sha256": "c7ffdf46a466765995ffdd057f491bb5c52055d6ebc5e1b287db73f654a467fd"
+    },
+    "torch": {
+      "path": "/ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/lib/python3.12/site-packages/torch/__init__.py",
+      "sha256": "bd4a10ff16357ed78f45aaf4b46ce5b771fdc0e8549402206e324d0eb792c672"
+    }
+  },
+  "network_identity": {
+    "profile": "hypergan-hndl-v2",
+    "hndl_version": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "hypergan_build_provenance_sha256": "fa0aaed8eea39a1cc545bafb96c9a72eb155b52cb79f2d34c44f505aaf4ac179",
+    "runtime_sources_sha256": "69e65e3daf18ac5c99154fd735d0b6fc8e8c95433c5b0618a074cdd203ed6251",
+    "projection_sha256": "b5efac1cfb0c597e5d6e0839af6077ff36dec916901bfa254be78db9f691c086",
+    "critic_sha256": "31f95ccf2178363d7a027597a00694c571c9d69a170151fcbe36e05326ac4707"
+  },
+  "versions": {
+    "particle-sliders-core": "0.12.0",
+    "particlegan": "0.9.4",
+    "hypergan": "2.0.0",
+    "hndl": "0.10.0",
+    "torch": "2.14.1+cpu",
+    "torchvision": "0.29.1+cpu"
+  },
+  "cuda_initialized": false
+}

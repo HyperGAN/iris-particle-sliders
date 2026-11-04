@@ -1,11 +1,15 @@
-Common lifecycle draft: **60 selected CPU checks passed** on the tested runtime below. See [publication and qualification status](PUBLICATION-STATUS.md); native/pretrained limits remain explicit.
+The default iris-particle-sliders 0.3.0 now uses shared core 0.12.0 and released ParticleGAN 0.9.4.
+See [the current upgrade and qualification](PG094-ADOPTION.md).
+A separate opt-in build now connects the actual native Iris hooks to shared
+HyperGAN develop/HNDL projection and spatial critic graphs. See
+[the profile, exact pins and qualification limits](HYPERGAN-HNDL.md).
 
 For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
 
 # Iris particle sliders
 
 Native Iris-3B routed particle adapters trained through the installed
-`particle-sliders-core` API and released **ParticleGAN 0.9.1**. The default
+`particle-sliders-core` API and released **ParticleGAN 0.9.4**. The default
 `iris-slider-train` command executes `particle_sliders.pg09.ConditionalPG09`.
 It trains on actual `[1,3,H,W]` RGB velocity fields through the existing Iris hooks;
 it has no pixel MSE, reconstruction loss, local optimizer or vendored GAN loop.
@@ -61,9 +65,9 @@ After the coordinator stages the pinned model snapshots and admits a device:
 ```bash
 iris-slider-train --checkpoint /ml2/models/iris-3b \
   --text-dir /ml2/models/Qwen3-VL-4B-Instruct \
-  --cache-dir /ml2/iris-sliders/cache --device cuda:0 --text-device cpu \
+  --cache-dir /ml2/iris-sliders/cache --device cuda:DEVICE --text-device cpu \
   --height 512 --width 512 --batch 2 --steps 1600 \
-  --outdir /ml2/iris-sliders/pg091
+  --outdir /ml2/iris-sliders/pg094
 ```
 
 Local official snapshots are the default. `--allow-hub` explicitly permits pinned
@@ -92,7 +96,7 @@ Gaussian response noise against noise plus `(student - target) / response_scale`
 with the public adversarial objectives, critic penalty and prior regularizer.
 The old sketch, isotropic calibration and FormulationGame do not run on this path.
 
-The optional `--critic hndl` arm calls the shared
+In the default native PG094 environment, the optional `--critic hndl` arm calls the shared
 `HNDLConditionalReadoutCritic` and released HNDL 0.8.2 resolver/builder. Only that
 critic flattens native responses; the public PG penalty keeps the RGB field.
 Its source, resolved plan and HNDL sources bind the checkpoint. Changing critic
@@ -100,21 +104,15 @@ requires a fresh cohort. Missing/wrong optional dependencies fail before native
 runtime allocation. The spatial field critic is the default.
 
 ```bash
-python -m pip install '.[hndl,diagnostics]'
+python -m pip install '.[hndl]'
 iris-slider-train --dummy --steps 5 --critic hndl --outdir outputs/iris-hndl
 iris-slider-response --dummy --adapter outputs/iris-hndl/response-adapter.pt \
-  --out outputs/iris-hndl/velocity.pt --diversity-report outputs/iris-hndl/diversity.json \
-  --latent-seeds 13 17
+  --out outputs/iris-hndl/velocity.pt
 ```
 
-`--diversity-report` calls the shared HyperGAN observer using the reviewed
-HyperGAN `develop` source at `a879c4fbff903ccefeba2194bcc7a13fe7b5abb7`.
-It varies at least two private normal latent samples while keeping one explicit
-native prompt/null/timestep/CFG/scale/geometry context fixed. Each reference is
-the frozen positive teacher at that matching latent. HyperGAN owns the streaming
-moment/diversity calculations; product glue preserves model state, modes and all
-RNG/training streams. This observes raw response variation, with no denoising
-trajectory, quality judgment, semantic-coverage claim or loss change.
+`--diversity-report` requires a shared observer API that the pinned 0.12.0 core does not supply. It now refuses explicitly before
+native allocation. The diagnostics extra alone does not qualify this operation.
+See [the current integration limits](HYPERGAN-HNDL.md).
 
 ## Exports and inference limits
 
@@ -144,7 +142,7 @@ or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CP
 All archived raw resume and real-model training requests fail before checkpoint
 reads or model allocation/mutation. The fixture writes EMA `adapter.safetensors`
 and `run.json`, marks `resume_supported=false`, and writes no `training.pt`.
-Use the default PG0.9.1 trainer for supported training/resume.
+Use the default PG0.9.4 trainer for supported training/resume.
 See [FORMULATION.md](FORMULATION.md) for the archived formulation.
 
 Adapter setup closes its hooks if a device transfer, later registration, or

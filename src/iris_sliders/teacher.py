@@ -86,6 +86,7 @@ def collect_response_rows(
     cache_device = device if cache_device is None else torch.device(cache_device)
     selected = set(torch.linspace(0, trajectory_steps - 1, records_per_pair).round().int().tolist())
     result = []
+    primary = None
     try:
         null = _condition(runtime.encode_null(), device)
         null_cached = {key: value.to(cache_device).clone() for key, value in null.items()}
@@ -134,6 +135,10 @@ def collect_response_rows(
                         guidance=float(cfg_scale),
                     )
                 )
+    except BaseException as error:
+        primary = error
+        raise
     finally:
-        runtime.offload_encoder()
+        from .cleanup import run_cleanup
+        run_cleanup([runtime.offload_encoder], primary=primary)
     return result

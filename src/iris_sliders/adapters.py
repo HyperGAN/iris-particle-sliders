@@ -45,21 +45,26 @@ class AdapterBank(nn.Module):
     Strength zero returns the original tensor without arithmetic.
     """
 
-    def __init__(self, model, stamp):
+    def __init__(self, model, stamp, *, projection=RoutedProjection):
         super().__init__()
-        model.requires_grad_(False)
-        targets = target_modules(model)
-        self.names = [name for name, _ in targets]
-        self.layers = nn.ModuleList([RoutedProjection(module, stamp) for _, module in targets])
-        self.strength = 0.0
-        object.__setattr__(self, "_particles", None)
-        self.particle_shape = (int(stamp.spec["parts"]), int(stamp.spec["particle_dim"]))
+        from .profiles import verify_runtime
+        from .cleanup import native_cleanup, run_cleanup
+        verify_runtime()
         self.handles = []
+        self._close_cleanup = None
+        self._restore_native = native_cleanup(model)
         try:
+            model.requires_grad_(False)
+            targets = target_modules(model)
+            self.names = [name for name, _ in targets]
+            self.layers = nn.ModuleList([projection(module, stamp) for _, module in targets])
+            self.strength = 0.0
+            object.__setattr__(self, "_particles", None)
+            self.particle_shape = (int(stamp.spec["parts"]), int(stamp.spec["particle_dim"]))
             for index, (_, module) in enumerate(targets):
                 self.handles.append(module.register_forward_hook(self._hook(index)))
-        except BaseException:
-            self.close()
+        except BaseException as error:
+            run_cleanup([self.close], primary=error)
             raise
 
     def _hook(self, index):
@@ -93,9 +98,14 @@ class AdapterBank(nn.Module):
             self.strength = previous[1]
 
     def close(self):
-        for handle in self.handles:
-            handle.remove()
-        self.handles.clear()
+        from .cleanup import Cleanup
+        if self._close_cleanup is None:
+            def remove(handle):
+                handle.remove()
+                self.handles.remove(handle)
+            self._close_cleanup = Cleanup([lambda h=h: remove(h) for h in self.handles]
+                                          + [self._restore_native])
+        self._close_cleanup()
 
 
 def new_particles(stamp, device="cpu"):

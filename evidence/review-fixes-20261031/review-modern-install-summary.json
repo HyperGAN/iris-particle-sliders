@@ -1,0 +1,19 @@
+{
+  "report_sha256": "869088eeb9389c5535db573d3417dccab57a5d0385961fc22b3126f55d8f30b3",
+  "packages": [
+    {
+      "name": "iris-particle-sliders-hndl",
+      "version": "0.3.0rc1",
+      "download_info": {
+        "url": "file:///ml2/codex-storage/future-workspaces/2026-10-31/task-13/wheels/review-modern/iris_particle_sliders_hndl-0.3.0rc1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=7b74b2ef7bb62f392ea8f279459718cf604c178b79396a2f5afe2032aa746f3f",
+          "hashes": {
+            "sha256": "7b74b2ef7bb62f392ea8f279459718cf604c178b79396a2f5afe2032aa746f3f"
+          }
+        }
+      },
+      "requested": true
+    }
+  ]
+}

@@ -33,9 +33,12 @@ def main(argv=None):
     parser.add_argument("--allow-hub", action="store_true")
     args = parser.parse_args(argv)
     if args.adapter.suffix == ".pt":
-        raise ValueError("PG0.9.1 exports support iris-slider-response only; native FlowDPMSolver rendering is unqualified")
+        raise ValueError("PG0.9.4 exports support iris-slider-response only; native FlowDPMSolver rendering is unqualified")
     if Path("/ml2") not in args.out.resolve().parents:
         raise ValueError("image outputs must live under /ml2")
+    from .profiles import select_profile, verify_runtime
+    select_profile('native-pg094-v1')
+    verify_runtime()
     saved = read_metadata(args.adapter)
     if saved.get("validation", {}).get("dummy"):
         raise ValueError("tiny fixture adapters cannot be used with Iris-3B weights")

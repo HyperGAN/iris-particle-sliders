@@ -4,3 +4,18 @@ recursive-include scripts *.py
 recursive-include tests *.py *.yaml
 include LIFECYCLE.md
 include INTEGRATION-AUDIT.md CORE081-ADOPTION.md
+
+include PUBLICATION-STATUS.md HYPERGAN-HNDL.md requirements-s081.txt
+
+include INVENTORY-REVIEW.md
+
+recursive-include src/iris_sliders_hndl *.py *.json
+include CLEAN-PUBLIC-QUALIFICATION.md
+
+include CLAUDE-FIXES.md
+
+include PUBLIC-RETURN-REVIEW.md
+
+include A794-MIGRATION.md
+
+include backend-s081.lock.json PG094-ADOPTION.md

@@ -1,0 +1,78 @@
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Collecting particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core (from particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Cloning https://github.com/HyperGAN/particle-sliders.git (to revision a794e3b4a8813b012f2c4faa3da82b78d4a90214) to /tmp/pip-install-kl36kx5z/particle-sliders-core_dd7354f671984e24a08c3ce38555f0da
+  Running command git clone --filter=blob:none --quiet https://github.com/HyperGAN/particle-sliders.git /tmp/pip-install-kl36kx5z/particle-sliders-core_dd7354f671984e24a08c3ce38555f0da
+  Running command git rev-parse -q --verify 'sha^a794e3b4a8813b012f2c4faa3da82b78d4a90214'
+  Running command git fetch -q https://github.com/HyperGAN/particle-sliders.git a794e3b4a8813b012f2c4faa3da82b78d4a90214
+  Running command git checkout -q a794e3b4a8813b012f2c4faa3da82b78d4a90214
+  Resolved https://github.com/HyperGAN/particle-sliders.git to commit a794e3b4a8813b012f2c4faa3da82b78d4a90214
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting build>=1
+  Using cached build-1.6.1-py3-none-any.whl.metadata (5.6 kB)
+Collecting setuptools>=84.2.1
+  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+Collecting packaging>=24.0 (from build>=1)
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyproject_hooks (from build>=1)
+  Using cached pyproject_hooks-1.3.3-py3-none-any.whl.metadata (1.3 kB)
+Collecting torch<3,>=2.6 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (37 kB)
+Collecting particlegan==0.9.4 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached particlegan-0.9.4-py3-none-any.whl.metadata (13 kB)
+Collecting numpy<3,>=1.26 (from particlegan==0.9.4->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting hypergan@ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached hypergan-2.0.0-py3-none-any.whl
+Collecting hndl==0.10.0 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached hndl-0.10.0-py3-none-any.whl.metadata (30 kB)
+Collecting filelock (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached filelock-4.2.6-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.10.0 (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting sympy>=1.13.3 (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+Collecting jinja2 (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec>=0.8.5 (from torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting foldlitedb<0.2,>=0.1.2 (from hypergan@ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached foldlitedb-0.1.2-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch<3,>=2.6->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core)
+  Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Using cached build-1.6.1-py3-none-any.whl (31 kB)
+Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)
+Using cached particlegan-0.9.4-py3-none-any.whl (295 kB)
+Using cached hndl-0.10.0-py3-none-any.whl (327 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (196.3 MB)
+Using cached pyproject_hooks-1.3.3-py3-none-any.whl (10 kB)
+Using cached foldlitedb-0.1.2-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.5 MB)
+Using cached fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Using cached networkx-3.7-py3-none-any.whl (2.1 MB)
+Using cached numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+Using cached sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached filelock-4.2.6-py3-none-any.whl (164 kB)
+Using cached https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Building wheels for collected packages: particle-sliders-core
+  Building wheel for particle-sliders-core (pyproject.toml): started
+  Building wheel for particle-sliders-core (pyproject.toml): finished with status 'done'
+  Created wheel for particle-sliders-core: filename=particle_sliders_core-0.12.0-py3-none-any.whl size=159713 sha256=426d5773b80c02515f75f027ff3a8b8ea2df4e1a0c95328e8e93fe868edf9efa
+  Stored in directory: /ml2/codex-storage/future-workspaces/2026-10-31/task-13/evidence/public-qualification/pip-cache/wheels/4c/85/2a/44627f620c324d75f8355a988ac1afca54357562eb98e9bfee
+Successfully built particle-sliders-core
+Installing collected packages: mpmath, typing-extensions, sympy, setuptools, pyproject_hooks, packaging, numpy, networkx, MarkupSafe, fsspec, foldlitedb, filelock, jinja2, hypergan, build, torch, particlegan, hndl, particle-sliders-core
+Successfully installed MarkupSafe-3.0.4 build-1.6.1 filelock-4.2.6 foldlitedb-0.1.2 fsspec-2026.9.0 hndl-0.10.0 hypergan-2.0.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.7 numpy-2.5.4 packaging-26.3 particle-sliders-core-0.12.0 particlegan-0.9.4 pyproject_hooks-1.3.3 setuptools-84.2.1 sympy-1.14.0 torch-2.14.1+cpu typing-extensions-4.16.0
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.2
+[notice] To update, run: /ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-a794/bin/python -m pip install --upgrade pip

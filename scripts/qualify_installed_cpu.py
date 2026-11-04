@@ -56,14 +56,18 @@ def main():
         "particlegan",
         "particle_sliders.pg09",
         "particle_sliders.pg09_images",
-        "particle_sliders.pg09_moss_campaign",
     ):
         path = Path(import_module(name).__file__).resolve()
         if "site-packages" not in path.parts:
             raise RuntimeError("source-free test imported a source checkout: " + str(path))
         imports[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
-    if version("particlegan") != "0.9.1":
-        raise RuntimeError("the released PG0.9.1 wheel is required")
+    from iris_sliders.profiles import default_profile, installation, verify_runtime
+    if default_profile() != 'native-pg094-v1':
+        from iris_sliders_hndl import verified_profile
+    expected_pg = verify_runtime()['particlegan_version']
+    if version('particlegan') != expected_pg:
+        raise RuntimeError('wrong ParticleGAN release for the installed profile')
+    network_identity = verified_profile()[1] if default_profile() != 'native-pg094-v1' else None
     commands, arms = [], {}
     for preset in ("bispf", "bispf_optimized"):
         root = output / preset
@@ -135,12 +139,13 @@ def main():
     result = {
         "schema": "iris-installed-cpu-qualification-v1",
         "critic": args.critic,
+        "network_identity": network_identity,
         "cwd": str(output),
         "pythonpath": os.environ.get("PYTHONPATH"),
         "interpreter": sys.executable,
         "versions": {
             name: version(name)
-            for name in ("iris-particle-sliders", "particle-sliders-core", "particlegan", "iris-3b", "torch")
+            for name in (installation()[0].metadata["Name"], "particle-sliders-core", "particlegan", "iris-3b", "torch")
         },
         "imports": imports,
         "commands": commands,

@@ -1,0 +1,309 @@
+Looking in indexes: https://pypi.org/simple, https://download.pytorch.org/whl/cpu
+Processing ./evidence/public-qualification/dist-hndl/iris_particle_sliders-0.3.0rc1-py3-none-any.whl
+Collecting particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core (from particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->iris-particle-sliders==0.3.0rc1)
+  Cloning https://github.com/HyperGAN/particle-sliders.git (to revision 4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231) to /tmp/pip-install-fnfxoykv/particle-sliders-core_08635f78d85144ab8b43497e033678ca
+  Running command git clone --filter=blob:none --quiet https://github.com/HyperGAN/particle-sliders.git /tmp/pip-install-fnfxoykv/particle-sliders-core_08635f78d85144ab8b43497e033678ca
+  Running command git rev-parse -q --verify 'sha^4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231'
+  Running command git fetch -q https://github.com/HyperGAN/particle-sliders.git 4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231
+  Running command git checkout -q 4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231
+  Resolved https://github.com/HyperGAN/particle-sliders.git to commit 4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc (from iris-particle-sliders==0.3.0rc1)
+  Cloning https://github.com/speridlabs/iris-3b.git (to revision a8d15239dea469aba042cfa56ca3bb4e450d5ebc) to /tmp/pip-install-fnfxoykv/iris-3b_f598ad26d1b9472e976357e3883861b2
+  Running command git clone --filter=blob:none --quiet https://github.com/speridlabs/iris-3b.git /tmp/pip-install-fnfxoykv/iris-3b_f598ad26d1b9472e976357e3883861b2
+  Running command git rev-parse -q --verify 'sha^a8d15239dea469aba042cfa56ca3bb4e450d5ebc'
+  Running command git fetch -q https://github.com/speridlabs/iris-3b.git a8d15239dea469aba042cfa56ca3bb4e450d5ebc
+  Running command git checkout -q a8d15239dea469aba042cfa56ca3bb4e450d5ebc
+  Resolved https://github.com/speridlabs/iris-3b.git to commit a8d15239dea469aba042cfa56ca3bb4e450d5ebc
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting torch<3,>=2.7.1 (from iris-particle-sliders==0.3.0rc1)
+  Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (37 kB)
+Collecting safetensors>=0.4 (from iris-particle-sliders==0.3.0rc1)
+  Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Collecting numpy>=1.26 (from iris-particle-sliders==0.3.0rc1)
+  Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting pillow>=13.0.0 (from iris-particle-sliders==0.3.0rc1)
+  Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Collecting filelock (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading filelock-4.2.6-py3-none-any.whl.metadata (2.0 kB)
+Collecting typing-extensions>=4.10.0 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting setuptools>=77.0.3 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+Collecting sympy>=1.13.3 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+Collecting jinja2 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec>=0.8.5 (from torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting dion@ git+https://github.com/microsoft/dion.git@58d38adb5fcd403a116cb16157a5ca824f8538a5 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Cloning https://github.com/microsoft/dion.git (to revision 58d38adb5fcd403a116cb16157a5ca824f8538a5) to /tmp/pip-install-fnfxoykv/dion_9ad65d181cb04cc69a292940b92effa1
+  Running command git clone --filter=blob:none --quiet https://github.com/microsoft/dion.git /tmp/pip-install-fnfxoykv/dion_9ad65d181cb04cc69a292940b92effa1
+  Running command git rev-parse -q --verify 'sha^58d38adb5fcd403a116cb16157a5ca824f8538a5'
+  Running command git fetch -q https://github.com/microsoft/dion.git 58d38adb5fcd403a116cb16157a5ca824f8538a5
+  Running command git checkout -q 58d38adb5fcd403a116cb16157a5ca824f8538a5
+  Resolved https://github.com/microsoft/dion.git to commit 58d38adb5fcd403a116cb16157a5ca824f8538a5
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting accelerate>=1.2 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading accelerate-1.15.0-py3-none-any.whl.metadata (19 kB)
+Collecting huggingface-hub>=0.26 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading huggingface_hub-2.4.0-py3-none-any.whl.metadata (16 kB)
+Collecting matplotlib>=3.8 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading matplotlib-3.11.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (80 kB)
+Collecting omegaconf>=2.3 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading omegaconf-2.4.0-py3-none-any.whl.metadata (4.9 kB)
+Collecting torchvision>=0.21 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading https://download-r2.pytorch.org/whl/cpu/torchvision-0.29.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
+Collecting transformers>=4.57.0 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading transformers-5.22.1-py3-none-any.whl.metadata (31 kB)
+Collecting wandb>=0.18 (from iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading wandb-0.31.0-py3-none-manylinux_2_28_x86_64.whl.metadata (12 kB)
+Collecting particlegan==0.9.4 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->iris-particle-sliders==0.3.0rc1)
+  Downloading particlegan-0.9.4-py3-none-any.whl.metadata (13 kB)
+Collecting hypergan@ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->iris-particle-sliders==0.3.0rc1)
+  Cloning https://github.com/HyperGAN/HyperGAN.git (to revision 5f368a3770cf5bdae0448995c9f76e29af8049f7) to /tmp/pip-install-fnfxoykv/hypergan_f2a5c27b1802428da0529df316620bab
+  Running command git clone --filter=blob:none --quiet https://github.com/HyperGAN/HyperGAN.git /tmp/pip-install-fnfxoykv/hypergan_f2a5c27b1802428da0529df316620bab
+  Running command git rev-parse -q --verify 'sha^5f368a3770cf5bdae0448995c9f76e29af8049f7'
+  Running command git fetch -q https://github.com/HyperGAN/HyperGAN.git 5f368a3770cf5bdae0448995c9f76e29af8049f7
+  Running command git checkout -q 5f368a3770cf5bdae0448995c9f76e29af8049f7
+  Resolved https://github.com/HyperGAN/HyperGAN.git to commit 5f368a3770cf5bdae0448995c9f76e29af8049f7
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting hndl==0.10.0 (from particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->iris-particle-sliders==0.3.0rc1)
+  Downloading hndl-0.10.0-py3-none-any.whl.metadata (30 kB)
+Collecting packaging>=20.0 (from accelerate>=1.2->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting psutil (from accelerate>=1.2->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Collecting pyyaml (from accelerate>=1.2->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting click<9.0.0,>=8.4.2 (from huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting hf-xet<2.0.0,>=1.6.0 (from huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading hf_xet-1.8.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Collecting httpx2<3,>=2.0.0 (from huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading httpx2-2.16.0-py3-none-any.whl.metadata (10 kB)
+Collecting tqdm>=4.42.1 (from huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting contourpy>=1.0.1 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading contourpy-1.4.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Collecting cycler>=0.10 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.28.2 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading fonttools-4.68.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (139 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading kiwisolver-1.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.2 kB)
+Collecting pyparsing>=3 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+Collecting python-dateutil>=2.7 (from matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading python_dateutil-3.0.0-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Collecting regex>=2025.10.22 (from transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading regex-2026.9.29-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting tokenizers<0.24.0,>=0.23.1 (from transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading tokenizers-0.23.3-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.8 kB)
+Collecting typer (from transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading typer-0.27.3-py3-none-any.whl.metadata (16 kB)
+Collecting cwevals==0.0.1b1 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading cwevals-0.0.1b1-py3-none-any.whl.metadata (13 kB)
+Collecting opentelemetry-api>=1.43.0 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+Collecting opentelemetry-exporter-otlp-proto-http>=1.43.0 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_exporter_otlp_proto_http-1.45.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting opentelemetry-sdk>=1.43.0 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_sdk-1.45.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting platformdirs (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading platformdirs-4.14.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting protobuf!=5.28.0,!=5.29.0,<8,>=5 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+Collecting pydantic<3,>=2.6 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+Collecting requests<3,>=2.0.0 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting xxhash>=3.0.0 (from wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading xxhash-4.0.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (17 kB)
+Collecting anyio<5,>=3.5.0 (from cwevals==0.0.1b1->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting distro<2,>=1.7.0 (from cwevals==0.0.1b1->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting httpx<1,>=0.23.0 (from cwevals==0.0.1b1->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting sniffio (from cwevals==0.0.1b1->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting foldlitedb<0.2,>=0.1.2 (from hypergan@ git+https://github.com/HyperGAN/HyperGAN.git@5f368a3770cf5bdae0448995c9f76e29af8049f7->particle-sliders-core@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->particle-sliders-core[fibo-hndl]@ git+https://github.com/HyperGAN/particle-sliders.git@4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231#subdirectory=packages/particle-sliders-core->iris-particle-sliders==0.3.0rc1)
+  Downloading foldlitedb-0.1.2-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch<3,>=2.7.1->iris-particle-sliders==0.3.0rc1)
+  Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting httpcore2==2.16.0 (from httpx2<3,>=2.0.0->huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading httpcore2-2.16.0-py3-none-any.whl.metadata (27 kB)
+Collecting idna>=3.18 (from httpx2<3,>=2.0.0->huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting truststore>=0.10 (from httpx2<3,>=2.0.0->huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading truststore-0.10.5-py3-none-any.whl.metadata (4.5 kB)
+Collecting h11>=0.16 (from httpcore2==2.16.0->httpx2<3,>=2.0.0->huggingface-hub>=0.26->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting googleapis-common-protos~=1.52 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading googleapis_common_protos-1.76.0-py3-none-any.whl.metadata (8.5 kB)
+Collecting opentelemetry-exporter-http-transport==0.66b2 (from opentelemetry-exporter-http-transport[requests]==0.66b2->opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_exporter_http_transport-0.66b2-py3-none-any.whl.metadata (2.3 kB)
+Collecting opentelemetry-exporter-otlp-common==0.66b2 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_exporter_otlp_common-0.66b2-py3-none-any.whl.metadata (1.9 kB)
+Collecting opentelemetry-exporter-otlp-proto-common==1.45.2 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_exporter_otlp_proto_common-1.45.2-py3-none-any.whl.metadata (1.8 kB)
+Collecting opentelemetry-proto==1.45.2 (from opentelemetry-exporter-otlp-proto-http>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_proto-1.45.2-py3-none-any.whl.metadata (2.3 kB)
+Collecting opentelemetry-semantic-conventions==0.66b2 (from opentelemetry-sdk>=1.43.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading opentelemetry_semantic_conventions-0.66b2-py3-none-any.whl.metadata (2.4 kB)
+Collecting annotated-types>=0.6.0 (from pydantic<3,>=2.6->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.2 (from pydantic<3,>=2.6->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.5 kB)
+Collecting typing-inspection>=0.4.4 (from pydantic<3,>=2.6->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting six>=1.6 (from python-dateutil>=2.7->matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting tzdata (from python-dateutil>=2.7->matplotlib>=3.8->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting charset_normalizer<4,>=2 (from requests<3,>=2.0.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+Collecting urllib3<3,>=1.26 (from requests<3,>=2.0.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting certifi>=2023.5.7 (from requests<3,>=2.0.0->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting shellingham>=1.3.0 (from typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting rich>=13.8.0 (from typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting annotated-doc>=0.0.2 (from typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.23.0->cwevals==0.0.1b1->wandb>=0.18->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.8.0->typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer->transformers>=4.57.0->iris-3b@ git+https://github.com/speridlabs/iris-3b.git@a8d15239dea469aba042cfa56ca3bb4e450d5ebc->iris-particle-sliders==0.3.0rc1)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 12.3 MB/s eta 0:00:00
+Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 23.4 MB/s eta 0:00:00
+Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
+Downloading https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (196.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.3/196.3 MB 31.7 MB/s eta 0:00:00
+Downloading particlegan-0.9.4-py3-none-any.whl (295 kB)
+Downloading hndl-0.10.0-py3-none-any.whl (327 kB)
+Downloading accelerate-1.15.0-py3-none-any.whl (394 kB)
+Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Downloading huggingface_hub-2.4.0-py3-none-any.whl (857 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 857.0/857.0 kB 26.3 MB/s eta 0:00:00
+Downloading filelock-4.2.6-py3-none-any.whl (164 kB)
+Downloading matplotlib-3.11.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 33.4 MB/s eta 0:00:00
+Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 45.3 MB/s eta 0:00:00
+Downloading omegaconf-2.4.0-py3-none-any.whl (254 kB)
+Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 35.9 MB/s eta 0:00:00
+Downloading https://download-r2.pytorch.org/whl/cpu/torchvision-0.29.1%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (1.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 34.6 MB/s eta 0:00:00
+Downloading transformers-5.22.1-py3-none-any.whl (13.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.1/13.1 MB 34.6 MB/s eta 0:00:00
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading wandb-0.31.0-py3-none-manylinux_2_28_x86_64.whl (20.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20.3/20.3 MB 34.3 MB/s eta 0:00:00
+Downloading cwevals-0.0.1b1-py3-none-any.whl (176 kB)
+Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Downloading contourpy-1.4.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (383 kB)
+Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Downloading foldlitedb-0.1.2-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 39.1 MB/s eta 0:00:00
+Downloading fonttools-4.68.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 35.2 MB/s eta 0:00:00
+Downloading hf_xet-1.8.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.3/4.3 MB 35.8 MB/s eta 0:00:00
+Downloading httpx2-2.16.0-py3-none-any.whl (97 kB)
+Downloading httpcore2-2.16.0-py3-none-any.whl (85 kB)
+Downloading kiwisolver-1.5.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 32.6 MB/s eta 0:00:00
+Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 48.1 MB/s eta 0:00:00
+Downloading opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+Downloading opentelemetry_exporter_otlp_proto_http-1.45.2-py3-none-any.whl (22 kB)
+Downloading opentelemetry_exporter_http_transport-0.66b2-py3-none-any.whl (12 kB)
+Downloading opentelemetry_exporter_otlp_common-0.66b2-py3-none-any.whl (12 kB)
+Downloading opentelemetry_exporter_otlp_proto_common-1.45.2-py3-none-any.whl (15 kB)
+Downloading opentelemetry_proto-1.45.2-py3-none-any.whl (72 kB)
+Downloading opentelemetry_sdk-1.45.2-py3-none-any.whl (141 kB)
+Downloading opentelemetry_semantic_conventions-0.66b2-py3-none-any.whl (206 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+Downloading pydantic_core-2.50.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 27.9 MB/s eta 0:00:00
+Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+Downloading python_dateutil-3.0.0-py2.py3-none-any.whl (94 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 16.5 MB/s eta 0:00:00
+Downloading regex-2026.9.29-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.8/807.8 kB 34.3 MB/s eta 0:00:00
+Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading tokenizers-0.23.3-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 38.2 MB/s eta 0:00:00
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading xxhash-4.0.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (261 kB)
+Downloading platformdirs-4.14.2-py3-none-any.whl (35 kB)
+Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+Downloading typer-0.27.3-py3-none-any.whl (123 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
+Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading googleapis_common_protos-1.76.0-py3-none-any.whl (307 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading idna-3.20-py3-none-any.whl (69 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading truststore-0.10.5-py3-none-any.whl (19 kB)
+Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 35.1 MB/s eta 0:00:00
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Would install Jinja2-3.1.6 MarkupSafe-3.0.4 PyYAML-6.0.3 Pygments-2.21.0 accelerate-1.15.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 certifi-2026.10.23 charset-normalizer-3.5.2 click-8.5.0 contourpy-1.4.0 cwevals-0.0.1b1 cycler-0.12.1 dion-0.1.0 distro-1.9.0 filelock-4.2.6 foldlitedb-0.1.2 fonttools-4.68.0 fsspec-2026.9.0 googleapis-common-protos-1.76.0 h11-0.16.0 hf-xet-1.8.0 hndl-0.10.0 httpcore-1.0.9 httpcore2-2.16.0 httpx-0.28.1 httpx2-2.16.0 huggingface_hub-2.4.0 hypergan-2.0.0 idna-3.20 iris-3b-0.1.0 iris-particle-sliders-0.3.0rc1 kiwisolver-1.5.1 markdown-it-py-4.2.0 matplotlib-3.11.2 mdurl-0.1.2 mpmath-1.3.0 networkx-3.7 numpy-2.5.4 omegaconf-2.4.0 opentelemetry-api-1.45.2 opentelemetry-exporter-http-transport-0.66b2 opentelemetry-exporter-otlp-common-0.66b2 opentelemetry-exporter-otlp-proto-common-1.45.2 opentelemetry-exporter-otlp-proto-http-1.45.2 opentelemetry-proto-1.45.2 opentelemetry-sdk-1.45.2 opentelemetry-semantic-conventions-0.66b2 packaging-26.3 particle-sliders-core-0.12.0 particlegan-0.9.4 pillow-13.0.0 platformdirs-4.14.2 protobuf-7.36.2 psutil-7.2.2 pydantic-2.14.2 pydantic_core-2.50.2 pyparsing-3.3.3 python-dateutil-3.0.0 regex-2026.9.29 requests-2.34.2 rich-15.0.0 safetensors-0.8.0 setuptools-84.2.1 shellingham-1.5.4 six-1.17.0 sniffio-1.3.1 sympy-1.14.0 tokenizers-0.23.3 torch-2.14.1+cpu torchvision-0.29.1+cpu tqdm-4.70.1 transformers-5.22.1 truststore-0.10.5 typer-0.27.3 typing-inspection-0.4.4 typing_extensions-4.16.0 tzdata-2026.6 urllib3-2.8.0 wandb-0.31.0 xxhash-4.0.2
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.2
+[notice] To update, run: /ml2/codex-storage/future-workspaces/2026-10-31/task-13/.venv-public/bin/python -m pip install --upgrade pip

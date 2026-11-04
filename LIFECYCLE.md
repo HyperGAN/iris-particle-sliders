@@ -1,3 +1,12 @@
+Current canonical package pins and installed qualification are in
+[PG094-ADOPTION.md](PG094-ADOPTION.md). The shared session/native interfaces below
+remain supported. The S081 receipts retain their historical source identities.
+
+For the separate HyperGAN develop/HNDL profile, use the opt-in build described in
+[HYPERGAN-HNDL.md](HYPERGAN-HNDL.md). It adds a signed network profile to the same
+session and native-inference contracts. The S081 pin and receipts below remain
+historical evidence for that environment; packets are not migrated implicitly.
+
 # Iris common lifecycle
 
 Exact tested shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.

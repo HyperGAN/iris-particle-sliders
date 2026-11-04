@@ -1,4 +1,48 @@
-# Publication and qualification status
+# Current PG094 upgrade
+
+The canonical installer is now iris-particle-sliders 0.3.0 / core 0.12.0 / PG 0.9.4.
+The separate HNDL distribution is 0.4.0rc1 using the same core pin.
+See [PG094-ADOPTION.md](PG094-ADOPTION.md) for exact pins and current installed
+qualification. Historical packets and review receipts below remain immutable.
+Native rendering, pretrained/GPU behavior and image quality remain unqualified.
+
+## Historical review and migration receipts
+
+# Active modern core migration
+
+The current modern candidate is `iris-particle-sliders-hndl` 0.3.0rc2 at exact
+core `a794e3b4a8813b012f2c4faa3da82b78d4a90214`. See
+[A794-MIGRATION.md](A794-MIGRATION.md) for current locks, installed CPU checks,
+preview refusal, the three deferred correctness fixes and the Claude RETURN gate.
+The stable/default pins and prior review notes below remain unchanged.
+
+# Current review corrections
+
+See [CLAUDE-FIXES.md](CLAUDE-FIXES.md) for the issue-by-issue corrections,
+separate stable/modern distribution identities, complete source admission,
+HyperGAN-installed observer refusal checks, cleanup and current CPU receipts.
+Exact core PR148 is public and clean dependency installation succeeds.
+Pretrained/GPU/rendering and the missing shared observer remain unqualified.
+All older receipts below retain their exact historical source and scope.
+
+The supported default installer remains core 0.8.1 / ParticleGAN 0.9.1. The new
+[HyperGAN/HNDL profile](HYPERGAN-HNDL.md) builds separately as 0.3.0rc1 and uses
+real shared projection/critic graphs on the actual tiny Iris CPU fixture.
+This new source requires a new cohort; historical packets retain their original
+environments through `requirements-s081.txt`.
+
+The exact shared 0.12 candidate is now public in draft core PR148. Clean public
+dependency installation, `pip check` and the 64 selected CPU tests pass; see
+[CLEAN-PUBLIC-QUALIFICATION.md](CLEAN-PUBLIC-QUALIFICATION.md). Pretrained loading,
+GPU behavior, quality and native FlowDPMSolver rendering remain unqualified. Render capability stays false. The common diversity-observer
+API is absent from both exact shared pins and now fails before allocation.
+
+Current installed CPU/build receipts will be indexed in `evidence/inventory-20261031`.
+Earlier PR1 was merged; the historical statement below is retained only as its
+original qualification receipt. It does not describe the new opt-in profile.
+There is no automatic package/model release or deployment workflow.
+
+## Historical S081 publication receipt
 
 This source is proposed through [the existing draft PR](https://github.com/HyperGAN/iris-particle-sliders/pull/1).
 Its qualified candidate is `fb5acc391ae7e32ad077364df2b1cbfc4c9ae158`; tested runtime is

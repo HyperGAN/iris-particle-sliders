@@ -1,0 +1,10 @@
+WARNING: The directory '/mnt/nvme/ai/caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing ./repo
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: iris-particle-sliders
+  Building wheel for iris-particle-sliders (pyproject.toml): started
+  Building wheel for iris-particle-sliders (pyproject.toml): finished with status 'done'
+  Created wheel for iris-particle-sliders: filename=iris_particle_sliders-0.2.0-py3-none-any.whl size=54206 sha256=e60df30a11be031232506867bab9d42250a434b3ee4b9fc1d6eba517d49ec218
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ed4yj00x/wheels/29/97/38/1a74eea7b554d7f1a146d53531635cd99a4be21da636a1d758
+Successfully built iris-particle-sliders

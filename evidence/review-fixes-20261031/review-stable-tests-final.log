@@ -1,0 +1,12 @@
+........................................................................ [ 37%]
+........................................................................ [ 75%]
+................................................                         [100%]
+=============================== warnings summary ===============================
+test_adapter_transaction.py::test_failed_transfer_closes_hooks_and_allows_same_runtime_retry[build]
+  /ml2/iris-particle-sliders-task-20261008/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: DeprecationWarning: concept_slider_core is a deprecated alias of particle_sliders. Install particle-sliders-core from HyperGAN/particle-sliders and import particle_sliders. New native-response integrations use ConditionalPG09.
+    return _bootstrap._gcd_import(name[level:], package, level)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] repo/tests/test_hndl_profile.py:10: separate modern distribution is absent in stable environment
+192 passed, 1 skipped, 1 warning in 39.29s
