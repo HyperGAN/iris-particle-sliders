@@ -1,3 +1,13 @@
+# Current PG094 upgrade
+
+The canonical installer is now iris-particle-sliders 0.3.0 / core 0.12.0 / PG 0.9.4.
+The separate HNDL distribution is 0.4.0rc1 using the same core pin.
+See [PG094-ADOPTION.md](PG094-ADOPTION.md) for exact pins and current installed
+qualification. Historical packets and review receipts below remain immutable.
+Native rendering, pretrained/GPU behavior and image quality remain unqualified.
+
+## Historical review and migration receipts
+
 # Active modern core migration
 
 The current modern candidate is `iris-particle-sliders-hndl` 0.3.0rc2 at exact

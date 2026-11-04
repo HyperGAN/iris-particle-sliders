@@ -17,3 +17,5 @@ include CLAUDE-FIXES.md
 include PUBLIC-RETURN-REVIEW.md
 
 include A794-MIGRATION.md
+
+include backend-s081.lock.json PG094-ADOPTION.md

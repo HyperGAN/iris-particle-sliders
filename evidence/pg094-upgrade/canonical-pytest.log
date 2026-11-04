@@ -1,0 +1,9 @@
+.............ss......................................................... [ 36%]
+........................................................s............... [ 73%]
+....................................................                     [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_hndl_profile.py:10: separate modern distribution is absent in stable environment
+SKIPPED [1] tests/test_diagnostics.py:81: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+SKIPPED [1] tests/test_diagnostics.py:139: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+SKIPPED [1] tests/test_pg09_training.py:352: could not import 'hypergan.diversity_metrics': No module named 'hypergan'
+193 passed, 4 skipped in 57.04s

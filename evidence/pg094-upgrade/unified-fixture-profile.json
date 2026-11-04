@@ -1,0 +1,18 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "iris-pg094-cpu-fixture",
+  "product": "iris-particle-sliders",
+  "config_kind": "session",
+  "backend": "iris",
+  "interface": "image",
+  "status": "fixture",
+  "runtime": {
+    "device": "cpu"
+  },
+  "capabilities": {
+    "resume": true,
+    "periodic_checkpoint": true,
+    "check": true
+  },
+  "default_checkpoint_every": 1
+}

@@ -1,23 +1,19 @@
 # Opt-in Iris HyperGAN/HNDL distribution
 
-The supported default is **iris-particle-sliders 0.2.0**, using exact core 0.8.1 /
-PG 0.9.1 (S081). The separate **iris-particle-sliders-hndl 0.3.0rc2** distribution
-uses real shared core 0.12.0 / PG 0.9.4 / HyperGAN develop / HNDL 0.10.0 graphs.
-Use one distribution per fresh virtual environment. Their common Iris namespace
-has an ownership guard that refuses coinstallation before any native work.
+The default **iris-particle-sliders 0.3.0** and separate
+**iris-particle-sliders-hndl 0.4.0rc1** now use the same exact current core 0.12.0 /
+PG 0.9.4 pin recorded in [PG094-ADOPTION.md](PG094-ADOPTION.md).
+The default native-pg094-v1 profile retains Iris routed projections and the shared
+spatial field critic. The separate HyperGAN/HNDL profile uses the actual shared
+HyperGAN develop / HNDL 0.10 projection and spatial critic graphs.
+Install exactly one distribution in a fresh environment. Their common Iris
+namespace refuses mixed ownership before native work. The default wheel excludes
+the HNDL addon, including when built after a previous addon build.
 
-The active modern core commit `a794e3b4a8813b012f2c4faa3da82b78d4a90214` is public in
-[the public shared core commit](https://github.com/HyperGAN/particle-sliders/commit/a794e3b4a8813b012f2c4faa3da82b78d4a90214).
-HyperGAN is `5f368a3770cf5bdae0448995c9f76e29af8049f7`; HNDL is 0.10.0.
-Modern native code and its manifest live in `iris_sliders_hndl`, which the stable
-wheel excludes. The stable CLI cannot select the modern profile, and the modern
-CLI/config/card cannot select legacy. A stale build directory cannot leak the
-previous HNDL module/assets into the stable wheel.
-
-The active migration receipt is [A794-MIGRATION.md](A794-MIGRATION.md). Earlier
-4abc preview packets retain their original cohort and environment; they are not
-relabelled or silently restored under this pin. The new modern artifact is
-0.3.0rc2; the stable package remains 0.2.0.
+HyperGAN remains pinned at `5f368a3770cf5bdae0448995c9f76e29af8049f7` and HNDL at
+0.10.0. Earlier preview/S081 packets retain their original environments and cannot
+resume under this new source signature. [A794-MIGRATION.md](A794-MIGRATION.md) is a
+historical receipt; [PG094-ADOPTION.md](PG094-ADOPTION.md) describes this update.
 
 ## Build in a fresh environment
 
@@ -28,7 +24,7 @@ python3.12 -m venv .venv-hndl
 .venv-hndl/bin/python -m pip install 'build>=1' 'setuptools>=84.2.1'
 .venv-hndl/bin/python scripts/build_hndl_profile.py --outdir dist-hndl
 .venv-hndl/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cpu 'torch==2.14.1+cpu' 'torchvision==0.29.1+cpu'
-.venv-hndl/bin/python -m pip install 'dist-hndl/iris_particle_sliders_hndl-0.3.0rc2-py3-none-any.whl[dev]'
+.venv-hndl/bin/python -m pip install 'dist-hndl/iris_particle_sliders_hndl-0.4.0rc1-py3-none-any.whl[dev]'
 .venv-hndl/bin/iris-slider-train --print-card
 .venv-hndl/bin/iris-slider-train --dummy --steps 5 --outdir outputs/hndl-cpu
 ```
@@ -38,8 +34,7 @@ is needed for `--dummy`. The complete emitted modern sdist retains its distinct
 name, exact dependencies, HNDL module/assets and this profile-specific long
 description. Its active lock describes the modern full source closure; the
 original S081 lock is included byte-for-byte as `backend-s081.lock.json`.
-Ordinary root builds remain stable. Python is >=3.11,<3.15 for modern; only 3.12
-was exercised here. No other Python/native runtime combination is qualified.
+Ordinary root builds remain stable. Python is >=3.11,<3.15 for modern; current Python/runtime evidence is recorded in PG094-ADOPTION.md.
 
 `requirements-s081.txt` restores the historical public Iris source at
 `a191c999e931dc9bd7d1f9dcb8f2c200048d342d`. Keep historical packets with that exact
@@ -79,7 +74,7 @@ preserves a primary failure while attaching secondary cleanup errors as notes.
 
 ## Qualification and limits
 
-Normal clean public dependency installation succeeds for both distributions,
+Earlier clean public dependency installation succeeded for both distributions,
 including stable's pinned HyperGAN diagnostic/HNDL extras. Both `pip check` calls
 pass. The modern suite, stable suite, mixed-install refusal, sdist rebuild and
 fresh-process resume/export receipts are indexed in

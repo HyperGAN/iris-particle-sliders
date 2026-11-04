@@ -1,6 +1,6 @@
 """Build a separate opt-in Iris HyperGAN/HNDL distribution; never publish it.
 
-The default pyproject remains the S081 installer. The emitted sdist is complete
+The default pyproject installs the current native PG094 profile. The emitted sdist is complete
 and contains its own exact profile pyproject, so wheel rebuilds retain the pins.
 """
 import argparse
@@ -23,7 +23,7 @@ def stage(root, destination):
            + core + '#subdirectory=packages/particle-sliders-core')
     if text.count(old) != 1:
         raise ValueError('ambiguous core dependency')
-    text = text.replace(old, new).replace('version = "0.2.0"', 'version = "0.3.0rc2"')
+    text = text.replace(old, new).replace('version = "0.3.0"', 'version = "0.4.0rc1"')
     text = text.replace('name = "iris-particle-sliders"', 'name = "iris-particle-sliders-hndl"')
     text = text.replace('readme = "README.md"', 'readme = "HYPERGAN-HNDL.md"')
     text = text.replace('iris-slider-train-legacy = "iris_sliders.legacy_train:main"\n', '')
@@ -41,7 +41,7 @@ def stage(root, destination):
             shutil.copy2(path, destination / path.name)
     # Keep the historical lock verbatim; the profile archive's active lock must
     # describe its actual dependencies rather than repeating S081 provenance.
-    shutil.copy2(root / 'backend.lock.json', destination / 'backend-s081.lock.json')
+    shutil.copy2(root / 'backend-s081.lock.json', destination / 'backend-s081.lock.json')
     lock = json.loads((root / 'backend.lock.json').read_text())
     lock['core'] = dict(repository=lock['core']['repository'], commit=core,
                         subdirectory='packages/particle-sliders-core', version=profile['core_version'],
@@ -57,7 +57,7 @@ def stage(root, destination):
         manifest.write('\ninclude backend-s081.lock.json\n')
     (destination / 'pyproject.toml').write_text(text)
     metadata = tomllib.loads(text)['project']
-    if (metadata['version'], metadata['requires-python']) != ('0.3.0rc2', '>=3.11,<3.15'):
+    if (metadata['version'], metadata['requires-python']) != ('0.4.0rc1', '>=3.11,<3.15'):
         raise ValueError('profile version/Python metadata did not bind')
 
 

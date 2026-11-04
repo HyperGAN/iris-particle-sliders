@@ -2,6 +2,7 @@
 
 import json
 from copy import deepcopy
+from dataclasses import asdict
 from importlib.metadata import version
 
 import pytest
@@ -64,7 +65,17 @@ def test_actual_shared_gan_owns_routed_bank_updates_and_balances_native_rows(mon
     )
     try:
         assert type(game) is ConditionalPG09
-        assert version("particlegan") == game._signature["pg_version"] == "0.9.1"
+        assert version("particlegan") == game._signature["pg_version"] == "0.9.4"
+        # Compare the real-bank game to the installed upstream recipe, including
+        # declared research precision. Only the shared dense resolver may select
+        # an upstream optimizer profile; product code supplies no alternate law.
+        from particlegan import get_recipe
+        from particle_sliders.optimizer_policy import configure_dense_profile
+        official, policy = configure_dense_profile(get_recipe(
+            preset, batch_size=2, total_steps=5, num_particles=128, z_dim=4))
+        assert asdict(game.recipe) == asdict(official) == game._signature['recipe']
+        assert game._signature['optimizer_policy'] == policy
+        assert game._signature['host_training_precision'] == 'float32'
         assert game.response_shape == (1, 3, 16, 16)
         assert game._signature["resolved_penalty_domain"] == "image"
         assert game._signature["objective"] == "g_adv+public_prior;d_adv+public_penalty"

@@ -6,7 +6,7 @@ import pytest
 import torch
 from iris_sliders.profiles import default_profile
 
-if default_profile() == 'legacy':
+if default_profile() == 'native-pg094-v1':
     pytest.skip('separate modern distribution is absent in stable environment', allow_module_level=True)
 
 from iris_sliders_hndl import PROFILE, HNDLRoutedProjection, verified_profile

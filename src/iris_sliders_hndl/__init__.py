@@ -65,7 +65,7 @@ class HNDLRoutedProjection(nn.Module):
         return self.graph(value=value, particles=bank).reshape(*shape[:-1], self.output_width)
 
 
-def adapter_bank(model, stamp, profile='legacy'):
+def adapter_bank(model, stamp, profile='native-pg094-v1'):
     if profile != PROFILE:
         raise ValueError('unknown Iris network profile')
     verified_profile()

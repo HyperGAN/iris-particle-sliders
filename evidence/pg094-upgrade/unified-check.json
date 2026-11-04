@@ -1,0 +1,7 @@
+{
+  "status": "checked",
+  "profile": "iris-pg094-cpu-fixture",
+  "qualification": "fixture",
+  "target_steps": 2,
+  "worker_output": "{\"status\": \"checked\", \"backend\": \"iris\"}"
+}

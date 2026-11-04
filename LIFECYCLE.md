@@ -1,3 +1,7 @@
+Current canonical package pins and installed qualification are in
+[PG094-ADOPTION.md](PG094-ADOPTION.md). The shared session/native interfaces below
+remain supported. The S081 receipts retain their historical source identities.
+
 For the separate HyperGAN develop/HNDL profile, use the opt-in build described in
 [HYPERGAN-HNDL.md](HYPERGAN-HNDL.md). It adds a signed network profile to the same
 session and native-inference contracts. The S081 pin and receipts below remain

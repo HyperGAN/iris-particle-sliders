@@ -16,6 +16,8 @@ import sys
 STABLE = 'iris-particle-sliders'
 MODERN = 'iris-particle-sliders-hndl'
 PROFILE = 'hypergan-hndl-v2'
+NATIVE_PROFILE = 'native-pg094-v1'
+# Each distribution admits only its own source-bound current architecture.
 
 
 def installation():
@@ -55,7 +57,7 @@ def installation():
             raise RuntimeError('Iris installed package bytes differ from distribution RECORD')
     if not modern and importlib.util.find_spec('iris_sliders_hndl') is not None:
         raise RuntimeError('modern Iris modules coexist with stable distribution; use a fresh environment')
-    return dist, PROFILE if modern else 'legacy'
+    return dist, PROFILE if modern else NATIVE_PROFILE
 
 
 def default_profile():
@@ -70,7 +72,7 @@ def select_profile(requested=None):
 
 
 def profile_document():
-    if default_profile() == 'legacy':
+    if default_profile() == NATIVE_PROFILE:
         return json.loads(files('iris_sliders').joinpath('stable-profile.json').read_text())
     return json.loads(files('iris_sliders_hndl').joinpath('profile.json').read_text())
 
@@ -96,7 +98,7 @@ def verify_runtime():
     if (core_dist.version != document['core_version'] or
             direct.get('vcs_info', {}).get('commit_id') != document['core_commit']):
         raise RuntimeError('Iris requires the exact public core VCS commit and version')
-    _origin('concept_slider_core', 'particle-sliders-core')
+    # Hash the historical alias below without importing its deprecated API.
     parent = core_root.parent
     actual = {}
     for package in ('particle_sliders', 'concept_slider_core'):
@@ -119,7 +121,7 @@ def verify_runtime():
 def adapter_bank(model, stamp, profile=None):
     profile = select_profile(profile)
     verify_runtime()
-    if profile == 'legacy':
+    if profile == NATIVE_PROFILE:
         from .adapters import AdapterBank
         return AdapterBank(model, stamp)
     from iris_sliders_hndl import adapter_bank as modern_bank

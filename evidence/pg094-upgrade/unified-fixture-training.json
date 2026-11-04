@@ -1,0 +1,22 @@
+{
+  "backend": "iris",
+  "cohort": "iris-pg094-dispatch-fixture-v1",
+  "options": {
+    "dummy": true,
+    "steps": 2,
+    "height": 16,
+    "width": 16,
+    "trajectory_steps": 4,
+    "records_per_pair": 2,
+    "rows": [
+      {
+        "neutral": "cup",
+        "positive": "shiny cup"
+      },
+      {
+        "neutral": "bowl",
+        "positive": "shiny bowl"
+      }
+    ]
+  }
+}

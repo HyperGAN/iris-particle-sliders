@@ -4,6 +4,8 @@ import json
 import math
 from importlib.resources import files
 
+# Immutable archived safetensors identity. Current training_card() reads the
+# admitted active profile instead; historical weights must never be relabelled.
 CORE_COMMIT = "32f6830f6402e85aa77b6631db64fcbbb2131f6b"
 IRIS_COMMIT = "a8d15239dea469aba042cfa56ca3bb4e450d5ebc"
 MODEL_ID = "speridlabs/iris-3b"
