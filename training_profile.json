@@ -1,0 +1,21 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "iris-source",
+  "product": "iris-particle-sliders",
+  "config_kind": "session",
+  "backend": "iris",
+  "interface": "image",
+  "status": "source_only",
+  "runtime": {
+    "python": "python3"
+  },
+  "capabilities": {
+    "resume": true,
+    "periodic_checkpoint": true,
+    "check": true
+  },
+  "default_checkpoint_every": 32,
+  "evidence": "src/iris_sliders/lifecycle.py",
+  "status_reason": "PG 0.9.1 with a real routed bank. Native model loading/training and solver parity are not qualified by this command adoption.",
+  "source_revision": "a191c999e931dc9bd7d1f9dcb8f2c200048d342d"
+}
