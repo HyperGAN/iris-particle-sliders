@@ -1,23 +1,30 @@
 {
-  "backend": "iris",
-  "cohort": "iris-new-owned-run",
-  "options": {
-    "steps": 128,
-    "device": "cpu",
-    "rows": [
-      {
-        "neutral": "A woman with neat hair.",
-        "positive": "A woman with wild spiky hair."
-      },
-      {
-        "neutral": "A man with neat hair.",
-        "positive": "A man with wild spiky hair."
-      }
-    ],
-    "height": 512,
-    "width": 512,
-    "checkpoint": "/path/to/local/iris-checkpoint",
-    "text_dir": "/path/to/local/text-encoder",
-    "cache_dir": "/ml2/iris-particle-sliders/cache"
+  "schema": "particle-slider-train-v1",
+  "profile": "training_profile.json",
+  "training": {
+    "backend": "iris",
+    "cohort": "iris-new-owned-run",
+    "options": {
+      "steps": 128,
+      "device": "cpu",
+      "rows": [
+        {
+          "neutral": "A woman with neat hair.",
+          "positive": "A woman with wild spiky hair."
+        },
+        {
+          "neutral": "A man with neat hair.",
+          "positive": "A man with wild spiky hair."
+        }
+      ],
+      "height": 512,
+      "width": 512,
+      "checkpoint": "/path/to/local/iris-checkpoint",
+      "text_dir": "/path/to/local/text-encoder",
+      "cache_dir": "/ml2/iris-particle-sliders/cache"
+    }
+  },
+  "execution": {
+    "runner": "local"
   }
 }
