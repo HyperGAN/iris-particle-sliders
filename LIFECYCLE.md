@@ -19,15 +19,20 @@ Native solver/render parity remains unqualified.
 The original `fd89e1c` / core 0.7.0 milestone and cohorts remain preserved.
 
 This derivative registers backend `iris` for `particle_sliders.lifecycle`.
-The core owns preparation dispatch, updates, EMA, checkpoints, export,
+The core owns preparation dispatch, updates, checkpoints, export,
 evaluation and cleanup. The product factory owns native loading/conditioning,
 geometry and sampler differences. This is a new source cohort; keep original
 pinned runs and receipts with their original loaders.
 
+Current and future ParticleGAN sessions disable EMA with `ema_decay=None`.
+Training, evaluation, export and inference use RAW weights; do not add EMA
+averaging, comparisons or selection. Historical EMA artifacts retain their
+original loaders and provenance.
+
 ```python
 from particle_sliders.lifecycle import SessionConfig, open_session
 config = SessionConfig('iris', 'new-iris-cpu-v1', dummy=True, steps=4,
-    height=16, width=16, trajectory_steps=4, records_per_pair=2, ema_decay=.9,
+    height=16, width=16, trajectory_steps=4, records_per_pair=2, ema_decay=None,
     rows=[dict(neutral='a red cup', positive='a shiny red cup'),
           dict(neutral='a blue bowl', positive='a shiny blue bowl')])
 with open_session(config) as session:
@@ -35,7 +40,7 @@ with open_session(config) as session:
     session.checkpoint('new-run/training.pt')
 with open_session(config, resume='new-run/training.pt') as session:
     session.train()
-    session.export('new-run/adapter.pt', selection='ema')
+    session.export('new-run/adapter.pt', selection='raw')
 ```
 
 Strengths remain [0,1]; reference-image conditioning is unsupported.
@@ -69,7 +74,7 @@ pretrained behavior, GPU memory, convergence or image quality.
 
 The original `iris-slider-train`/`iris-slider-response` commands retain their
 product packet schemas and loaders. Use `particle-slider` for common session
-packets and EMA selection; neither entrypoint silently converts the other's
+packets and RAW-only exports; neither entrypoint silently converts the other's
 packets. Historical source receipts under `evidence/derivative-audit` describe
 their original PR1 cohort and are not qualification for a new lifecycle head.
 See `INTEGRATION-AUDIT.md` for the fresh integration inventory and deferred checks.
@@ -86,13 +91,13 @@ from particle_sliders.inference import open_inference
 
 with open_session(config) as session:
     session.train()
-    session.export_inference('new-run/native-ema.pt', selection='ema')
+    session.export_inference('new-run/native-raw.pt', selection='raw')
 
 # Later, without the training rows or teacher cache:
-with open_inference('new-run/native-ema.pt', operation='response') as inference:
+with open_inference('new-run/native-raw.pt', operation='response') as inference:
     velocity = inference.response(prompt='a red cup', height=16, width=16,
                                   timestep=500, cfg_scale=3., strength=.5, seed=7)
-    assert inference.selection == 'ema'
+    assert inference.selection == 'raw'
 ```
 
 The example continues the tiny fixture above. For native weights pass only local
