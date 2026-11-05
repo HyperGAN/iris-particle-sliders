@@ -1,4 +1,14 @@
-> **Current source: core0.13.0 / published ParticleGAN0.9.5.** This is a fresh cohort; older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md). No native PG0.9.5 result is claimed.
+> **Current source: core0.13.0 / published ParticleGAN0.9.5.** Older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md).
+
+A source-qualified native RGB128 FP32 research search selected **G=0.004**,
+with `d_lr_mult=4.5` and `prior_lr_mult=7.5`, at a common 128-update horizon.
+The completed development RAW score is **0.41552692957922055**; independent
+held-out confirmation is **0.46889995235620385** over six examples. All evaluation
+uses RAW weights, with EMA disabled. See [the recipe and its exact scope](LEARNING-RATES.md#native128-pg095-research-recipe).
+Package defaults are unchanged; this measurement does not qualify the default
+512-pixel workflow, trajectory rendering, or the separate optional HNDL profile.
+
+The PG0.9.4 overview below records the earlier source and qualification history.
 
 The default iris-particle-sliders 0.3.0 now uses shared core 0.12.0 and released ParticleGAN 0.9.4.
 See [the current upgrade and qualification](PG094-ADOPTION.md).
