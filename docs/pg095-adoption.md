@@ -13,7 +13,10 @@ product source is `dae4597ec962cff5c91e7f2eb85fc917e6255da0`; historical archive
 The current PG0.9.5 path refuses old packet source/config identities.
 
 CPU fixture/update/resume/export checks establish software integration only.
-Pretrained/native PG0.9.5 training and rate confirmation require fresh evidence.
+The fresh [native RGB128 FP32 research cohort](../LEARNING-RATES.md#native128-pg095-research-recipe)
+now has actual PG0.9.5 update/resume/RAW proof, matched-budget search and
+independent six-example held-out confirmation. Its result applies to the
+declared research profile; package defaults and historical evidence are unchanged.
 Use [the common learning-rate contract](https://github.com/HyperGAN/particle-sliders/blob/3dd672a7f9b8c169daef90fd63e4bb42b9ddc423/packages/particle-sliders-core/LEARNING-RATE-CONTRACT.md).
 Held-out RAW FP64 equal-example relative SSE is the sole ranking/confirmation
 metric; preservation and media diagnostics are optional and never veto a rate.

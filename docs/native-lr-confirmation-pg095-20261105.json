@@ -1,0 +1,222 @@
+{
+  "schema": "particle-slider-measured-lr-recommendation-v2",
+  "status": "best_tested_heldout_confirmed",
+  "measured_at": "2026-11-05",
+  "repository": "HyperGAN/iris-particle-sliders",
+  "configuration_overrides": {
+    "lr": 0.004,
+    "d_lr_mult": 4.5,
+    "prior_lr_mult": 7.5
+  },
+  "actual_optimizer_rates": {
+    "G": [
+      0.004
+    ],
+    "D": [
+      0.018000000000000002,
+      0.018000000000000002,
+      0.018000000000000002,
+      0.018000000000000002
+    ],
+    "P": [
+      0.03
+    ]
+  },
+  "actual_rate_float_hex": {
+    "G": "0x1.0624dd2f1a9fcp-8",
+    "D": "0x1.26e978d4fdf3cp-6",
+    "P": "0x1.eb851eb851eb8p-6"
+  },
+  "source": {
+    "product_commit": "5e852aa1a10b43f613faecd8177272ba582a9f66",
+    "runtime_package_git_tree": "e9f47bf776c5f9cd2beb7b98526f4ee5672ea79f",
+    "public_runtime_files_byte_equal": 24,
+    "core_version": "0.13.0",
+    "core_commit": "3dd672a7f9b8c169daef90fd63e4bb42b9ddc423",
+    "particlegan_version": "0.9.5",
+    "particlegan_commit": "1b8355b184b21bb7d81104ee590813c262f6df0a",
+    "particlegan_wheel_sha256": "c1c0de7a635ac1b1634ba158eed050b6f6aed993e01f9b463435430c77d846ae",
+    "PG_source_profile": "release-0.9.5",
+    "model": "speridlabs/iris-3b",
+    "model_revision": "7445443349bc9abe3c96f01ff793e2098ca012b3"
+  },
+  "scope": {
+    "cohort": "iris-native128-pg095-fp32-math-g128-v1",
+    "qualification": "Source-qualified native RGB128 RAW-response research preset",
+    "native_pixels": [
+      128,
+      128
+    ],
+    "native_response_shape": [
+      1,
+      3,
+      128,
+      128
+    ],
+    "base_and_response_precision": "float32",
+    "adapter": "Stable rank-8 routed attention-output projections; not the separate optional HNDL profile",
+    "rank": 8,
+    "particle_bank": [
+      128,
+      4
+    ],
+    "critic": "spatial field",
+    "critic_width": 16,
+    "batch": 2,
+    "seed": 7104,
+    "preset": "bispf_optimized",
+    "response_scale": 1.0,
+    "observation_sigma": 1.0,
+    "schedule_horizon": 128,
+    "completed_updates": 128,
+    "teacher_trajectory_steps": 4,
+    "teacher_CFG": 3.0,
+    "positions": [
+      0,
+      3
+    ],
+    "development_examples": 3,
+    "confirmation_subjects": 3,
+    "confirmation_seeds": 2,
+    "confirmation_examples": 6,
+    "confirmation_fields": 12,
+    "public_RAW_API": "particle_sliders.inference.open_inference(operation=response, backend=source-qualified native-only research backend)"
+  },
+  "numerical": {
+    "native_Torch": "2.11.0+cu128",
+    "native_CUDA": "12.8",
+    "native_attention": "deterministic math only, TF32 disabled, uncheckpointed native model",
+    "native_response_dtype": "float32",
+    "teacher_trajectory": "native neutral order2/shift4/CFG3 with BF16 CUDA autocast",
+    "conditioning_Torch": "2.14.1+cpu",
+    "conditioning_Transformers": "5.22.1",
+    "conditioning_dtype": "bfloat16",
+    "conditioning_attention": "sdpa",
+    "conditioning_threads": 4,
+    "conditioning_defaults": "Historical CPU defaults retained; native GPU flags not imposed",
+    "native_and_metric_threads": 2
+  },
+  "averaging": {
+    "EMA_used": false,
+    "SessionConfig_ema_decay": null,
+    "official_GAN_recipe_ema_decay": 0.0,
+    "materialized_EMA_weights": false,
+    "evaluation_selection": "raw",
+    "export_selection": "raw",
+    "inference_selection": "raw"
+  },
+  "metric": {
+    "name": "RAW equal-example relative SSE",
+    "direction": "minimize",
+    "aggregation": "Cast S/T/N to FP64 before subtraction; pool both positions and all coordinates within subject/seed example; divide per example; equal-example mean",
+    "zero_energy": "Teacher-only fixed membership; exact zero undefined, no epsilon; student failures never remove examples",
+    "development": 0.41552692957922055,
+    "development_examples": 3,
+    "heldout_confirmation": 0.46889995235620385,
+    "confirmation_examples": 6,
+    "confirmation_excluded_examples": 0,
+    "confirmation_per_example_relative_SSE": [
+      0.5767287189280219,
+      0.46363334697681546,
+      0.316557512605165,
+      0.553705124516283,
+      0.4960960085155573,
+      0.4066790025953806
+    ],
+    "OFF": 1.0,
+    "teacher": 0.0,
+    "reversed_edit": 4.0
+  },
+  "search": {
+    "kind": "G bracket with exact common actual D/P",
+    "common_horizon": 128,
+    "rungs": [
+      32,
+      64,
+      128
+    ],
+    "cells": [
+      {
+        "cell": 0,
+        "G": 0.00012,
+        "actual_D": 0.018000000000000002,
+        "actual_P": 0.03,
+        "RAW32": 0.9925285907400787
+      },
+      {
+        "cell": 1,
+        "G": 0.0012,
+        "actual_D": 0.018000000000000002,
+        "actual_P": 0.03,
+        "RAW32": 0.9158610259311905,
+        "RAW64": 0.7246065985051159
+      },
+      {
+        "cell": 2,
+        "G": 0.004,
+        "actual_D": 0.018000000000000002,
+        "actual_P": 0.03,
+        "RAW32": 0.627008978134015,
+        "RAW64": 0.4966238997862638,
+        "RAW128": 0.41552692957922055
+      },
+      {
+        "cell": 3,
+        "G": 0.012,
+        "actual_D": 0.018000000000000002,
+        "actual_P": 0.03,
+        "RAW32": 1.3124381316966245
+      }
+    ],
+    "selected32": [
+      2,
+      1
+    ],
+    "selected64": [
+      2
+    ],
+    "selected128": 2,
+    "boundary_winner": false,
+    "all_finite_admitted_budgets_completed": true,
+    "confirmation": "Declared independent three subjects/two seeds encoded and evaluated only after qualified selected128; final values not used for tuning",
+    "counts": {
+      "known_physical_completed_update_calls": 258,
+      "logical_completed_updates": 256,
+      "duplicate_mechanical_updates": 2,
+      "confirmation_update_calls": 0
+    },
+    "count_limit": "Earlier failed/uncommitted native work remains in immutable failure artifacts; it is not invented as a completed call or as zero native work."
+  },
+  "defaults_changed": false,
+  "limits": "Best tested recipe for this exact source/model/data/numerical/native128/rank/batch/128-horizon cohort and declared successive halving. Only the selected64 winner was evaluated at128. No universal optimum, default512/1024-pixel, sampler/media/subjective-quality, frontend or separate opt-in HNDL qualification. No weights, checkpoints, response tensors or corpus distributed.",
+  "evidence": {
+    "native_fresh2_vs_fresh1plus1_complete_state_metrics_exact": true,
+    "public_RAW_OFF_replay_exact": true,
+    "native_final_training_game_critic_optimizer_constructors_used": false,
+    "native_final_frozen_base_and_RAW_adapter_unchanged": true,
+    "native_final_fixed_teacher_membership_before_student": true,
+    "actual_all_final_stage_exits0_reaped": true,
+    "scientific_freeze_sha256": "25ec4107128ac216ea1d063399b6d57e1a9d164e2ff4655e78456bdf877af0ee",
+    "native_proof_qualification_sha256": "a6fa96e59f9305a60a1ca067b1fd9296d1abe1ad1faaca5df5f0fe62ffd8105f",
+    "selection32_sha256": "a1c4c36753e755386c3a4e6ea23cbabe9647316a4320e4b2c07a1ceee28496bb",
+    "selection64_sha256": "26779809b7dfe73f4731615d4e5b88d30de827def1619a0c082b121b6c030964",
+    "selected128_qualification_sha256": "4f2a073b3f7936a59ae1fa7a953b0467111359248abc1ebaf4e2adb01af21feb",
+    "selected128_full_state_sha256": "ffcd75f72062dd38c3ea19b78209ec370bc1db01e609845ca39fe4e8b0ef2715",
+    "selected128_checkpoint_sha256": "1aed4467e8b9548a82ba678a1d1eb5cb511e0aa4953d2352658a046038f33d74",
+    "selected128_public_RAW_sha256": "eec34d5aeb74a91da137b943de9c791233279e992926e6c24545b26eddb78db9",
+    "confirmation_plan_sha256": "6c5698061dc8dfd96d2dd9b0015c197967414c428031848bd90631931fe4e083",
+    "confirmation_completion_sha256": "b729e95f08b8dae390c39a7c32d877beab12ad89b3851e69dbb6d0ef0f071d7f",
+    "confirmation_report_sha256": "aad0a1fdbad2668a239c5143243f70b5ebcdcbae41d701e0c18500564904bc84",
+    "confirmation_fields_sha256": "c432ccf1fbc40f9ef5a569b0bd33b3eb4d0e4f4ed0567d0596199b0cc1452956",
+    "independent_saved_field_audit": {
+      "sha256": "e7c0f1f5b854d9d0761611e39ab672dcc9105e68d7ecf1d59e93b4aca77a21b5",
+      "actual_exit": 0,
+      "all_per_field_and_example_values_exact": true,
+      "CPU_threads": 2,
+      "CUDA_initialized": false,
+      "models_or_PG_calls": 0
+    },
+    "no_EMA_audit_sha256": "c64fe6a1d33916114d9e9c7de04b6946c6ac9d89ea2e517995023b3fc1029210",
+    "public_runtime_source_match_sha256": "f294aafa52f795ab9b84f6fa15dfc65a802e56a80a42767e06895dc221d739b5"
+  }
+}
