@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
     original = json.loads((args.preview / 'preview-receipt.json').read_text())
     assert original['core_commit'] == '4abc0eb03a4e3a84fc3e6d02734c13dc7e8ea231'
-    assert verify_runtime()['core_commit'] == 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
+    assert verify_runtime()['core_commit'] == '3dd672a7f9b8c169daef90fd63e4bb42b9ddc423'
     for name, digest in original['files'].items():
         assert hashlib.sha256((args.preview / name).read_bytes()).hexdigest() == digest
     config = SessionConfig('iris', original['cohort'], **original['options'])

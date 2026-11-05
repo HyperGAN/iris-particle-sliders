@@ -6,7 +6,7 @@ import pytest
 import torch
 from iris_sliders.profiles import default_profile
 
-if default_profile() == 'native-pg094-v1':
+if default_profile() == 'native-pg095-v1':
     pytest.skip('separate modern distribution is absent in stable environment', allow_module_level=True)
 
 from iris_sliders_hndl import PROFILE, HNDLRoutedProjection, verified_profile
@@ -14,7 +14,7 @@ from iris_sliders.teacher import load_prompts
 from iris_sliders.tiny import TinyRuntime
 from iris_sliders.train import build_game, configuration
 
-pytestmark = pytest.mark.skipif(version('particle-sliders-core') != '0.12.0',
+pytestmark = pytest.mark.skipif(version('particle-sliders-core') != '0.13.0',
                                 reason='requires separate exact HyperGAN/HNDL profile build')
 
 
@@ -39,7 +39,7 @@ def test_real_graphs_own_updates_and_preserve_native_zero(preset):
     base = deepcopy(runtime.model.state_dict())
     game = build_game(runtime, settings(preset=preset))
     try:
-        assert version('particlegan') == '0.9.4'
+        assert version('particlegan') == '0.9.5'
         assert game.response_shape == (1, 3, 16, 16)
         assert game._signature['resolved_penalty_domain'] == 'image'
         assert game.prior.z is game.backend.particles is game.network.particles

@@ -37,7 +37,7 @@ def training_card(network_profile=None):
                            "student_conditioning": "neutral", "cfg_adapter_branch": "conditional_only",
                            "objective": "g_adv+public_prior;d_adv+public_penalty",
                            "rendering": "unqualified; raw response evaluation only"}}
-    if selected != 'native-pg094-v1':
+    if selected != 'native-pg095-v1':
         from iris_sliders_hndl import verified_profile
         result['network_profile'] = verified_profile()[1]
     return result
@@ -70,11 +70,11 @@ def configuration(
     from .profiles import select_profile, verify_runtime
     network_profile = select_profile(network_profile)
     verify_runtime()
-    if network_profile == "hypergan-hndl-v2":
+    if network_profile == "hypergan-hndl-pg095-v1":
         from iris_sliders_hndl import verified_profile
         verified_profile()
         if critic != "field":
-            raise ValueError("hypergan-hndl-v2 uses the shared HNDL spatial field critic")
+            raise ValueError("hypergan-hndl-pg095-v1 uses the shared HNDL spatial field critic")
     if critic not in ("field", "hndl"):
         raise ValueError("critic must be field or hndl; a changed critic requires a fresh cohort")
     if critic == "hndl":
@@ -135,7 +135,7 @@ def configuration(
         "critic": critic,
     }
     result.update(rates)
-    if network_profile != "native-pg094-v1":
+    if network_profile != "native-pg095-v1":
         result["network_profile"] = network_profile
     return result
 
@@ -183,7 +183,7 @@ def build_game(runtime, config):
             backend = IrisResponseAdapter(runtime, bank, particles, model_identity=identity)
             prepared = [backend.prepare(row) for row in response_rows]
             conditions = image_condition_features(prepared)
-            if profile == "hypergan-hndl-v2":
+            if profile == "hypergan-hndl-pg095-v1":
                 from iris_sliders_hndl import spatial_critic
                 critic = spatial_critic(prepared[0].target.shape[1], conditions.shape[1],
                                         tuple(prepared[0].target.shape[2:]), config["critic_hidden"]).to(runtime.device)

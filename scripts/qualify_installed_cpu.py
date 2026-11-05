@@ -62,12 +62,12 @@ def main():
             raise RuntimeError("source-free test imported a source checkout: " + str(path))
         imports[name] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
     from iris_sliders.profiles import default_profile, installation, verify_runtime
-    if default_profile() != 'native-pg094-v1':
+    if default_profile() != 'native-pg095-v1':
         from iris_sliders_hndl import verified_profile
     expected_pg = verify_runtime()['particlegan_version']
     if version('particlegan') != expected_pg:
         raise RuntimeError('wrong ParticleGAN release for the installed profile')
-    network_identity = verified_profile()[1] if default_profile() != 'native-pg094-v1' else None
+    network_identity = verified_profile()[1] if default_profile() != 'native-pg095-v1' else None
     commands, arms = [], {}
     for preset in ("bispf", "bispf_optimized"):
         root = output / preset

@@ -34,14 +34,14 @@ def test_native_only_factory_without_training_construction(exports, monkeypatch)
     from particle_sliders.pg09 import ConditionalPG09
     monkeypatch.setattr(FieldCritic, '__init__', forbidden)
     from iris_sliders.profiles import default_profile
-    if default_profile() != 'native-pg094-v1':
+    if default_profile() != 'native-pg095-v1':
         from particle_sliders.fibo_hndl import HNDLFieldCritic
         monkeypatch.setattr(HNDLFieldCritic, '__init__', forbidden)
     monkeypatch.setattr(ConditionalPG09, '__init__', forbidden)
     before = torch.get_rng_state().clone()
     for selection, packet in exports.items():
         from iris_sliders.profiles import default_profile
-        expected_keys = {'dummy', 'seed'} | ({'network_profile'} if default_profile() != 'native-pg094-v1' else set())
+        expected_keys = {'dummy', 'seed'} | ({'network_profile'} if default_profile() != 'native-pg095-v1' else set())
         assert set(packet['specification']['configuration']) == expected_keys
         assert not {'game', 'rows', 'optimizer', 'critic'} & packet.keys()
         with open_inference(packet, backend=native.INFERENCE_BACKEND, operation='response') as session:

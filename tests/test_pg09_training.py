@@ -65,7 +65,7 @@ def test_actual_shared_gan_owns_routed_bank_updates_and_balances_native_rows(mon
     )
     try:
         assert type(game) is ConditionalPG09
-        assert version("particlegan") == game._signature["pg_version"] == "0.9.4"
+        assert version("particlegan") == game._signature["pg_version"] == "0.9.5"
         # Compare the real-bank game to the installed upstream recipe, including
         # declared research precision. Only the shared dense resolver may select
         # an upstream optimizer profile; product code supplies no alternate law.

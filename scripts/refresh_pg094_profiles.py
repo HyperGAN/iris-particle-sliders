@@ -24,17 +24,17 @@ def main():
     args = parser.parse_args()
     core = metadata.distribution('particle-sliders-core')
     direct = json.loads(core.read_text('direct_url.json') or '{}')
-    if direct.get('vcs_info', {}).get('commit_id') != args.core_commit or core.version != '0.12.0':
-        raise ValueError('install the exact reviewed public VCS core0.12.0 commit first')
-    if metadata.version('particlegan') != '0.9.4':
-        raise ValueError('install released ParticleGAN0.9.4 first')
+    if direct.get('vcs_info', {}).get('commit_id') != args.core_commit or core.version != '0.13.0':
+        raise ValueError('install the exact reviewed public VCS core0.13.0 commit first')
+    if metadata.version('particlegan') != '0.9.5':
+        raise ValueError('install released ParticleGAN0.9.5 first')
     root = Path(__file__).resolve().parents[1]
     sources = closure('particle_sliders') | closure('concept_slider_core')
     pg_sources = closure('particlegan')
     for relative in ('src/iris_sliders/stable-profile.json', 'src/iris_sliders_hndl/profile.json'):
         path = root / relative
         document = json.loads(path.read_text())
-        document.update(core_commit=args.core_commit, core_version=core.version, particlegan_version='0.9.4',
+        document.update(core_commit=args.core_commit, core_version=core.version, particlegan_version='0.9.5',
                         core_full_sources_sha256=sources, pg_full_sources_sha256=pg_sources)
         if 'core_sources_sha256' in document:
             document['core_sources_sha256'] = {name: sources['particle_sliders/' + name]
@@ -47,11 +47,11 @@ def main():
     lock['core'].update(commit=args.core_commit, version=core.version, source_sha256=sources,
                         source_map_scope='all installed non-cache core package source/data files')
     lock['particlegan'] = dict(repository='https://github.com/255BITS/ParticleGAN',
-        commit='330eb94ee748cdcad131b0275d8de75fd5a7f96f', version='0.9.4',
-        release='https://github.com/255BITS/ParticleGAN/releases/tag/v0.9.4',
-        source_manifest='particle_sliders/pg094_release.json', source_sha256=pg_sources,
+        commit='1b8355b184b21bb7d81104ee590813c262f6df0a', version='0.9.5',
+        release='https://github.com/255BITS/ParticleGAN/releases/tag/v0.9.5',
+        source_manifest='particle_sliders/pg095_release.json', source_sha256=pg_sources,
         role='core transitive dependency; exact installed release source closure verified')
-    lock['network_profile'] = 'native-pg094-v1'
+    lock['network_profile'] = 'native-pg095-v1'
     lock['historical_environment'] = 'requirements-s081.txt; backend-s081.lock.json'
     path.write_text(json.dumps(lock, indent=2) + '\n')
 

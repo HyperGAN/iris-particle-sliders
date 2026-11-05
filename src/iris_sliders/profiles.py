@@ -15,8 +15,8 @@ import sys
 
 STABLE = 'iris-particle-sliders'
 MODERN = 'iris-particle-sliders-hndl'
-PROFILE = 'hypergan-hndl-v2'
-NATIVE_PROFILE = 'native-pg094-v1'
+PROFILE = 'hypergan-hndl-pg095-v1'
+NATIVE_PROFILE = 'native-pg095-v1'
 # Each distribution admits only its own source-bound current architecture.
 
 

@@ -1,3 +1,5 @@
+> **Current source: core0.13.0 / published ParticleGAN0.9.5.** This is a fresh cohort; older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md). No native PG0.9.5 result is claimed.
+
 The default iris-particle-sliders 0.3.0 now uses shared core 0.12.0 and released ParticleGAN 0.9.4.
 See [the current upgrade and qualification](PG094-ADOPTION.md).
 A separate opt-in build now connects the actual native Iris hooks to shared
