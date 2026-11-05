@@ -208,11 +208,11 @@ def _conditioning_digest(records):
 
 def _require_fixture_mode(*, dummy, resume, allow_legacy):
     from .profiles import select_profile
-    select_profile('native-pg094-v1')
+    select_profile('native-pg095-v1')
     if not allow_legacy:
         raise ValueError("archived gmix fixture requires allow_legacy=True or --allow-legacy")
     if resume is not None:
-        raise ValueError("archived raw resume is unsupported; use iris-slider-train for PG0.9.4")
+        raise ValueError("archived raw resume is unsupported; use iris-slider-train for PG0.9.5")
     if not dummy:
         raise ValueError(
             "archived real training is unsupported; only the explicit CPU dummy fixture is available"
@@ -372,7 +372,7 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     from .profiles import select_profile
-    select_profile('native-pg094-v1')
+    select_profile('native-pg095-v1')
     if args.print_card:
         print(json.dumps(card(), indent=2))
         return

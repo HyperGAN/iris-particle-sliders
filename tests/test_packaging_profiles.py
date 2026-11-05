@@ -17,7 +17,7 @@ def test_profile_staging_preserves_default_and_binds_exact_dependencies(tmp_path
     stable = tomllib.loads(before.decode())['project']
     modern = tomllib.loads((tmp_path / 'pyproject.toml').read_text())['project']
     assert stable['version'] == '0.3.0'
-    assert 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137' in next(
+    assert '3dd672a7f9b8c169daef90fd63e4bb42b9ddc423' in next(
         d for d in stable['dependencies'] if d.startswith('particle-sliders-core '))
     assert modern['version'] == '0.4.0rc1' and modern['requires-python'] == '>=3.11,<3.15'
     profile = json.loads((tmp_path / 'src/iris_sliders_hndl/profile.json').read_text())
@@ -35,6 +35,6 @@ def test_profile_staging_preserves_default_and_binds_exact_dependencies(tmp_path
     assert (tmp_path / 'backend-s081.lock.json').read_bytes() == (root / 'backend-s081.lock.json').read_bytes()
     lock = json.loads((tmp_path / 'backend.lock.json').read_text())
     assert lock['core']['commit'] == profile['core_commit']
-    assert lock['particlegan']['version'] == '0.9.4'
+    assert lock['particlegan']['version'] == '0.9.5'
     assert lock['network_profile']['hypergan_commit'] == profile['hypergan_commit']
     assert 'canonical_receipt_sha256' not in lock['core']

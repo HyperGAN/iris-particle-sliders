@@ -10,7 +10,7 @@ from torch import nn
 
 from iris_sliders.adapters import AdapterBank
 
-PROFILE = 'hypergan-hndl-v2'
+PROFILE = 'hypergan-hndl-pg095-v1'
 
 
 def verified_profile():
@@ -65,7 +65,7 @@ class HNDLRoutedProjection(nn.Module):
         return self.graph(value=value, particles=bank).reshape(*shape[:-1], self.output_width)
 
 
-def adapter_bank(model, stamp, profile='native-pg094-v1'):
+def adapter_bank(model, stamp, profile='native-pg095-v1'):
     if profile != PROFILE:
         raise ValueError('unknown Iris network profile')
     verified_profile()

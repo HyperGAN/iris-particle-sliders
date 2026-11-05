@@ -1,3 +1,5 @@
+> Current adoption: [published PG0.9.5 / core0.13.0](docs/pg095-adoption.md). Versioned earlier receipts below retain their original source scope; none establishes a PG0.9.5 native result.
+
 Current canonical package pins and installed qualification are in
 [PG094-ADOPTION.md](PG094-ADOPTION.md). The shared session/native interfaces below
 remain supported. The S081 receipts retain their historical source identities.

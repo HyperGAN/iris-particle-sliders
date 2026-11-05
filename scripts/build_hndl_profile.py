@@ -1,6 +1,6 @@
 """Build a separate opt-in Iris HyperGAN/HNDL distribution; never publish it.
 
-The default pyproject installs the current native PG094 profile. The emitted sdist is complete
+The default pyproject installs the current native PG095 profile. The emitted sdist is complete
 and contains its own exact profile pyproject, so wheel rebuilds retain the pins.
 """
 import argparse
@@ -57,7 +57,8 @@ def stage(root, destination):
         if path.is_file() and (path.suffix in ('.md', '.json', '.toml', '.txt')
                                or path.name in ('LICENSE', 'NOTICE', 'MANIFEST.in', 'setup.py')):
             shutil.copy2(path, destination / path.name)
-    restore_pre_lr_runtime(root, destination)
+    # Ship the old closed archive unchanged; never substitute its runtime into095.
+    shutil.copytree(root / 'cohorts/pre-lr-hndl', destination / 'cohorts/pre-lr-hndl')
     # Keep the historical lock verbatim; the profile archive's active lock must
     # describe its actual dependencies rather than repeating S081 provenance.
     shutil.copy2(root / 'backend-s081.lock.json', destination / 'backend-s081.lock.json')
@@ -68,7 +69,7 @@ def stage(root, destination):
                         source_map_scope='all installed non-cache core package source/data files; shared builder closure verified separately')
     lock['particlegan'] = dict(repository='https://github.com/255BITS/ParticleGAN',
                               version=profile['particlegan_version'],
-                              source_manifest='particle_sliders/pg094_release.json')
+                              source_manifest='particle_sliders/pg095_release.json')
     lock['network_profile'] = profile
     lock.pop('optional_reuse', None)
     (destination / 'backend.lock.json').write_text(json.dumps(lock, indent=2) + '\n')

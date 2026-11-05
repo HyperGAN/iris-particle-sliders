@@ -10,7 +10,7 @@ import torch
 def response_diversity(*args, **kwargs):
     """Resolve the shared observer before allocating a native model.
 
-    S081 and the current core 0.12 candidate do not ship this observer. An
+    S081 and the current core 0.13 candidate do not ship this observer. An
     optional HyperGAN install alone cannot supply a missing shared API.
     """
     try:

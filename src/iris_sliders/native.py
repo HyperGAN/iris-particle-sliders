@@ -138,10 +138,10 @@ def validate_inference(options, spec):
     from .profiles import default_profile, select_profile, verify_runtime
     select_profile(architecture.get('network_profile'))
     verify_runtime()
-    if default_profile() != 'native-pg094-v1' and 'network_profile' not in architecture:
+    if default_profile() != 'native-pg095-v1' and 'network_profile' not in architecture:
         raise ValueError('S081 inference artifacts require their original pinned environment')
     if 'network_profile' in architecture:
-        if architecture['network_profile'] != 'hypergan-hndl-v2':
+        if architecture['network_profile'] != 'hypergan-hndl-pg095-v1':
             raise ValueError('invalid Iris network profile')
         from iris_sliders_hndl import verified_profile
         verified_profile()
@@ -177,7 +177,7 @@ def prepare_inference(options, spec):
             raise ValueError('the staged Iris base must use float32 weights')
         stamp = winning_formulation()
         from .profiles import adapter_bank
-        bank = adapter_bank(runtime.model, stamp, architecture.get('network_profile', 'native-pg094-v1'))
+        bank = adapter_bank(runtime.model, stamp, architecture.get('network_profile', 'native-pg095-v1'))
         bank.to(runtime.device)
         particles = new_particles(stamp, runtime.device)
         native = IrisResponseAdapter(runtime, bank, particles, model_identity=model_identity(runtime))

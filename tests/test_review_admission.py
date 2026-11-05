@@ -17,7 +17,7 @@ def config():
 
 
 def test_profile_choice_and_card_refuse_cross_profile_before_native(monkeypatch):
-    other = 'native-pg094-v1' if profiles.default_profile() != 'native-pg094-v1' else profiles.PROFILE
+    other = 'native-pg095-v1' if profiles.default_profile() != 'native-pg095-v1' else profiles.PROFILE
     monkeypatch.setattr(train, 'make_runtime', lambda *a: pytest.fail('invalid profile allocated model'))
     with pytest.raises(ValueError, match='installed Iris distribution'):
         train.configuration(load_prompts(), network_profile=other)
@@ -217,7 +217,7 @@ def test_failed_close_retries_only_pending_actions():
 def test_modern_legacy_entrypoint_is_absent_and_module_refuses():
     from iris_sliders import legacy_train
     names = {entry.name for entry in profiles.installation()[0].entry_points}
-    if profiles.default_profile() == 'native-pg094-v1':
+    if profiles.default_profile() == 'native-pg095-v1':
         assert 'iris-slider-train-legacy' in names
         return
     assert 'iris-slider-train-legacy' not in names
