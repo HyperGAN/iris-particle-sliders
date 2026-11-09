@@ -1,0 +1,113 @@
+{
+  "schema": "particle-slider-scoped-finished-output-rate-guidance-v1",
+  "as_of": "2026-11-09",
+  "product_id": "iris-particle-sliders",
+  "concept": "Golden Hour",
+  "selection_metric": "Equal-case arithmetic mean of intended-effect intensity ON minus exact matched OFF in finished images; higher wins.",
+  "comparison_policy": "Retain negative gains, native zeros and exact ties. Technical failures are missing evidence, not zero. No teacher-SSE, preservation, beauty, confidence or completion selector/tiebreak. Reuse completed searches, checkpoints, proofs, outputs and first scores; no additional fresh confirmation or worse-arm completion.",
+  "common_rate_overrides": {
+    "lr": 0.012,
+    "d_lr_mult": 1.5000000000000002,
+    "prior_lr_mult": 2.5,
+    "ema_decay": null
+  },
+  "product_option_fragment": {
+    "lr": 0.012,
+    "d_lr_mult": 1.5000000000000002,
+    "prior_lr_mult": 2.5,
+    "ema_decay": null
+  },
+  "actual_rates": {
+    "G": 0.012,
+    "D": 0.018000000000000002,
+    "bank": 0.03
+  },
+  "profile": {
+    "concept": "Golden Hour",
+    "training_updates": 32,
+    "horizon": 128,
+    "training_resolution": 128,
+    "render_resolution": 1024,
+    "base_precision": "float32",
+    "render_autocast": "bfloat16",
+    "integration_precision": "float32",
+    "render_steps": 100,
+    "solver_order": 2,
+    "solver_shift": 4.0,
+    "conditional_CFG": 3.0,
+    "outer_CFG": 1.0,
+    "particle_bank_shape": [
+      128,
+      4
+    ]
+  },
+  "primary": {
+    "training_updates": 32,
+    "cases": 4,
+    "mean_gain": 0.020561928239961464,
+    "candidate_means": [
+      {
+        "G": 0.00012,
+        "mean_gain": -3.864274670680362e-05
+      },
+      {
+        "G": 0.0012,
+        "mean_gain": 0.00035456288605928426
+      },
+      {
+        "G": 0.004,
+        "mean_gain": 0.004087222119172415
+      },
+      {
+        "G": 0.012,
+        "mean_gain": 0.020561928239961464
+      }
+    ],
+    "per_case_gains": {
+      "case0": 0.02175051594773928,
+      "case1": 0.027764639506737392,
+      "case2": 0.015293962011734646,
+      "case3": 0.01743859549363454
+    }
+  },
+  "separate_fresh_result": {
+    "training_updates": 32,
+    "cases": 4,
+    "mean_gain": 0.01689556334167719,
+    "per_case_gains": {
+      "fresh0": 0.019246398160854977,
+      "fresh1": 0.021287449946006138,
+      "fresh2": 0.012270787109931309,
+      "fresh3": 0.01477761814991633
+    },
+    "scope": "Fresh seeds on the original two neutral prompts; not unseen-prompt holdout and not pooled with primary cases."
+  },
+  "weight_EMA": null,
+  "measurement_kind": "Frozen model instrument (SigLIP2), not human or statistical validation.",
+  "scope": "Conditional best tested G in the recorded concept/native profile/budget at fixed D and bank where present; not a global or joint optimum. Package defaults are unchanged.",
+  "additional_fresh_confirmation_required": false,
+  "selected_checkpoint_availability": "Private retained RAW checkpoint, not included in this repository or newly released by this documentation.",
+  "source_records": [
+    {
+      "role": "primary_result",
+      "name": "result.json",
+      "bytes": 78807,
+      "sha256": "2f27084175902c530504a9d8c08d1a8358c4dbfb47336904b5d7ef09977bc78e",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    },
+    {
+      "role": "primary_decision",
+      "name": "root-existing-four-arm-RAW32-effect-selection-v1.json",
+      "bytes": 3673,
+      "sha256": "e77ac2886551af81020043390807c658f80a7aef7094a691b99af036e2f38f54",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    },
+    {
+      "role": "fresh_result",
+      "name": "result.json",
+      "bytes": 31367,
+      "sha256": "425a0f7dab0a40c62bfe88aa6123786cf628baa1b068d575feed194f42374736",
+      "availability": "Retained campaign evidence; not bundled as a public artifact download."
+    }
+  ]
+}
