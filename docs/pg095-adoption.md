@@ -17,6 +17,9 @@ The fresh [native RGB128 FP32 research cohort](../LEARNING-RATES.md#native128-pg
 now has actual PG0.9.5 update/resume/RAW proof, matched-budget search and
 independent six-example held-out confirmation. Its result applies to the
 declared research profile; package defaults and historical evidence are unchanged.
-Use [the common learning-rate contract](https://github.com/HyperGAN/particle-sliders/blob/3dd672a7f9b8c169daef90fd63e4bb42b9ddc423/packages/particle-sliders-core/LEARNING-RATE-CONTRACT.md).
-Held-out RAW FP64 equal-example relative SSE is the sole ranking/confirmation
-metric; preservation and media diagnostics are optional and never veto a rate.
+That historical study used RAW FP64 relative SSE; its values and proof remain
+scoped diagnostic evidence. Current guidance uses [finished-output intended-effect
+ON−OFF mean](finished-output-learning-rates.md), with equal case weights and
+negatives, zeros and ties retained. Reuse completed searches, native proofs,
+saved checkpoints, outputs and first scores; no additional confirmation is
+required. SSE, preservation, beauty and confidence do not select or break ties.

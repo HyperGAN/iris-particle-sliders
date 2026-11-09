@@ -1,12 +1,19 @@
 > **Current source: core0.13.0 / published ParticleGAN0.9.5.** Older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md).
 
-A source-qualified native RGB128 FP32 research search selected **G=0.004**,
-with `d_lr_mult=4.5` and `prior_lr_mult=7.5`, at a common 128-update horizon.
-The completed development RAW score is **0.41552692957922055**; independent
-held-out confirmation is **0.46889995235620385** over six examples. All evaluation
-uses RAW weights, with EMA disabled. See [the recipe and its exact scope](LEARNING-RATES.md#native128-pg095-research-recipe).
-Package defaults are unchanged; this measurement does not qualify the default
-512-pixel workflow, trajectory rendering, or the separate optional HNDL profile.
+**Current finished-image guidance:** use existing Golden Hour **G0.012 RAW32**,
+fixed D `0.018000000000000002` / bank `0.03`, horizon128. The four-case primary
+intended-effect ON−OFF mean is `0.020561928239961464`; the separate completed
+fresh-seed mean is `0.01689556334167719` on the original two neutral prompts.
+Use exact options `lr=0.012`, `d_lr_mult=1.5000000000000002`, `prior_lr_mult=2.5`,
+`ema_decay=null`. [Scope, native1024 consumer and how-to](docs/finished-output-learning-rates.md)
+· [portable values](docs/finished-output-rate.json). Reuse the saved checkpoint
+and scores; no repeated search or additional confirmation is required.
+
+The earlier native128 RAW128 **response-SSE diagnostic** selected G0.004;
+its development `0.41552692957922055` and six-example held-out
+`0.46889995235620385` remain in [historical evidence](LEARNING-RATES.md#native128-pg095-research-recipe).
+It is not the current finished-output selector. Package defaults and the separate
+public factory/HNDL/render qualification boundaries remain unchanged.
 
 The PG0.9.4 overview below records the earlier source and qualification history.
 
