@@ -1,5 +1,7 @@
 > **Current source: core0.13.0 / published ParticleGAN0.9.5.** Older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md).
 
+**Opt-in new-cohort initialization:** [cached fresh, strict FULL and RAW velocity API](docs/explicit-cached-fresh-initialization.md). Existing cohorts and defaults stay unchanged.
+
 **Current finished-image guidance:** use existing Golden Hour **G0.012 RAW32**,
 fixed D `0.018000000000000002` / bank `0.03`, horizon128. The four-case primary
 intended-effect ON−OFF mean is `0.020561928239961464`; the separate completed
