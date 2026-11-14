@@ -1,0 +1,333 @@
+{
+  "schema": "slider-memory-source-facts-v1",
+  "date": "2026-11-14",
+  "calculation_only": true,
+  "models_constructed": 0,
+  "framework_imports": 0,
+  "GPU_operations": 0,
+  "model": "speridlabs/iris-3b",
+  "revision": "7445443349bc9abe3c96f01ff793e2098ca012b3",
+  "frozen_weights": [
+    {
+      "component": "FP32 model file upper bound",
+      "bytes": 11950112680
+    },
+    {
+      "component": "BF16 text encoder serialized upper bound",
+      "bytes": 8875719344
+    }
+  ],
+  "parameter_derivation": "The product pins11,950,112,680 model-file bytes and8,875,719,344 text-file bytes. IrisRuntime explicitly converts the DiT to FP32. Config:24 trunk blocks/width2560/20Q/5KV heads, patch16; RGB output, no VAE. The four pixel blocks have attention hidden width1280 and are separately allowed for.",
+  "trainable": {
+    "parameters": 1223793,
+    "FP32_weights_bytes": 4895172,
+    "gradient_bytes": 4895172,
+    "persistent_momentum_or_Adam_tensor_bytes": 0,
+    "optimizer_transient_allowance_bytes": 92296496,
+    "optimizer_transient_formula": "48*A + 32MiB; FP32 protected normals/directions, FP64 promoted normals/displacements and small-matrix SVD/Gram workspace; conservative simultaneous allowance"
+  },
+  "trainable_derivation": "24×(8×5120+6476)+512 bank +84,817 width16 critic = 1,223,793",
+  "metadata": [
+    {
+      "repository": "speridlabs/iris-3b",
+      "requested_revision": "7445443349bc9abe3c96f01ff793e2098ca012b3",
+      "resolved_revision": "7445443349bc9abe3c96f01ff793e2098ca012b3",
+      "repository_metadata_sha256": "c5bf148b5de51a52996b561af86119ee487c073b720e2dd03d0fa43029a1161f",
+      "weight_files": [
+        {
+          "path": "depth/empty_prompt.safetensors",
+          "size": 36864468,
+          "lfs_sha256": "ea77e942f2ac7698bf4e5a2657d1820839b7e47212762ae31fbe5234beef33e6"
+        },
+        {
+          "path": "depth/model.safetensors",
+          "size": 11952738184,
+          "lfs_sha256": "e7aabbd5992637914407bfb5541f67c727ae30516d63eb32a85c541f8e5d8952"
+        },
+        {
+          "path": "model.safetensors",
+          "size": 11950112680,
+          "lfs_sha256": "a90e1f4c197bac8491f82078def68884b6a3527ea7fc97a693e3e367372aa80f"
+        },
+        {
+          "path": "upscaler/empty_prompt.safetensors",
+          "size": 36864468,
+          "lfs_sha256": "3cef1162f07bb81f7fb37fc7c997a9305a000f4de2563e61982d5d373a61d225"
+        },
+        {
+          "path": "upscaler/model.safetensors",
+          "size": 11950112680,
+          "lfs_sha256": "b4235e5f60bd1c0cb761f13b9549e31aefd25e3814aded4349f1f156ce0abeaa"
+        }
+      ],
+      "configs": {
+        "config.yaml": {
+          "URL": "https://huggingface.co/speridlabs/iris-3b/resolve/7445443349bc9abe3c96f01ff793e2098ca012b3/config.yaml",
+          "bytes": 1407,
+          "sha256": "077ce19156d9425a7e665a0059be02b3c5a1fcd7aea7607047b4f7486efa6cd5",
+          "value": "model:\n  block: single_stream\n  dual_depth: 8\n  final_block_text: keep\n  hidden_size: 2560\n  depth: 24\n  num_heads: 20\n  num_kv_heads: 5\n  gated_attention: true\n  sandwich_norm: true\n  patch_size: 16\n  in_channels: 3\n  mlp_ratio: 4.0\n  qkv_bias: false\n  qk_norm: true\n  norm_eps: 1.0e-06\n  attn_backend: sdpa\n  modulation: shared_bias\n  modulation_rank: 64\n  timestep_max_period: 10.0\n  adaln_zero_init: true\n  rope_theta: 10000.0\n  rope_scale: 16.0\n  rope_aspect: isotropic\n  rope_frame_pairs: 0\n  rope_frame_theta: 10.0\n  text_rope: true\n  text_rope_theta: 10000.0\n  text_abs_pos_embed: true\n  text_dim: 2560\n  text_len: 300\n  text_adapter: lap_blocks2\n  text_lap_num_layers: 12\n  text_lap_num_heads: 32\n  text_lap_mlp_ratio: 1.3\n  repa_layer: 10\n  pixel:\n    enabled: true\n    depth: 4\n    hidden_size: 16\n    attn_hidden_size: 1280\n    num_heads: 10\n    mlp_ratio: 4.0\n    modulation: post\n    abs_pos_embed: true\ntext_encoder:\n  name: qwen3_vl\n  pretrained: Qwen/Qwen3-VL-4B-Instruct\n  dim: 2560\n  max_length: 300\n  dtype: bfloat16\n  attn_implementation: sdpa\n  hidden_layers:\n  - 2\n  - 5\n  - 8\n  - 11\n  - 14\n  - 17\n  - 20\n  - 23\n  - 26\n  - 29\n  - 32\n  - 35\n  compile: false\n  on_caption_overflow: warn\nflow:\n  num_train_timesteps: 1000\n  shift: 4.0\n  timestep_sampler: logit_normal\n  logit_mean: 0.0\n  logit_std: 1.0\n  prediction: v\n  x_pred_sigma_min: 0.05\n  shift_law: none\n  shift_base_tokens: 256\n"
+        }
+      },
+      "indexes": {}
+    },
+    {
+      "repository": "Qwen/Qwen3-VL-4B-Instruct",
+      "requested_revision": "ebb281ec70b05090aa6165b016eac8ec08e71b17",
+      "resolved_revision": "ebb281ec70b05090aa6165b016eac8ec08e71b17",
+      "repository_metadata_sha256": "e5a6486727fb0c9787706ac17ab7f50e35d25e78369918f86a430ecce02e824d",
+      "weight_files": [
+        {
+          "path": "model-00001-of-00002.safetensors",
+          "size": 4967229296,
+          "lfs_sha256": "30a01a0556622645a3cce87b655bbbbbc1f170c196099f1b666c93202c3339a9"
+        },
+        {
+          "path": "model-00002-of-00002.safetensors",
+          "size": 3908490048,
+          "lfs_sha256": "046296a2a387efb43b0c997d5833c789604d168834f6e0d3064bf7bb13d002a6"
+        }
+      ],
+      "configs": {
+        "config.json": {
+          "URL": "https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct/resolve/ebb281ec70b05090aa6165b016eac8ec08e71b17/config.json",
+          "bytes": 1505,
+          "sha256": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+          "value": {
+            "architectures": [
+              "Qwen3VLForConditionalGeneration"
+            ],
+            "image_token_id": 151655,
+            "model_type": "qwen3_vl",
+            "text_config": {
+              "attention_bias": false,
+              "attention_dropout": 0.0,
+              "bos_token_id": 151643,
+              "dtype": "bfloat16",
+              "eos_token_id": 151645,
+              "head_dim": 128,
+              "hidden_act": "silu",
+              "hidden_size": 2560,
+              "initializer_range": 0.02,
+              "intermediate_size": 9728,
+              "max_position_embeddings": 262144,
+              "model_type": "qwen3_vl_text",
+              "num_attention_heads": 32,
+              "num_hidden_layers": 36,
+              "num_key_value_heads": 8,
+              "rms_norm_eps": 1e-06,
+              "rope_scaling": {
+                "mrope_interleaved": true,
+                "mrope_section": [
+                  24,
+                  20,
+                  20
+                ],
+                "rope_type": "default"
+              },
+              "rope_theta": 5000000,
+              "tie_word_embeddings": true,
+              "use_cache": true,
+              "vocab_size": 151936
+            },
+            "tie_word_embeddings": true,
+            "transformers_version": "4.57.0.dev0",
+            "video_token_id": 151656,
+            "vision_config": {
+              "deepstack_visual_indexes": [
+                5,
+                11,
+                17
+              ],
+              "depth": 24,
+              "hidden_act": "gelu_pytorch_tanh",
+              "hidden_size": 1024,
+              "in_channels": 3,
+              "initializer_range": 0.02,
+              "intermediate_size": 4096,
+              "model_type": "qwen3_vl",
+              "num_heads": 16,
+              "num_position_embeddings": 2304,
+              "out_hidden_size": 2560,
+              "patch_size": 16,
+              "spatial_merge_size": 2,
+              "temporal_patch_size": 2
+            },
+            "vision_end_token_id": 151653,
+            "vision_start_token_id": 151652
+          }
+        }
+      },
+      "indexes": {
+        "model.safetensors.index.json": {
+          "URL": "https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct/resolve/ebb281ec70b05090aa6165b016eac8ec08e71b17/model.safetensors.index.json",
+          "bytes": 64742,
+          "sha256": "58a7841d7bff2548dd91577d216274a83cf1b500bc6a534b809d6c1b1707cf2b",
+          "metadata": {
+            "total_size": 8875631616
+          }
+        }
+      }
+    }
+  ],
+  "source_citations": [
+    "src/iris_sliders/card.py",
+    "src/iris_sliders/runtime.py",
+    "src/iris_sliders/adapters.py",
+    "src/iris_sliders/train.py",
+    "src/iris_sliders/teacher.py"
+  ],
+  "profiles": [
+    {
+      "operation": "Train512px GPU, CPU encoder",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 80,
+      "calculated_host_RAM_GiB": 64,
+      "geometry": "512×512",
+      "batch_graphs": 2,
+      "text_token_bound": 300,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 11950112680,
+      "activation_allowance_bytes": 51844218880,
+      "trainable_and_optimizer_peak_bytes": 4895172,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 63799226732,
+      "host_loading_and_cache_subtotal_bytes": 48797867696,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "Conservative28-block envelope includes trunk/text handling; eight full-resolution FP32 pixel intermediates at1280 channels are reserved separately. No checkpointing is enabled by the default command.",
+      "activation_envelope_inputs": {
+        "D": 2560,
+        "I": 10240,
+        "H": 20,
+        "L": 28,
+        "N": 1324,
+        "B": 2,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": false
+      },
+      "precision": "FP32 DiT/adapter; BF16 TE",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    },
+    {
+      "operation": "Train512px CPU default",
+      "gpu_count": 0,
+      "calculated_VRAM_per_GPU_GiB": 0,
+      "calculated_host_RAM_GiB": 112,
+      "geometry": "512×512",
+      "batch_graphs": 2,
+      "text_token_bound": 300,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 11950112680,
+      "activation_allowance_bytes": 51844218880,
+      "trainable_and_optimizer_peak_bytes": 102086840,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 0,
+      "host_loading_and_cache_subtotal_bytes": 91868454072,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "Actual CLI defaults are CPU/CPU. This row is host-only; it is not a recommendation to use CPU for the active GPU campaign.",
+      "activation_envelope_inputs": {
+        "D": 2560,
+        "I": 10240,
+        "H": 20,
+        "L": 28,
+        "N": 1324,
+        "B": 2,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": false
+      },
+      "precision": "FP32 DiT/adapter; BF16 TE",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    },
+    {
+      "operation": "Render1024px GPU, CPU encoder",
+      "gpu_count": 1,
+      "calculated_VRAM_per_GPU_GiB": 68,
+      "calculated_host_RAM_GiB": 64,
+      "geometry": "1024×1024",
+      "batch_graphs": 1,
+      "text_token_bound": 300,
+      "checkpointing": false,
+      "attention": "memory-efficient SDPA (flash/efficient; no dense fallback)",
+      "resident_frozen_bytes": 11950112680,
+      "activation_allowance_bytes": 42949672960,
+      "trainable_and_optimizer_peak_bytes": 4895172,
+      "other_GPU_allowance_bytes": 0,
+      "GPU_subtotal_bytes": 54904680812,
+      "host_loading_and_cache_subtotal_bytes": 48797867696,
+      "runtime_headroom": "GPU: 25% subtotal +2GiB; host:25% subtotal +4GiB; final ceil4GiB",
+      "notes": "No VAE. Pixel-layer allowance, rather than latent-only activation math, dominates the deliberately conservative estimate.",
+      "activation_envelope_inputs": {
+        "D": 2560,
+        "I": 10240,
+        "H": 20,
+        "L": 28,
+        "N": 4396,
+        "B": 1,
+        "scalar_bytes": 4,
+        "checkpointed": false,
+        "dense_fallback": false
+      },
+      "precision": "FP32 DiT/adapter; BF16 TE",
+      "quantization_metadata_bytes": 0,
+      "activation_allowance_model": "Conservative planning envelope; linear transformer terms plus explicit dense fallback, text/KV or decode/pixel allowance as recorded in profile notes. Not measured or a formal peak guarantee."
+    }
+  ],
+  "repository": "iris-particle-sliders",
+  "optimizer_source_facts": [
+    {
+      "version": "0.9.5",
+      "source_file": "recipes.py",
+      "bytes": 104250,
+      "sha256": "4f86c1a5c029916e73c834ebea4aae3bd5502dde8f10628e5a99a23f7e60242c"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/dualnorm.py",
+      "bytes": 56768,
+      "sha256": "8e57be915dc8be44aaff2ac2f7ad39fbb2a7c610d77340e9f13e895974bf173c"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/direction_blend.py",
+      "bytes": 4011,
+      "sha256": "84982277f0559e68aceea6d1c5ee60129c1e1972bebf61ca47dfa38b8611a1fb"
+    },
+    {
+      "version": "0.9.5",
+      "source_file": "optim/constraint_geometry.py",
+      "bytes": 9142,
+      "sha256": "e51a90df05857bd986ff097a6d266bd22cefa93a0d545a6fb25d58b42775ce4c"
+    }
+  ],
+  "KV_or_recurrent_state": {
+    "type": "bounded CPU encoder returned-state allowance; no generated-token loop",
+    "bytes": 44236800,
+    "formula": "2*36*8*300*128*2; within host cache allowance"
+  },
+  "cache_limits": {
+    "max_rows": 128,
+    "max_cached_prompts": 32,
+    "field_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "FP32_fields_per_row": 3,
+    "prompt_hidden": [
+      1,
+      300,
+      12,
+      2560
+    ],
+    "prompt_bytes_per_element": 2,
+    "FP32_row_tensor_bytes": 1207959552,
+    "prompt_embedding_bytes": 589824000,
+    "host_cache_formula": "max_rows*3*product(field_shape)*4 +max_cached_prompts*product(prompt_hidden)*prompt_bytes_per_element; native masks/indices included in loader/cache reserve"
+  }
+}
