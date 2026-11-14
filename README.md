@@ -1,3 +1,5 @@
+> **Calculated memory planning:** training **80 GiB VRAM / 64 GiB host RAM** (512×512, B=2, FP32 DiT/adapter; BF16 TE); sampling **68 GiB VRAM / 64 GiB host RAM** (1024×1024). See [MEMORY.md](MEMORY.md) for checkpointed/phase variants, attention fallback and exact limits. These are conservative calculated budgets, not measured peaks.
+
 > **Current source: core0.13.0 / published ParticleGAN0.9.5.** Older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md).
 
 **Opt-in new-cohort initialization:** [cached fresh, strict FULL and RAW velocity API](docs/explicit-cached-fresh-initialization.md). Existing cohorts and defaults stay unchanged.
