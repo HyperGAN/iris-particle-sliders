@@ -3,14 +3,14 @@ from copy import deepcopy
 from pathlib import Path
 import pytest
 import torch
-from particle_sliders.pg09_backends import PreparedResponse,ResponseRow
-from particle_sliders.pg09_images import IrisResponseAdapter
+from particle_sliders.backends import PreparedResponse,ResponseRow
+from iris_sliders.image_bindings import IrisResponseAdapter
 from iris_sliders.tiny import TinyRuntime
 from iris_sliders.train import configuration
 from iris_sliders.profiles import default_profile
-from iris_sliders_fresh95 import open_training,open_inference,save_prepared_cache
-from iris_sliders_fresh95 import policy,training
-from iris_sliders_fresh95.util import Checkpoint,equal,file_pin
+from iris_sliders_scoped import open_training,open_inference,save_prepared_cache
+from iris_sliders_scoped import policy,training
+from iris_sliders_scoped.util import Checkpoint,equal,file_pin
 
 
 def runtime_fixture():
@@ -52,7 +52,7 @@ def forbid_teachers(monkeypatch):
 def test_new_cached_fresh_receipt_precedes_optimizers_and_preserves_parameters(tmp_path,monkeypatch):
     runtime,config=runtime_fixture(),config_fixture();cache,rows=cache_fixture(tmp_path,runtime,config)
     forbid_teachers(monkeypatch)
-    initialize,game=policy.initialize,training.ConditionalPG09;seen={}
+    initialize,game=policy.initialize,training.ConditionalParticleGAN;seen={}
     def initialize_spy(*args,**kwargs):
         bank,critic=args[1:3];particles=kwargs['particles']
         seen['ids']=[id(p)for p in bank.parameters()]+[id(particles)]+[id(p)for p in critic.parameters()]
@@ -65,7 +65,7 @@ def test_new_cached_fresh_receipt_precedes_optimizers_and_preserves_parameters(t
         assert backend.metadata()['fresh_initialization']['receipt']==seen['receipt']
         assert backend.network.particles is backend.particles is kwargs['particles']
         seen['before_optimizer']=True;return game(backend,prepared,critic,**kwargs)
-    monkeypatch.setattr(policy,'initialize',initialize_spy);monkeypatch.setattr(training,'ConditionalPG09',game_spy)
+    monkeypatch.setattr(policy,'initialize',initialize_spy);monkeypatch.setattr(training,'ConditionalParticleGAN',game_spy)
     owner=open_training(runtime,cache,tmp_path/'fresh',mode='fresh',cohort_id='NEW-Iris-software',config=config)
     try:
         assert seen['before_optimizer']and owner.step==0
@@ -139,7 +139,7 @@ def test_new_missing_cache_and_legacy_intent_refuse_before_components_and_cleanu
             args=dict(runtime=runtime,cache=cache,directory=tmp_path/'refused',mode='fresh',cohort_id='refused',config=config);args.update(patch)
             with pytest.raises((ValueError,FileNotFoundError)):
                 open_training(**args)
-        old=tmp_path/'old.pt';torch.save(dict(schema='iris-conditional-pg09-training-v1',config=config,game={}),old)
+        old=tmp_path/'old.pt';torch.save(dict(schema='iris-conditional-engine-training-v1',config=config,game={}),old)
         with pytest.raises(ValueError):
             open_training(runtime,cache,tmp_path/'refused',mode='resume',cohort_id='refused',config=config,resume=file_pin(old))
     owner=open_training(runtime,cache,tmp_path/'cleanup',mode='fresh',cohort_id='cleanup',config=config)

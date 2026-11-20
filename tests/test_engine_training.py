@@ -8,7 +8,7 @@ from importlib.metadata import version
 import pytest
 import torch
 from particle_sliders import FormulationGame
-from particle_sliders.pg09 import ConditionalPG09
+from particle_sliders.engine import ConditionalParticleGAN
 
 from iris_sliders import response
 from iris_sliders import train as training
@@ -64,8 +64,8 @@ def test_actual_shared_gan_owns_routed_bank_updates_and_balances_native_rows(mon
         runtime, training.configuration(load_prompts(), **options(preset=preset, critic=critic))
     )
     try:
-        assert type(game) is ConditionalPG09
-        assert version("particlegan") == game._signature["pg_version"] == "0.9.5"
+        assert type(game) is ConditionalParticleGAN
+        assert version("particlegan") == game._signature["pg_version"] == "0.11.0"
         # Compare the real-bank game to the installed upstream recipe, including
         # declared research precision. Only the shared dense resolver may select
         # an upstream optimizer profile; product code supplies no alternate law.
@@ -202,7 +202,7 @@ def test_build_failure_removes_all_native_adapter_hooks(monkeypatch, stage):
     if stage == "prepare":
         monkeypatch.setattr(training.IrisResponseAdapter, "prepare", fail)
     else:
-        monkeypatch.setattr(training, "ConditionalPG09", fail)
+        monkeypatch.setattr(training, "ConditionalParticleGAN", fail)
     with pytest.raises(ValueError, match="intentional failure"):
         training.build_game(runtime, training.configuration(load_prompts(), **options()))
     assert_no_hooks(runtime)
@@ -354,7 +354,7 @@ def test_response_cli_optional_observer_executes_public_hypergan(tmp_path, train
     torch.save(trained_packet, path)
     report = tmp_path / "diversity.json"
     from importlib.util import find_spec
-    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+    if find_spec('iris_sliders.hypergan_diagnostics') is None:
         monkeypatch.setattr(response, 'make_runtime', lambda *a: pytest.fail('missing observer allocated model'))
         with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
             response.main(['--dummy', '--adapter', str(path), '--out', str(tmp_path / 'velocity.pt'),

@@ -8,15 +8,8 @@ import torch
 
 
 def response_diversity(*args, **kwargs):
-    """Resolve the shared observer before allocating a native model.
-
-    S081 and the current core 0.13 candidate do not ship this observer. An
-    optional HyperGAN install alone cannot supply a missing shared API.
-    """
-    try:
-        from particle_sliders.hypergan_diagnostics import response_diversity as observe
-    except ImportError as exc:
-        raise RuntimeError('the pinned shared core has no qualified HyperGAN diversity observer') from exc
+    """Resolve the optional observer before native allocation."""
+    from .hypergan_diagnostics import response_diversity as observe
     return observe(*args, **kwargs)
 
 

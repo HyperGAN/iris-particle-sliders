@@ -5,8 +5,8 @@ from pathlib import Path
 import torch
 from particle_sliders import winning_formulation
 from particle_sliders.field_critic import FieldCritic
-from particle_sliders.pg09 import ConditionalPG09
-from particle_sliders.pg09_images import IrisResponseAdapter
+from particle_sliders.engine import ConditionalParticleGAN
+from iris_sliders.image_bindings import IrisResponseAdapter
 from iris_sliders.adapters import new_particles
 from iris_sliders.profiles import adapter_bank,select_profile
 from iris_sliders.native import model_identity,admitted
@@ -15,8 +15,8 @@ from . import PROFILE,ownership,policy
 from .cache import load_cache,to_device
 from .util import canonical,equal,new_directory,read_packet,save_packet,write_json
 
-FULL_SCHEMA='Iris-explicit-cached-fresh95-v1-FULL'
-RAW_SCHEMA='Iris-explicit-cached-fresh95-v1-RAW'
+FULL_SCHEMA='Iris-explicit-cached-scoped-v1-FULL'
+RAW_SCHEMA='Iris-explicit-cached-scoped-v1-RAW'
 
 class ReceiptBackend:
     def __init__(self,backend,initialization,sources,cache_identity):
@@ -106,11 +106,11 @@ class Training(Owner):
                 torch.set_rng_state(torch.Generator().manual_seed(config['seed']).get_state())
                 if devices:torch.cuda.set_rng_state(torch.Generator(device=runtime.device).manual_seed(config['seed']).get_state(),runtime.device)
                 self.bank,particles,native=attach(runtime,config,architecture)
-                if architecture=='hypergan-hndl-pg095-v1':
+                if architecture=='hypergan-hndl-engine-v1':
                     from iris_sliders_hndl import spatial_critic
                     critic=spatial_critic(prepared[0].target.shape[1],conditions.shape[1],tuple(prepared[0].target.shape[2:]),config['critic_hidden']).to(runtime.device)
                 elif config['critic']=='hndl':
-                    from particle_sliders.pg09_hndl import HNDLConditionalReadoutCritic
+                    from particle_sliders.hndl_critic import HNDLConditionalReadoutCritic
                     critic=HNDLConditionalReadoutCritic(prepared[0].target.numel(),conditions.shape[1],hidden=config['critic_hidden']).to(runtime.device)
                 else:
                     critic=FieldCritic(prepared[0].target.shape[1],conditions.shape[1],width=config['critic_hidden']).to(runtime.device)
@@ -122,7 +122,7 @@ class Training(Owner):
             else:self.initialization=deepcopy(packet['initialization'])
             self.backend=ReceiptBackend(native,self.initialization,self.sources,self.cache_identity)
             # First optimizer construction is after the fresh scoped initializer.
-            self.game=ConditionalPG09(self.backend,prepared,critic,conditions=conditions,particles=particles,
+            self.game=ConditionalParticleGAN(self.backend,prepared,critic,conditions=conditions,particles=particles,
                 response_domain='continuous_field',response_scale=config['response_scale'],sigma=config['sigma'],
                 preset=config['preset'],total_steps=config['steps'],batch_size=config['batch'],seed=config['seed'],
                 sampling='balanced',recipe_overrides={k:config[k]for k in('lr','d_lr_mult','prior_lr_mult')if k in config})

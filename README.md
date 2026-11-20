@@ -1,6 +1,6 @@
 > **Calculated memory planning:** training **80 GiB VRAM / 64 GiB host RAM** (512×512, B=2, FP32 DiT/adapter; BF16 TE); sampling **68 GiB VRAM / 64 GiB host RAM** (1024×1024). See [MEMORY.md](MEMORY.md) for checkpointed/phase variants, attention fallback and exact limits. These are conservative calculated budgets, not measured peaks.
 
-> **Current source: core0.13.0 / published ParticleGAN0.9.5.** Older versioned evidence below remains historical. See [adoption and compatibility](docs/pg095-adoption.md).
+> **Current source uses Particle Sliders core 0.15.1 and ParticleGAN 0.11.0.** New runs use a fresh RAW-only cohort. Saved evidence retains its original source and recipe.
 
 **Opt-in new-cohort initialization:** [cached fresh, strict FULL and RAW velocity API](docs/explicit-cached-fresh-initialization.md). Existing cohorts and defaults stay unchanged.
 
@@ -22,7 +22,7 @@ public factory/HNDL/render qualification boundaries remain unchanged.
 The PG0.9.4 overview below records the earlier source and qualification history.
 
 The default iris-particle-sliders 0.3.0 now uses shared core 0.12.0 and released ParticleGAN 0.9.4.
-See [the current upgrade and qualification](PG094-ADOPTION.md).
+See the [historical release qualification](PG094-ADOPTION.md).
 A separate opt-in build now connects the actual native Iris hooks to shared
 HyperGAN develop/HNDL projection and spatial critic graphs. See
 [the profile, exact pins and qualification limits](HYPERGAN-HNDL.md).
@@ -33,7 +33,7 @@ For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
 
 Native Iris-3B routed particle adapters trained through the installed
 `particle-sliders-core` API and released **ParticleGAN 0.9.4**. The default
-`iris-slider-train` command executes `particle_sliders.pg09.ConditionalPG09`.
+`iris-slider-train` command executes `particle_sliders.engine.ConditionalParticleGAN`.
 It trains on actual `[1,3,H,W]` RGB velocity fields through the existing Iris hooks;
 it has no pixel MSE, reconstruction loss, local optimizer or vendored GAN loop.
 
@@ -90,7 +90,7 @@ iris-slider-train --checkpoint /ml2/models/iris-3b \
   --text-dir /ml2/models/Qwen3-VL-4B-Instruct \
   --cache-dir /ml2/iris-sliders/cache --device cuda:DEVICE --text-device cpu \
   --height 512 --width 512 --batch 2 --steps 1600 \
-  --outdir /ml2/iris-sliders/pg094
+  --outdir /ml2/iris-sliders/engine
 ```
 
 Local official snapshots are the default. `--allow-hub` explicitly permits pinned
@@ -119,7 +119,7 @@ Gaussian response noise against noise plus `(student - target) / response_scale`
 with the public adversarial objectives, critic penalty and prior regularizer.
 The old sketch, isotropic calibration and FormulationGame do not run on this path.
 
-In the default native PG094 environment, the optional `--critic hndl` arm calls the shared
+In the default native engine profile, the optional `--critic hndl` arm calls the shared
 `HNDLConditionalReadoutCritic` and released HNDL 0.8.2 resolver/builder. Only that
 critic flattens native responses; the public PG penalty keeps the RGB field.
 Its source, resolved plan and HNDL sources bind the checkpoint. Changing critic
@@ -133,9 +133,10 @@ iris-slider-response --dummy --adapter outputs/iris-hndl/response-adapter.pt \
   --out outputs/iris-hndl/velocity.pt
 ```
 
-`--diversity-report` requires a shared observer API that the pinned 0.12.0 core does not supply. It now refuses explicitly before
-native allocation. The diagnostics extra alone does not qualify this operation.
-See [the current integration limits](HYPERGAN-HNDL.md).
+`--diversity-report` uses the product's vendored observer bridge in the
+default distribution. Install the `diagnostics` extra in that environment to
+use the pinned HyperGAN implementation. The report describes within-condition
+response variation at a fixed timestep.
 
 ## Exports and inference limits
 
@@ -146,7 +147,7 @@ last shared update, with no product-specific EMA added. `train.jsonl` logs actua
 GAN metrics, and `run.json` records the exact resolved recipe and source signature.
 
 `iris-slider-response` rebuilds the bound native contexts and loads the export
-through `ConditionalPG09.load_export_state_dict`, then returns a native RGB
+through `ConditionalParticleGAN.load_export_state_dict`, then returns a native RGB
 velocity tensor for one bound row. It is a response evaluation, not an image.
 It requires the same runtime, native source, base, conditioning and recipe.
 

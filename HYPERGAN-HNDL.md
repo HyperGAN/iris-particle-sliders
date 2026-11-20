@@ -1,11 +1,10 @@
 # Opt-in Iris HyperGAN/HNDL distribution
 
 The default **iris-particle-sliders 0.3.0** and separate
-**iris-particle-sliders-hndl 0.4.0rc1** now use the same exact current core 0.12.0 /
-PG 0.9.4 pin recorded in [PG094-ADOPTION.md](PG094-ADOPTION.md).
-The default native-pg094-v1 profile retains Iris routed projections and the shared
-spatial field critic. The separate HyperGAN/HNDL profile uses the actual shared
-HyperGAN develop / HNDL 0.10 projection and spatial critic graphs.
+**iris-particle-sliders-hndl 0.4.0rc1** both use Particle Sliders core 0.15.1
+at `c13890f8` with ParticleGAN 0.11.0. The default native profile retains
+Iris routed projections and the shared spatial field critic. The opt-in
+distribution owns the vendored HNDL graph assets and pins its builder directly.
 Install exactly one distribution in a fresh environment. Their common Iris
 namespace refuses mixed ownership before native work. The default wheel excludes
 the HNDL addon, including when built after a previous addon build.
@@ -13,7 +12,7 @@ the HNDL addon, including when built after a previous addon build.
 HyperGAN remains pinned at `5f368a3770cf5bdae0448995c9f76e29af8049f7` and HNDL at
 0.10.0. Earlier preview/S081 packets retain their original environments and cannot
 resume under this new source signature. [A794-MIGRATION.md](A794-MIGRATION.md) is a
-historical receipt; [PG094-ADOPTION.md](PG094-ADOPTION.md) describes this update.
+historical receipt.
 
 ## Build in a fresh environment
 
@@ -34,7 +33,7 @@ is needed for `--dummy`. The complete emitted modern sdist retains its distinct
 name, exact dependencies, HNDL module/assets and this profile-specific long
 description. Its active lock describes the modern full source closure; the
 original S081 lock is included byte-for-byte as `backend-s081.lock.json`.
-Ordinary root builds remain stable. Python is >=3.11,<3.15 for modern; current Python/runtime evidence is recorded in PG094-ADOPTION.md.
+Ordinary root builds remain stable. Python is >=3.11,<3.15 for modern; the packaged profile records the exact source closure.
 
 `requirements-s081.txt` restores the historical public Iris source at
 `a191c999e931dc9bd7d1f9dcb8f2c200048d342d`. Keep historical packets with that exact
@@ -50,7 +49,7 @@ output/input/particle VJP tests prove the original Iris projection is preserved.
 There is no copied GAN loss, regularizer, optimizer or update loop here.
 
 Shared `AdapterParameters` owns the actual FP32 adapter leaves and single 128x4
-particle parameter once; frozen Iris parameters are excluded. `ConditionalPG09`
+particle parameter once; frozen Iris parameters are excluded. `ConditionalParticleGAN`
 owns all GAN updates. Genuine native RGB `[1,3,H,W]` fields stay in the admitted
 PG image penalty domain. Flat continuous widths >=170 remain refused; no domain
 selector or width guard is bypassed.
@@ -81,11 +80,9 @@ fresh-process resume/export receipts are indexed in
 [CLAUDE-FIXES.md](CLAUDE-FIXES.md). The earlier public qualification of source
 `2e54a08` remains in [its historical receipt](CLEAN-PUBLIC-QUALIFICATION.md).
 
-Neither exact core provides `particle_sliders.hypergan_diagnostics`. Requests for
-diversity reports explicitly refuse before native allocation. Both lanes test
-this behavior with HyperGAN installed; missing shared imports are not converted
-into skips. The absent observer is a feature gap, not a qualified observation.
-HyperGAN integration here is the actual network builder above.
+Iris supplies its own optional observer bridge. The default distribution's
+diagnostics extra binds the reviewed observer source. The HNDL distribution
+pins the separate graph-builder source.
 
 All native execution uses random tiny Iris and synthetic text on CPU. Pretrained
 loading, GPU behavior/memory, convergence, semantic quality and native

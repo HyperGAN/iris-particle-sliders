@@ -1,5 +1,5 @@
-"""Explicit cached Iris fresh95-v1 APIs; original Iris routes remain unchanged."""
-PROFILE = 'iris-explicit-cached-fresh95-v1'
+"""Explicit cached Iris scoped-v1 APIs; original Iris routes remain unchanged."""
+PROFILE = 'iris-explicit-cached-scoped-v1'
 
 def open_training(*args, **kwargs):
     from .training import Training

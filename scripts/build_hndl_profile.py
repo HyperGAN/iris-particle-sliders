@@ -1,6 +1,6 @@
 """Build a separate opt-in Iris HyperGAN/HNDL distribution; never publish it.
 
-The default pyproject installs the current native PG095 profile. The emitted sdist is complete
+The default pyproject installs the current native ParticleGAN 0.11.0 profile. The emitted sdist is complete
 and contains its own exact profile pyproject, so wheel rebuilds retain the pins.
 """
 import argparse
@@ -37,7 +37,7 @@ def stage(root, destination):
     config = tomllib.loads(text)
     old = next(d for d in config['project']['dependencies'] if d.startswith('particle-sliders-core @'))
     core = profile['core_commit']
-    new = ('particle-sliders-core[fibo-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@'
+    new = ('particle-sliders-core @ git+https://github.com/HyperGAN/particle-sliders.git@'
            + core + '#subdirectory=packages/particle-sliders-core')
     if text.count(old) != 1:
         raise ValueError('ambiguous core dependency')
@@ -47,6 +47,11 @@ def stage(root, destination):
     text = text.replace('iris-slider-train-legacy = "iris_sliders.legacy_train:main"\n', '')
     text = text.replace('exclude = ["iris_sliders_hndl*"]', 'exclude = []')
     text = text.replace('iris_sliders = ["*.json"]', 'iris_sliders = ["*.json"]\niris_sliders_hndl = ["*.json"]')
+    text = text.replace(
+        f'"{new}",',
+        f'"{new}",\n  "hndl==0.10.0",\n  "hypergan @ git+https://github.com/HyperGAN/HyperGAN.git@{profile["hypergan_commit"]}",',
+    )
+    text = text.replace('iris_sliders_hndl = ["*.json"]', 'iris_sliders_hndl = ["*.json", "*.hndl"]')
     text = text.replace('requires-python = ">=3.11"', 'requires-python = ">=3.11,<3.15"')
     text = text.replace('hndl = ["hndl==0.8.2"]', 'hndl = ["hndl==0.10.0"]')
     text = text.replace('a879c4fbff903ccefeba2194bcc7a13fe7b5abb7', profile['hypergan_commit'])
@@ -69,7 +74,7 @@ def stage(root, destination):
                         source_map_scope='all installed non-cache core package source/data files; shared builder closure verified separately')
     lock['particlegan'] = dict(repository='https://github.com/255BITS/ParticleGAN',
                               version=profile['particlegan_version'],
-                              source_manifest='particle_sliders/pg095_release.json')
+                              source_manifest='particle_sliders/engine_release.json')
     lock['network_profile'] = profile
     lock.pop('optional_reuse', None)
     (destination / 'backend.lock.json').write_text(json.dumps(lock, indent=2) + '\n')

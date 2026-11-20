@@ -2,12 +2,12 @@
 import torch
 import pytest
 from particle_sliders.lifecycle import SessionConfig, open_session, backend, UnsupportedOperation
-from particle_sliders.pg09 import _hash
+from particle_sliders.engine import _hash
 
 
 def test_common_factory_roundtrip(tmp_path):
     torch.set_num_threads(1)
-    config = SessionConfig('iris', 'lifecycle-cpu-new-v1', **dict(dummy=True, steps=4, ema_decay=.9, height=16, width=16, trajectory_steps=4, records_per_pair=2, rows=[{'neutral': 'a red cup', 'positive': 'a shiny red cup'}, {'neutral': 'a blue bowl', 'positive': 'a shiny blue bowl'}]))
+    config = SessionConfig('iris', 'lifecycle-cpu-new-v1', **dict(dummy=True, steps=4, ema_decay=None, height=16, width=16, trajectory_steps=4, records_per_pair=2, rows=[{'neutral': 'a red cup', 'positive': 'a shiny red cup'}, {'neutral': 'a blue bowl', 'positive': 'a shiny blue bowl'}]))
     before = torch.get_rng_state().clone()
     with open_session(config) as full:
         assert torch.equal(before, torch.get_rng_state())
@@ -23,10 +23,11 @@ def test_common_factory_roundtrip(tmp_path):
     with open_session(config, resume=tmp_path / 'training.pt') as resumed:
         resumed.train()
         assert resumed.checkpoint()['sha256'] == expected['sha256']
-        resumed.export(tmp_path / 'adapter.pt', selection='ema')
-        ema = resumed.ema.values
+        resumed.export(tmp_path / 'adapter.pt', selection='raw')
+        assert resumed.ema.decay is None and resumed.ema.values is None
+        raw_hash = _hash(resumed.game.network.state_dict())
     with open_session(config, artifact=tmp_path / 'adapter.pt', operation='evaluate') as inference:
-        assert _hash(inference.game.network.state_dict()) == _hash(ema)
+        assert _hash(inference.game.network.state_dict()) == raw_hash
         assert torch.isfinite(inference.evaluate()).all()
     assert torch.equal(before, torch.get_rng_state())
     assert not torch.cuda.is_initialized()

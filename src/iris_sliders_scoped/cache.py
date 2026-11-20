@@ -2,13 +2,13 @@
 from dataclasses import fields
 import hashlib,math
 import torch
-from particle_sliders.pg09_backends import PreparedResponse,ResponseRow
-from particle_sliders.pg09_images import image_condition_features
+from particle_sliders.backends import PreparedResponse,ResponseRow
+from iris_sliders.image_bindings import image_condition_features
 from iris_sliders.native import model_identity
 from . import ownership
 from .util import canonical,read_packet,save_packet,tree
 
-SCHEMA='Iris-completed-native-prepared-cache-fresh95-v1'
+SCHEMA='Iris-completed-native-prepared-cache-scoped-v1'
 TEACHER_KEYS=('rows','seed','height','width','trajectory_steps','records_per_pair','teacher_cfg')
 
 def teacher_configuration(config):return {k:config[k]for k in TEACHER_KEYS}

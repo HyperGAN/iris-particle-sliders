@@ -6,7 +6,7 @@ from pathlib import Path
 
 import torch
 from iris3b.flow.solver import FlowDPMSolver
-from particle_sliders.pg09_backends import ResponseRow
+from particle_sliders.backends import ResponseRow
 
 from .card import default_prompts
 from .runtime import validate_shape

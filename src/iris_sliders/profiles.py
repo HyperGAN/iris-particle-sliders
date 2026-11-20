@@ -15,8 +15,8 @@ import sys
 
 STABLE = 'iris-particle-sliders'
 MODERN = 'iris-particle-sliders-hndl'
-PROFILE = 'hypergan-hndl-pg095-v1'
-NATIVE_PROFILE = 'native-pg095-v1'
+PROFILE = 'hypergan-hndl-engine-v1'
+NATIVE_PROFILE = 'native-engine-v1'
 # Each distribution admits only its own source-bound current architecture.
 
 
@@ -113,8 +113,8 @@ def verify_runtime():
     if pg_dist.version != document['particlegan_version'] or actual_pg != document['pg_full_sources_sha256']:
         raise RuntimeError('Iris actual ParticleGAN version/source bytes differ from admitted release')
     # Execute the verified shared admission rather than advertising a hardcoded PG version.
-    from particle_sliders.pg09 import validate_pg09_domain
-    validate_pg09_domain((1, 3, 16, 16), response_domain='continuous_field')
+    from particle_sliders.engine import validate_engine_domain
+    validate_engine_domain((1, 3, 16, 16), response_domain='continuous_field')
     return document
 
 

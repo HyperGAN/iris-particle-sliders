@@ -69,7 +69,7 @@ def test_optional_observation_module_import_is_lazy(monkeypatch):
     original = builtins.__import__
 
     def guarded(name, *args, **kwargs):
-        if name.startswith(("hypergan", "particle_sliders.hypergan_diagnostics")):
+        if name.startswith(("hypergan", "iris_sliders.hypergan_diagnostics")):
             pytest.fail("optional observation imported while loading the Iris module")
         return original(name, *args, **kwargs)
 
@@ -80,13 +80,13 @@ def test_optional_observation_module_import_is_lazy(monkeypatch):
 def test_real_observation_varies_only_private_latents_in_one_explicit_condition_group(game, monkeypatch):
     pytest.importorskip("hypergan.diversity_metrics")
     from importlib.util import find_spec
-    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+    if find_spec('iris_sliders.hypergan_diagnostics') is None:
         before = snapshot(game)
         with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
             diagnostics.observe_response_diversity(game, seeds=(13, 17))
         assert equal_tree(before, snapshot(game))
         return
-    from particle_sliders import hypergan_diagnostics
+    from iris_sliders import hypergan_diagnostics
 
     batches, contexts = [], []
     observe = hypergan_diagnostics.response_diversity
@@ -139,7 +139,7 @@ def test_real_observation_is_deterministic_and_preserves_exact_export(game):
     pytest.importorskip("hypergan.diversity_metrics")
     before = snapshot(game)
     from importlib.util import find_spec
-    if find_spec('particle_sliders.hypergan_diagnostics') is None:
+    if find_spec('iris_sliders.hypergan_diagnostics') is None:
         with pytest.raises(RuntimeError, match='no qualified HyperGAN diversity observer'):
             diagnostics.observe_response_diversity(game, index=1, seeds=(23, 29), pool_size=4)
         assert equal_tree(before, snapshot(game))
