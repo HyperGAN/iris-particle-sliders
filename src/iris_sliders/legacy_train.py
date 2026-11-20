@@ -208,11 +208,11 @@ def _conditioning_digest(records):
 
 def _require_fixture_mode(*, dummy, resume, allow_legacy):
     from .profiles import select_profile
-    select_profile('native-pg095-v1')
+    select_profile('native-engine-v1')
     if not allow_legacy:
         raise ValueError("archived gmix fixture requires allow_legacy=True or --allow-legacy")
     if resume is not None:
-        raise ValueError("archived raw resume is unsupported; use iris-slider-train for PG0.9.5")
+        raise ValueError("archived raw resume is unsupported; use iris-slider-train for ParticleGAN 0.11.0")
     if not dummy:
         raise ValueError(
             "archived real training is unsupported; only the explicit CPU dummy fixture is available"
@@ -298,17 +298,10 @@ def train(
     try:
         outdir = Path(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
-        ema = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
-        ema_particles = game.particles.detach().clone()
         history = []
-        decay = float(stamp.spec["ema"])
         for index in range(1, steps + 1):
             stats = step_context(game, records, index, batch)
             history.append(stats)
-            with torch.no_grad():
-                for key, tensor in game.bridge.bank.state_dict().items():
-                    ema[key].lerp_(tensor, 1.0 - decay)
-                ema_particles.lerp_(game.particles, 1.0 - decay)
             with (outdir / "train.jsonl").open("a") as handle:
                 handle.write(json.dumps(stats) + "\n")
             print(json.dumps(stats), flush=True)
@@ -323,18 +316,13 @@ def train(
             "controls_excluded_from_normalization": True,
             "calibration": "exact-isotropic-pixel-edit-rms-moments",
             "teacher_cfg": teacher_cfg,
-            "export": "EMA",
-            "ema": decay,
+            "export": "RAW",
+            "ema": None,
             "projection": "all-RGB-coordinate Rademacher sketch, rank 8, fixed per D/G step and changing by step index",
             "quality_validated": False,
             "resume_supported": False,
         }
-        raw_state = {key: tensor.detach().clone() for key, tensor in game.bridge.bank.state_dict().items()}
-        try:
-            game.bridge.bank.load_state_dict(ema)
-            save_adapter(outdir / "adapter.safetensors", game.bridge.bank, ema_particles, meta)
-        finally:
-            game.bridge.bank.load_state_dict(raw_state)
+        save_adapter(outdir / "adapter.safetensors", game.bridge.bank, game.particles, meta)
         (outdir / "run.json").write_text(
             json.dumps({"metadata": meta, "config": run_config, "last": history[-1]}, indent=2) + "\n"
         )
@@ -372,7 +360,7 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     from .profiles import select_profile
-    select_profile('native-pg095-v1')
+    select_profile('native-engine-v1')
     if args.print_card:
         print(json.dumps(card(), indent=2))
         return

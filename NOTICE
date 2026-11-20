@@ -14,3 +14,6 @@ licenses, including:
 
 Shared particle-sliders-core and ParticleGAN are separate MIT-licensed dependencies; no base weights are redistributed.
 Frozen Qwen3-VL-4B-Instruct: Apache-2.0; downloaded separately.
+
+The image response binding, optional HyperGAN observer bridge, and HNDL
+profiles include MIT-licensed code adapted from HyperGAN/particle-sliders.

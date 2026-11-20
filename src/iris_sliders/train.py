@@ -12,8 +12,8 @@ import torch
 from particle_sliders import winning_formulation
 from particle_sliders.field_critic import FieldCritic
 from particle_sliders.lifecycle import atomic_save, updates
-from particle_sliders.pg09 import ConditionalPG09, validate_pg09_domain
-from particle_sliders.pg09_images import IrisResponseAdapter, image_condition_features
+from particle_sliders.engine import ConditionalParticleGAN, validate_engine_domain
+from iris_sliders.image_bindings import IrisResponseAdapter, image_condition_features
 
 from .adapters import new_particles
 from .card import IRIS_COMMIT, MODEL_REVISION, TEXT_REVISION, card
@@ -21,8 +21,8 @@ from .checkpoint import config_digest
 from .runtime import validate_shape
 from .teacher import collect_response_rows, load_prompts
 
-TRAINING_SCHEMA = "iris-conditional-pg09-training-v1"
-EXPORT_SCHEMA = "iris-conditional-pg09-response-v1"
+TRAINING_SCHEMA = "iris-conditional-engine-training-v1"
+EXPORT_SCHEMA = "iris-conditional-engine-response-v1"
 
 
 def training_card(network_profile=None):
@@ -32,12 +32,12 @@ def training_card(network_profile=None):
     result = {**card(), "format": EXPORT_SCHEMA, "core_commit": profile['core_commit'],
               "shared_core_version": version('particle-sliders-core'),
               "particlegan": version('particlegan'),
-              "trainer": "particle_sliders.pg09.ConditionalPG09",
+              "trainer": "particle_sliders.engine.ConditionalParticleGAN",
               "protocol": {"response": "native RGB velocity [1,3,H,W]",
                            "student_conditioning": "neutral", "cfg_adapter_branch": "conditional_only",
                            "objective": "g_adv+public_prior;d_adv+public_penalty",
                            "rendering": "unqualified; raw response evaluation only"}}
-    if selected != 'native-pg095-v1':
+    if selected != 'native-engine-v1':
         from iris_sliders_hndl import verified_profile
         result['network_profile'] = verified_profile()[1]
     return result
@@ -70,11 +70,11 @@ def configuration(
     from .profiles import select_profile, verify_runtime
     network_profile = select_profile(network_profile)
     verify_runtime()
-    if network_profile == "hypergan-hndl-pg095-v1":
+    if network_profile == "hypergan-hndl-engine-v1":
         from iris_sliders_hndl import verified_profile
         verified_profile()
         if critic != "field":
-            raise ValueError("hypergan-hndl-pg095-v1 uses the shared HNDL spatial field critic")
+            raise ValueError("hypergan-hndl-engine-v1 uses the shared HNDL spatial field critic")
     if critic not in ("field", "hndl"):
         raise ValueError("critic must be field or hndl; a changed critic requires a fresh cohort")
     if critic == "hndl":
@@ -109,7 +109,7 @@ def configuration(
     if height * width > 1048576:
         raise ValueError("this Iris release is limited to one megapixel")
     # Reject the wrong PG release/domain before any native model forward.
-    validate_pg09_domain((1, 3, height, width), response_domain="continuous_field")
+    validate_engine_domain((1, 3, height, width), response_domain="continuous_field")
     if type(steps) is not int or steps < 1 or type(batch) is not int or not 2 <= batch <= 512:
         raise ValueError("positive total steps and a batch in [2,512] are required")
     if type(seed) is not int or not 0 <= seed < 2**63 - 100:
@@ -135,7 +135,7 @@ def configuration(
         "critic": critic,
     }
     result.update(rates)
-    if network_profile != "native-pg095-v1":
+    if network_profile != "native-engine-v1":
         result["network_profile"] = network_profile
     return result
 
@@ -183,12 +183,12 @@ def build_game(runtime, config):
             backend = IrisResponseAdapter(runtime, bank, particles, model_identity=identity)
             prepared = [backend.prepare(row) for row in response_rows]
             conditions = image_condition_features(prepared)
-            if profile == "hypergan-hndl-pg095-v1":
+            if profile == "hypergan-hndl-engine-v1":
                 from iris_sliders_hndl import spatial_critic
                 critic = spatial_critic(prepared[0].target.shape[1], conditions.shape[1],
                                         tuple(prepared[0].target.shape[2:]), config["critic_hidden"]).to(runtime.device)
             elif config["critic"] == "hndl":
-                from particle_sliders.pg09_hndl import HNDLConditionalReadoutCritic
+                from particle_sliders.hndl_critic import HNDLConditionalReadoutCritic
 
                 critic = HNDLConditionalReadoutCritic(
                     prepared[0].target.numel(), conditions.shape[1], hidden=config["critic_hidden"]
@@ -197,7 +197,7 @@ def build_game(runtime, config):
                 critic = FieldCritic(
                     prepared[0].target.shape[1], conditions.shape[1], width=config["critic_hidden"]
                 ).to(runtime.device)
-            return ConditionalPG09(
+            return ConditionalParticleGAN(
                 backend,
                 prepared,
                 critic,
@@ -327,7 +327,7 @@ def parser():
     result.add_argument("--width", type=int, default=512)
     result.add_argument("--trajectory-steps", type=int, default=100)
     result.add_argument("--records-per-pair", type=int, default=2)
-    result.add_argument("--outdir", type=Path, default=Path("outputs/iris-pg09"))
+    result.add_argument("--outdir", type=Path, default=Path("outputs/iris-engine"))
     result.add_argument("--resume", type=Path)
     result.add_argument("--cache-dir", type=Path, default=Path("/ml2/iris-particle-sliders/cache"))
     result.add_argument("--checkpoint", type=Path)

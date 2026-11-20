@@ -1,4 +1,4 @@
-"""Archived gmix stamp helpers. The default trainer uses the shared PG0.9.5 API."""
+"""Archived gmix stamp helpers. The default trainer uses the shared ParticleGAN 0.11.0 API."""
 
 from particle_sliders import winning_formulation
 

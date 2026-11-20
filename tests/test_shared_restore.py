@@ -3,7 +3,7 @@
 from copy import deepcopy
 
 import pytest
-from test_pg09_training import equal_tree
+from test_engine_training import equal_tree
 
 from iris_sliders.teacher import load_prompts
 from iris_sliders.tiny import TinyRuntime

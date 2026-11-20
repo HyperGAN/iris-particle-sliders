@@ -10,7 +10,7 @@ from torch import nn
 
 from iris_sliders.adapters import AdapterBank
 
-PROFILE = 'hypergan-hndl-pg095-v1'
+PROFILE = 'hypergan-hndl-engine-v1'
 
 
 def verified_profile():
@@ -23,7 +23,7 @@ def verified_profile():
     direct = json.loads(hypergan.read_text('direct_url.json') or '{}')
     if direct.get('vcs_info', {}).get('commit_id') != expected['hypergan_commit']:
         raise RuntimeError('Iris requires the exact public HyperGAN VCS commit')
-    from particle_sliders.fibo_hndl import verified_builder
+    from iris_sliders_hndl.fibo_hndl import verified_builder
     builder, identity = verified_builder()
     if identity != expected['network_identity']:
         raise ValueError('Iris HNDL network provenance differs')
@@ -36,7 +36,7 @@ class HNDLRoutedProjection(nn.Module):
         super().__init__()
         if (stamp.spec['adapter_rank'], stamp.spec['parts'], stamp.spec['particle_dim']) != (8, 128, 4):
             raise ValueError('Iris HNDL requires the shared rank8/128x4 architecture')
-        from particle_sliders.fibo_hndl import HNDLParticleProjection
+        from iris_sliders_hndl.fibo_hndl import HNDLParticleProjection
         builder, identity = verified_profile()
         # The shared wrapper constructs and initializes the common graph. It does
         # not attach to the host, and its placeholder bank is never registered.
@@ -65,7 +65,7 @@ class HNDLRoutedProjection(nn.Module):
         return self.graph(value=value, particles=bank).reshape(*shape[:-1], self.output_width)
 
 
-def adapter_bank(model, stamp, profile='native-pg095-v1'):
+def adapter_bank(model, stamp, profile='native-engine-v1'):
     if profile != PROFILE:
         raise ValueError('unknown Iris network profile')
     verified_profile()
@@ -74,5 +74,5 @@ def adapter_bank(model, stamp, profile='native-pg095-v1'):
 
 def spatial_critic(channels, condition_width, spatial_shape, width):
     verified_profile()
-    from particle_sliders.fibo_hndl import HNDLFieldCritic
+    from iris_sliders_hndl.fibo_hndl import HNDLFieldCritic
     return HNDLFieldCritic(channels, condition_width, spatial_shape, width=width)

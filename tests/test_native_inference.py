@@ -13,12 +13,14 @@ from iris_sliders.lifecycle import BACKEND
 @pytest.fixture(scope='module')
 def exports():
     config = SessionConfig('iris', 'iris-core081-native-new', dummy=True, steps=2,
-        height=16, width=16, trajectory_steps=4, records_per_pair=2, ema_decay=.9,
+        height=16, width=16, trajectory_steps=4, records_per_pair=2, ema_decay=None,
         rows=[dict(neutral='cup', positive='shiny cup'), dict(neutral='bowl', positive='shiny bowl')])
     with BACKEND.open(config) as session:
         session.train(stop_after=1)
         before = session.checkpoint()['sha256']
-        packets = {selection: session.export_inference(selection=selection) for selection in ('raw', 'ema')}
+        packets = {'raw': session.export_inference(selection='raw')}
+        with pytest.raises(ValueError, match='raw'):
+            session.export_inference(selection='ema')
         assert session.checkpoint()['sha256'] == before
     return packets
 
@@ -31,17 +33,17 @@ def test_native_only_factory_without_training_construction(exports, monkeypatch)
     monkeypatch.setattr(teacher, 'collect_response_rows', forbidden)
     monkeypatch.setattr(torch.optim.Optimizer, '__init__', forbidden)
     from particle_sliders.field_critic import FieldCritic
-    from particle_sliders.pg09 import ConditionalPG09
+    from particle_sliders.engine import ConditionalParticleGAN
     monkeypatch.setattr(FieldCritic, '__init__', forbidden)
     from iris_sliders.profiles import default_profile
-    if default_profile() != 'native-pg095-v1':
-        from particle_sliders.fibo_hndl import HNDLFieldCritic
+    if default_profile() != 'native-engine-v1':
+        from iris_sliders_hndl.fibo_hndl import HNDLFieldCritic
         monkeypatch.setattr(HNDLFieldCritic, '__init__', forbidden)
-    monkeypatch.setattr(ConditionalPG09, '__init__', forbidden)
+    monkeypatch.setattr(ConditionalParticleGAN, '__init__', forbidden)
     before = torch.get_rng_state().clone()
     for selection, packet in exports.items():
         from iris_sliders.profiles import default_profile
-        expected_keys = {'dummy', 'seed'} | ({'network_profile'} if default_profile() != 'native-pg095-v1' else set())
+        expected_keys = {'dummy', 'seed'} | ({'network_profile'} if default_profile() != 'native-engine-v1' else set())
         assert set(packet['specification']['configuration']) == expected_keys
         assert not {'game', 'rows', 'optimizer', 'critic'} & packet.keys()
         with open_inference(packet, backend=native.INFERENCE_BACKEND, operation='response') as session:

@@ -3,7 +3,7 @@ from copy import deepcopy
 import math
 import torch
 from particle_sliders.lifecycle import _network_observation
-from particle_sliders.pg09_backends import ResponseRow
+from particle_sliders.backends import ResponseRow
 from iris_sliders.native import model_identity,observation
 from iris_sliders.train import configuration
 from . import PROFILE,ownership
