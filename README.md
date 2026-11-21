@@ -173,10 +173,54 @@ adapter on the positive branch of native CFG3, 1024-pixel images, and the
 grid and exact gains for that replay.
 [Per-case evidence](evidence/golden-hour-raw128-scheduled-strength.json)
 
+### Calibrated activation gating
+
+Supply an explicit calibrated plan and a wheel built from core commit
+`b1f780decc516808cfd3019d5e5b674457161f86`. Iris verifies the shared module
+bytes while the strict installed core continues to own checkpoint loading.
+[Shared steering implementation](https://github.com/HyperGAN/particle-sliders/pull/269)
+
+```bash
+iris-slider-infer --adapter "$RAW_ADAPTER" --prompt "$PROMPT" \
+  --strength "$CALIBRATED_STRENGTH" --gate-plan "$GATE_PLAN_JSON" \
+  --steering-wheel "$CORE_STEERING_WHEEL" --out "$OUTPUT_PNG"
+```
+
+The plan records `method`, `parameter`, and the `calibration_sha256` of
+the record that produced those settings. For CFP, provide the fitted unit
+`direction` in Iris solver-channel space and the calibrated threshold as
+`parameter`. For CLABS, provide the same type of direction, the calibrated
+bias, an explicit integer `seed`, and the `clabs` fields `mean`, `std`,
+`epsilon`, `setpoint`, `proportional_gain`, `integral_gain` and `beta`.
+The matched `random` control uses a rate and seed. All settings come from
+the caller's calibration record. Select one of `--gate-plan` and
+`--step-gains`. The gate accepts a source-matched native safetensors export
+whose metadata declares RAW weights and disabled EMA.
+
+Iris projects the FP32 spatial channel means of the noisy image entering the
+native denoiser before the adapter edit. The solver duplicates this state
+for CFG, so one decision controls the existing adapter scope for the whole
+native interval. Iris uses the shared CFP or CLABS allocation equations with
+its own routed adapter as the intervention. The sidecar records the
+calibration digest, native sigma grid, projections, probabilities, decisions
+and realized sigma-weighted strength. Replay the decisions with
+`--step-gains` using each effective strength divided by the original nominal
+strength.
+
+Fit the direction on separate matched positive and neutral Iris trajectories
+at the same solver coordinates and conditioning protocol. Calibrate the
+budget with the adapter active on a separate split and compare with matched
+OFF and constant-strength outputs on held-out cases using the intended-effect
+score. Assess catastrophic output failures independently. The archived
+Golden Hour RAW128 panel uses a different conditional-only runtime and
+provides fixed-schedule effect evidence for that cohort. Iris adaptive gains
+remain unmeasured.
+[Shared calibration and controls](https://github.com/HyperGAN/particle-sliders/blob/b1f780decc516808cfd3019d5e5b674457161f86/docs/strength-schedules.md)
+
 The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
 or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CPU.
 All archived raw resume and real-model training requests fail before checkpoint
-reads or model allocation/mutation. The fixture writes EMA `adapter.safetensors`
+reads or model allocation/mutation. The fixture writes RAW `adapter.safetensors`
 and `run.json`, marks `resume_supported=false`, and writes no `training.pt`.
 Use the default ParticleGAN trainer for supported training/resume.
 See [FORMULATION.md](FORMULATION.md) for the archived formulation.
