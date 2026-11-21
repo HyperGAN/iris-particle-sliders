@@ -1,8 +1,8 @@
 # Opt-in Iris HyperGAN/HNDL distribution
 
 The default **iris-particle-sliders 0.3.0** and separate
-**iris-particle-sliders-hndl 0.4.0rc1** both use Particle Sliders core 0.15.1
-at `c13890f8` with ParticleGAN 0.11.0. The default native profile retains
+**iris-particle-sliders-hndl 0.4.0rc1** both use Particle Sliders core 0.15.2
+at `ec1161f5` with ParticleGAN 0.11.1. The default native profile retains
 Iris routed projections and the shared spatial field critic. The opt-in
 distribution owns the vendored HNDL graph assets and pins its builder directly.
 Install exactly one distribution in a fresh environment. Their common Iris

@@ -14,7 +14,7 @@ from iris_sliders.teacher import load_prompts
 from iris_sliders.tiny import TinyRuntime
 from iris_sliders.train import build_game, configuration
 
-pytestmark = pytest.mark.skipif(version('particle-sliders-core') != '0.15.1',
+pytestmark = pytest.mark.skipif(version('particle-sliders-core') != '0.15.2',
                                 reason='requires separate exact HyperGAN/HNDL profile build')
 
 
@@ -39,7 +39,7 @@ def test_real_graphs_own_updates_and_preserve_native_zero(preset):
     base = deepcopy(runtime.model.state_dict())
     game = build_game(runtime, settings(preset=preset))
     try:
-        assert version('particlegan') == '0.11.0'
+        assert version('particlegan') == '0.11.1'
         assert game.response_shape == (1, 3, 16, 16)
         assert game._signature['resolved_penalty_domain'] == 'image'
         assert game.prior.z is game.backend.particles is game.network.particles
@@ -88,7 +88,7 @@ def test_profile_and_corrupted_checkpoint_reject_before_mutation():
             game.load_state_dict(changed)
         assert equal(before, game.state_dict())
         changed = deepcopy(before)
-        changed['config']['pg_version'] = '0.9.1'
+        changed['config']['pg_version'] = '99.0.0'
         with pytest.raises(ValueError):
             game.load_state_dict(changed)
         assert equal(before, game.state_dict())

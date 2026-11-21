@@ -1,6 +1,6 @@
 """Build a separate opt-in Iris HyperGAN/HNDL distribution; never publish it.
 
-The default pyproject installs the current native ParticleGAN 0.11.0 profile. The emitted sdist is complete
+The default pyproject installs the current native ParticleGAN 0.11.1 profile. The emitted sdist is complete
 and contains its own exact profile pyproject, so wheel rebuilds retain the pins.
 """
 import argparse
@@ -11,24 +11,6 @@ import sys
 import tempfile
 import tomllib
 from pathlib import Path
-
-
-def restore_pre_lr_runtime(root, destination):
-    """Keep the closed HNDL cohort's borrowed runtime bytes unchanged."""
-    import hashlib
-    import json
-    archive = root / 'cohorts/pre-lr-hndl'
-    manifest = json.loads((archive / 'manifest.json').read_text())
-    for relative, expected in manifest['files'].items():
-        data = (archive / relative).read_bytes()
-        if hashlib.sha256(data).hexdigest() != expected:
-            raise ValueError('archived HNDL runtime checksum differs: ' + relative)
-        (destination / relative).write_bytes(data)
-    (destination / 'src/iris_sliders/learning_rates.py').unlink(missing_ok=True)
-    # Archive ships in the sdist so its profile builder remains reproducible.
-    target = destination / 'cohorts/pre-lr-hndl'
-    if not target.exists():
-        shutil.copytree(archive, target)
 
 
 def stage(root, destination):
@@ -62,11 +44,6 @@ def stage(root, destination):
         if path.is_file() and (path.suffix in ('.md', '.json', '.toml', '.txt')
                                or path.name in ('LICENSE', 'NOTICE', 'MANIFEST.in', 'setup.py')):
             shutil.copy2(path, destination / path.name)
-    # Ship the old closed archive unchanged; never substitute its runtime into095.
-    shutil.copytree(root / 'cohorts/pre-lr-hndl', destination / 'cohorts/pre-lr-hndl')
-    # Keep the historical lock verbatim; the profile archive's active lock must
-    # describe its actual dependencies rather than repeating S081 provenance.
-    shutil.copy2(root / 'backend-s081.lock.json', destination / 'backend-s081.lock.json')
     lock = json.loads((root / 'backend.lock.json').read_text())
     lock['core'] = dict(repository=lock['core']['repository'], commit=core,
                         subdirectory='packages/particle-sliders-core', version=profile['core_version'],
@@ -78,8 +55,6 @@ def stage(root, destination):
     lock['network_profile'] = profile
     lock.pop('optional_reuse', None)
     (destination / 'backend.lock.json').write_text(json.dumps(lock, indent=2) + '\n')
-    with (destination / 'MANIFEST.in').open('a') as manifest:
-        manifest.write('\ninclude backend-s081.lock.json\n')
     (destination / 'pyproject.toml').write_text(text)
     metadata = tomllib.loads(text)['project']
     if (metadata['version'], metadata['requires-python']) != ('0.4.0rc1', '>=3.11,<3.15'):

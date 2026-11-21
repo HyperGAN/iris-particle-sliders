@@ -1,4 +1,4 @@
-> Current adoption: [published PG0.9.5 / core0.13.0](docs/pg095-adoption.md). Versioned earlier receipts below retain their original source scope; none establishes a PG0.9.5 native result.
+> Historical adoption: [archived release notes](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/pg095-adoption.md). Versioned earlier receipts below retain their original source scope; none establishes an archived ParticleGAN release native result.
 
 # Archived gmix formulation
 
@@ -69,7 +69,7 @@ does not promise linear image interpolation. Particles and routed maps remain ac
 at inference. Inference validates the entire checkpoint protocol against an independently constructed
 native protocol before loading models, including the requested CFG. Earlier unpublished fixture revisions stored raw critic/optimizer/RNG state.
 That archived raw resume path is now unsupported and emits no `training.pt`.
-Supported resumable state belongs to the default shared PG0.9.1 trainer.
+Supported resumable state belongs to the default shared the archived ParticleGAN release trainer.
 
 This revision fixes the first local prototype's CFG1/CFG3 mismatch, fixed pooling
 nullspace, particle context registration, control-majority normalization and dtype

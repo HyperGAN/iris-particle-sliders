@@ -1,7 +1,7 @@
 """Regenerate current source locks from an exact public VCS core installation.
 
 Run in the qualification environment after installing the reviewed core commit.
-Historical backend-s081.lock.json and s081-profile.json are never rewritten.
+Historical runtime locks live at the archived source revision.
 """
 import argparse
 import hashlib
@@ -24,17 +24,17 @@ def main():
     args = parser.parse_args()
     core = metadata.distribution('particle-sliders-core')
     direct = json.loads(core.read_text('direct_url.json') or '{}')
-    if direct.get('vcs_info', {}).get('commit_id') != args.core_commit or core.version != '0.15.1':
-        raise ValueError('install the exact reviewed public VCS core0.15.1 commit first')
-    if metadata.version('particlegan') != '0.11.0':
-        raise ValueError('install released ParticleGAN0.11.0 first')
+    if direct.get('vcs_info', {}).get('commit_id') != args.core_commit or core.version != '0.15.2':
+        raise ValueError('install the exact reviewed public VCS core0.15.2 commit first')
+    if metadata.version('particlegan') != '0.11.1':
+        raise ValueError('install released ParticleGAN0.11.1 first')
     root = Path(__file__).resolve().parents[1]
     sources = closure('particle_sliders') | closure('concept_slider_core')
     pg_sources = closure('particlegan')
     for relative in ('src/iris_sliders/stable-profile.json', 'src/iris_sliders_hndl/profile.json'):
         path = root / relative
         document = json.loads(path.read_text())
-        document.update(core_commit=args.core_commit, core_version=core.version, particlegan_version='0.11.0',
+        document.update(core_commit=args.core_commit, core_version=core.version, particlegan_version='0.11.1',
                         core_full_sources_sha256=sources, pg_full_sources_sha256=pg_sources)
         if "core_sources_sha256" in document:
             document["profile"] = "hypergan-hndl-engine-v1"
@@ -54,14 +54,15 @@ def main():
     lock['core'].update(commit=args.core_commit, version=core.version, source_sha256=sources,
                         source_map_scope='all installed non-cache core package source/data files')
     lock['particlegan'] = dict(repository='https://github.com/255BITS/ParticleGAN',
-        commit='b86f0379b4d887f4cde88d686aedc04661a2b61b', version='0.11.0',
-        release='https://github.com/255BITS/ParticleGAN/releases/tag/v0.11.0',
+        commit='d5dec2fe005305082acf382f0939a4bdb51c7131', version='0.11.1',
+        release='https://github.com/255BITS/ParticleGAN/releases/tag/v0.11.1',
         source_manifest='particle_sliders/engine_release.json', source_sha256=pg_sources,
         role='core transitive dependency; exact installed release source closure verified')
     lock['network_profile'] = 'native-engine-v1'
     if 'optional_observation' in lock and 'shared_api' in lock['optional_observation']:
         lock['optional_observation']['shared_api'] = 'iris_sliders.hypergan_diagnostics.response_diversity'
-    lock['historical_environment'] = 'requirements-s081.txt; backend-s081.lock.json'
+    lock['historical_environment'] = ('https://github.com/HyperGAN/iris-particle-sliders/tree/'
+                                       '7236ede009983b9fdbe020c5eed7c65a466ba408')
     path.write_text(json.dumps(lock, indent=2) + '\n')
 
 
