@@ -3,7 +3,7 @@
 # Archived gmix formulation
 
 This document describes `iris_sliders.legacy_train` only. The default trainer now
-uses installed `particle_sliders.pg09.ConditionalPG09` with native RGB fields; see
+uses installed `particle_sliders.engine.ConditionalParticleGAN` with native RGB fields; see
 [README.md](README.md). This historical formulation is retained only as an explicit CPU TinyRuntime
 fixture. Real archived training and all raw resume requests fail before model
 access, and the fixture emits no resumable training state.
