@@ -162,7 +162,16 @@ one gain per solver interval. For example, `--steps 4 --strength 0.5 --step-gain
 '[1.5, 1.5, 0.5, 0.5]'` illustrates the input format. Keep each effective
 strength within `[0, 1]`. The image sidecar records the native shifted sigma
 grid and applied strengths. Constant-gain parity is verified with the official
-solver on CPU. A matched finished-image gain is pending.
+solver on CPU.
+
+On the archived Golden Hour RAW128 profile, early-heavy strength raised the
+four-case mean finished-image gain from +0.00509 to +0.00755 at the same
+nominal strength of 0.5. It improved all four cases. All twelve new images
+passed independent integrity. This profile uses the RAW128 checkpoint with the
+adapter on the positive branch of native CFG3, 1024-pixel images, and the
+100-step second-order FlowDPMSolver. The evidence includes the native sigma
+grid and exact gains for that replay.
+[Per-case evidence](evidence/golden-hour-raw128-scheduled-strength.json)
 
 The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
 or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CPU.
