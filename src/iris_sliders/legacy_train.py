@@ -212,7 +212,7 @@ def _require_fixture_mode(*, dummy, resume, allow_legacy):
     if not allow_legacy:
         raise ValueError("archived gmix fixture requires allow_legacy=True or --allow-legacy")
     if resume is not None:
-        raise ValueError("archived raw resume is unsupported; use iris-slider-train for ParticleGAN 0.11.0")
+        raise ValueError("archived raw resume is unsupported; use iris-slider-train for ParticleGAN 0.11.1")
     if not dummy:
         raise ValueError(
             "archived real training is unsupported; only the explicit CPU dummy fixture is available"

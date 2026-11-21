@@ -1,22 +1,8 @@
-> Current adoption: [published PG0.9.5 / core0.13.0](docs/pg095-adoption.md). Versioned earlier receipts below retain their original source scope; none establishes a PG0.9.5 native result.
-
-Current canonical package pins and installed qualification are in
-[PG094-ADOPTION.md](PG094-ADOPTION.md). The shared session/native interfaces below
-remain supported. The S081 receipts retain their historical source identities.
-
-For the separate HyperGAN develop/HNDL profile, use the opt-in build described in
-[HYPERGAN-HNDL.md](HYPERGAN-HNDL.md). It adds a signed network profile to the same
-session and native-inference contracts. The S081 pin and receipts below remain
-historical evidence for that environment; packets are not migrated implicitly.
-
 # Iris common lifecycle
 
-Exact tested shared pin: `32f6830f6402e85aa77b6631db64fcbbb2131f6b` / core 0.8.1.
-This PG0.9.1 runtime passed **60 installed CPU checks**; the pin is publicly
-reachable through merged common-core PR144 ancestry. The product remains a draft
-for independent review. See [qualification status](PUBLICATION-STATUS.md).
-Native solver/render parity remains unqualified.
-The original `fd89e1c` / core 0.7.0 milestone and cohorts remain preserved.
+The installed product uses shared core 0.15.2 and ParticleGAN 0.11.1.
+Use the [separate HNDL build](HYPERGAN-HNDL.md) for the optional network profile.
+Use the [archived lifecycle](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/LIFECYCLE.md) to reproduce earlier cohorts.
 
 This derivative registers backend `iris` for `particle_sliders.lifecycle`.
 The core owns preparation dispatch, updates, checkpoints, export,

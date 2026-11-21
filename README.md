@@ -1,6 +1,6 @@
 > **Calculated memory planning:** training **80 GiB VRAM / 64 GiB host RAM** (512×512, B=2, FP32 DiT/adapter; BF16 TE); sampling **68 GiB VRAM / 64 GiB host RAM** (1024×1024). See [MEMORY.md](MEMORY.md) for checkpointed/phase variants, attention fallback and exact limits. These are conservative calculated budgets, not measured peaks.
 
-> **Current source uses Particle Sliders core 0.15.1 and ParticleGAN 0.11.0.** New runs use a fresh RAW-only cohort. Saved evidence retains its original source and recipe.
+> **Current source uses Particle Sliders core 0.15.2 and ParticleGAN 0.11.1.** New runs use a fresh RAW-only cohort. Saved evidence retains its original source and recipe.
 
 **Opt-in new-cohort initialization:** [cached fresh, strict FULL and RAW velocity API](docs/explicit-cached-fresh-initialization.md). Existing cohorts and defaults stay unchanged.
 
@@ -15,14 +15,11 @@ and scores; no repeated search or additional confirmation is required.
 
 The earlier native128 RAW128 **response-SSE diagnostic** selected G0.004;
 its development `0.41552692957922055` and six-example held-out
-`0.46889995235620385` remain in [historical evidence](LEARNING-RATES.md#native128-pg095-research-recipe).
+`0.46889995235620385` remain in [historical evidence](LEARNING-RATES.md#historical-native128-research-recipe).
 It is not the current finished-output selector. Package defaults and the separate
 public factory/HNDL/render qualification boundaries remain unchanged.
 
-The PG0.9.4 overview below records the earlier source and qualification history.
-
-The default iris-particle-sliders 0.3.0 now uses shared core 0.12.0 and released ParticleGAN 0.9.4.
-See the [historical release qualification](PG094-ADOPTION.md).
+Earlier qualifications and their reproduction commands remain in the [archived source](https://github.com/HyperGAN/iris-particle-sliders/tree/7236ede009983b9fdbe020c5eed7c65a466ba408).
 A separate opt-in build now connects the actual native Iris hooks to shared
 HyperGAN develop/HNDL projection and spatial critic graphs. See
 [the profile, exact pins and qualification limits](HYPERGAN-HNDL.md).
@@ -32,7 +29,7 @@ For the new common session/CLI interface, see [LIFECYCLE.md](LIFECYCLE.md).
 # Iris particle sliders
 
 Native Iris-3B routed particle adapters trained through the installed
-`particle-sliders-core` API and released **ParticleGAN 0.9.4**. The default
+`particle-sliders-core` API and released **ParticleGAN 0.11.1**. The default
 `iris-slider-train` command executes `particle_sliders.engine.ConditionalParticleGAN`.
 It trains on actual `[1,3,H,W]` RGB velocity fields through the existing Iris hooks;
 it has no pixel MSE, reconstruction loss, local optimizer or vendored GAN loop.
@@ -166,7 +163,7 @@ or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CP
 All archived raw resume and real-model training requests fail before checkpoint
 reads or model allocation/mutation. The fixture writes EMA `adapter.safetensors`
 and `run.json`, marks `resume_supported=false`, and writes no `training.pt`.
-Use the default PG0.9.4 trainer for supported training/resume.
+Use the default ParticleGAN trainer for supported training/resume.
 See [FORMULATION.md](FORMULATION.md) for the archived formulation.
 
 Adapter setup closes its hooks if a device transfer, later registration, or
@@ -176,6 +173,7 @@ checkpoint identity: new qualification uses a new cohort, with no automatic
 rebind of historical checkpoints or active training sources.
 
 Source: Apache-2.0. Native Iris/Qwen: Apache-2.0. Shared core/ParticleGAN: MIT.
-No model/adapter publication or merge is performed by this audit.
 
 Learning-rate controls and preserved defaults: [LEARNING-RATES.md](LEARNING-RATES.md).
+
+Earlier training environments, packaging checks and public qualification evidence remain available in the [archived source](https://github.com/HyperGAN/iris-particle-sliders/tree/7236ede009983b9fdbe020c5eed7c65a466ba408).

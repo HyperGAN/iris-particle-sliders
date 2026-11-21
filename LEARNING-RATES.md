@@ -39,7 +39,7 @@ reuse valid completed proofs rather than repeat them.
 
 The old response-error studies treated media/preservation observations as optional diagnostics. Current LR selection instead measures the requested effect in finished outputs as defined above.
 
-## Native128 PG0.9.5 research recipe
+## Historical native128 research recipe
 
 **Historical response-SSE diagnostic, not the current finished-image recommendation.** The G0.004 RAW128 values below remain unchanged; current Golden Hour guidance is G0.012 RAW32 in the linked scope.
 
@@ -65,7 +65,7 @@ response replay. The development equal-example RAW relative SSE is
 **0.41552692957922055** over three examples. Independent held-out confirmation
 is **0.46889995235620385** over six subject/seed examples (12 fields, no
 zero-energy exclusions), recomputed exactly from saved fields by a separate
-CPU FP64 audit. See the [sanitized evidence](docs/native-lr-confirmation-pg095-20261105.json).
+CPU FP64 audit. See the [sanitized evidence](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/native-lr-confirmation-pg095-20261105.json).
 
 Training, evaluation, export and inference use RAW weights throughout. The
 public session explicitly uses `ema_decay=None`; the official GAN recipe
@@ -73,7 +73,7 @@ records disabled `ema_decay=0.0`. No EMA weight state, averaging, comparison
 or selection is used.
 
 This is a measured research cohort on product `5e852aa`, core `3dd672a`
-(0.13.0) and official ParticleGAN 0.9.5. Its native runtime is Torch
+(0.13.0) and the archived ParticleGAN release. Its native runtime is Torch
 2.11.0+cu128 with deterministic math attention and TF32 disabled. The separately
 prepared text conditioning retains Torch 2.14.1+cpu / Transformers 5.22.1,
 BF16 SDPA and four CPU threads. The research native-only backend uses the

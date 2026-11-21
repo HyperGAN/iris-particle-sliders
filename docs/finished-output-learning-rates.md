@@ -51,7 +51,7 @@ The recorded image consumer used 100 steps/order2/shift4, FP32 base/integration,
 BF16 autocast, conditional CFG3 and outer CFG1. Its source-bound consumer is
 separate from the public default response-only Iris factory; this documentation
 does not unlock generic rendering or convert historical RAWs. The old
-[G0.004 native128 RAW128 response-error result](../LEARNING-RATES.md#native128-pg095-research-recipe)
+[G0.004 native128 RAW128 response-error result](../LEARNING-RATES.md#historical-native128-research-recipe)
 keeps its original scope as diagnostic history. A fixed-D/bank G result is not a
 joint optimum; keeping multipliers fixed while changing G is a coupled change.
 

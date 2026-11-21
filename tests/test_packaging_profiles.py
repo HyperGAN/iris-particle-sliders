@@ -17,7 +17,7 @@ def test_profile_staging_preserves_default_and_binds_exact_dependencies(tmp_path
     stable = tomllib.loads(before.decode())['project']
     modern = tomllib.loads((tmp_path / 'pyproject.toml').read_text())['project']
     assert stable['version'] == '0.3.0'
-    assert 'c13890f8e2a1ecf1dc8eb9f2a37f9187cb9fea78' in next(
+    assert 'ec1161f5d74481be3540cb0dfa63d0e8f8b54e90' in next(
         d for d in stable['dependencies'] if d.startswith('particle-sliders-core '))
     assert modern['version'] == '0.4.0rc1' and modern['requires-python'] == '>=3.11,<3.15'
     profile = json.loads((tmp_path / 'src/iris_sliders_hndl/profile.json').read_text())
@@ -29,12 +29,12 @@ def test_profile_staging_preserves_default_and_binds_exact_dependencies(tmp_path
     assert 'iris-slider-train-legacy' not in modern['scripts']
     assert modern['readme'] == 'HYPERGAN-HNDL.md'
     assert tomllib.loads((root / 'pyproject.toml').read_text())['tool']['setuptools']['packages']['find']['exclude'] == ['iris_sliders_hndl*']
-    assert 'a191c999e931dc9bd7d1f9dcb8f2c200048d342d' in (tmp_path / 'requirements-s081.txt').read_text()
+    assert not (tmp_path / 'requirements-s081.txt').exists()
     assert (tmp_path / 'HYPERGAN-HNDL.md').is_file()
 
-    assert (tmp_path / 'backend-s081.lock.json').read_bytes() == (root / 'backend-s081.lock.json').read_bytes()
+    assert not (tmp_path / 'backend-s081.lock.json').exists()
     lock = json.loads((tmp_path / 'backend.lock.json').read_text())
     assert lock['core']['commit'] == profile['core_commit']
-    assert lock['particlegan']['version'] == '0.11.0'
+    assert lock['particlegan']['version'] == '0.11.1'
     assert lock['network_profile']['hypergan_commit'] == profile['hypergan_commit']
     assert 'canonical_receipt_sha256' not in lock['core']
