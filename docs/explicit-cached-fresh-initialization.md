@@ -11,10 +11,10 @@ RECORD. Install the [optional HNDL distribution](../HYPERGAN-HNDL.md) in its
 own environment to use that profile.
 
 The [earlier qualification](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/explicit-cached-fresh-initialization.md)
-records four passing installed-wheel CPU cases on the captured
-`native-pg095-v1` profile. Those cases used a tiny random Iris model and
-synthetic prepared responses to test package ownership, initialization,
-whole-state continuation, and RAW velocity inference.
+records four passing installed-wheel CPU cases on its original runtime profile.
+Those cases used a tiny random Iris model and synthetic prepared responses to
+test package ownership, initialization, whole-state continuation, and RAW
+velocity inference.
 
 Supply the staged native runtime. For non-CPU execution, the resource owner's
 admission callback must return `True` before cache transfer or component

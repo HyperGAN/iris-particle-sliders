@@ -45,9 +45,8 @@ iris-slider-train --print-card
 
 The shared package and upstream `speridlabs/iris-3b` are immutable Git dependencies.
 No native runtime, model weights or shared implementation is vendored here.
-[backend.lock.json](backend.lock.json) records source/model pins. The original
-inspection head was `6a226126623fb17c87fe22b86173fe2fcff4bf3e`, verified against
-GitHub `main` on 2026-10-17; this proposal uses an isolated checkout.
+[backend.lock.json](backend.lock.json) records source and model pins.
+See [VALIDATION.md](VALIDATION.md) for the historical qualification archive.
 
 ## CPU software check
 
