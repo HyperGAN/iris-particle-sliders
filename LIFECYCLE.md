@@ -61,9 +61,9 @@ pretrained behavior, GPU memory, convergence or image quality.
 The original `iris-slider-train`/`iris-slider-response` commands retain their
 product packet schemas and loaders. Use `particle-slider` for common session
 packets and RAW-only exports; neither entrypoint silently converts the other's
-packets. Historical source receipts under `evidence/derivative-audit` describe
-their original PR1 cohort and are not qualification for a new lifecycle head.
-See `INTEGRATION-AUDIT.md` for the fresh integration inventory and deferred checks.
+packets. The [archived derivative audit](https://github.com/HyperGAN/iris-particle-sliders/tree/9fea40c6a942c4f3fc686486df9a7133da43f6d7/evidence/derivative-audit)
+records validation for the original PR1 cohort. See
+[INTEGRATION-AUDIT.md](INTEGRATION-AUDIT.md) for its integration inventory and deferred checks.
 
 ## Native-only velocity inference (v2)
 

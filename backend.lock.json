@@ -321,7 +321,7 @@
     "objective": "g_adv+public_prior;d_adv+public_penalty",
     "rendering": "unqualified; raw response evaluation only"
   },
-  "adapter_format": "iris-conditional-pg09-response-v1",
+  "adapter_format": "iris-conditional-engine-response-v1",
   "optional_reuse": {
     "hndl": {
       "version": "0.8.2",
