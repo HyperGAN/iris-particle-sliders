@@ -1,19 +1,32 @@
 # Opt-in cached fresh initialization
 
-`iris_sliders_fresh95` is a separate Python API for a genuinely fresh Iris cohort or exact continuation of its own FULL checkpoint. Existing commands, shared registrations, package defaults, saved cohorts and [measured learning-rate results](finished-output-learning-rates.md) keep their original initialization and loaders. The new policy does not inherit an old cohort's measured effect or quality claim.
+`iris_sliders_scoped` provides a separate Python API for starting a fresh Iris cohort or continuing from its exact FULL checkpoint. Use the original source checkout and loaders for saved cohorts and [measured learning-rate results](finished-output-learning-rates.md).
 
-Install the owning Iris distribution normally in a clean environment with its pinned dependencies. The existing `src` package discovery includes this namespace. The API requires its actual Python files in that distribution's generated RECORD; a source-directory overlay is refused. All original stable/profile, imported-core, PG source and ownership checks remain enabled. This route retains core0.13.0 commit `3dd672a7f9b8c169daef90fd63e4bb42b9ddc423` and the archived ParticleGAN release. It does not upgrade an old environment or admit a replacement dependency by version label.
+Install the Iris distribution from this checkout in a clean environment with
+`python -m pip install .`. It pins Particle Sliders core 0.15.2 at
+`ec1161f5d74481be3540cb0dfa63d0e8f8b54e90` and resolves ParticleGAN 0.11.1.
+The scoped API verifies the installed runtime profile, core Git origin,
+core and ParticleGAN source bytes, and ownership in the distribution's wheel
+RECORD. Install the [optional HNDL distribution](../HYPERGAN-HNDL.md) in its
+own environment to use that profile.
 
-The stable `native-pg095-v1` route was built from sdist, built as a wheel, installed in a new isolated target and exercised through four new CPU software cases. All four passed with no failures, errors, skips, blocked calls or real teachers. Both original guards and the new namespace's RECORD guard passed. The cases use a random tiny original Iris model and synthetic prepared responses; one tiny software update tests full optimizer/RNG restoration. This establishes software and packaging integration, not pretrained-model execution, image quality or a newly measured LR recipe. The optional HNDL profile retains its separate existing qualification boundary.
+The [earlier qualification](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/explicit-cached-fresh-initialization.md)
+records four passing installed-wheel CPU cases on the captured
+`native-pg095-v1` profile. Those cases used a tiny random Iris model and
+synthetic prepared responses to test package ownership, initialization,
+whole-state continuation, and RAW velocity inference.
 
-The resource owner supplies the staged native runtime and explicit admission callback. The callback must return `True` before cache transfer or added component/game construction. This library does not load models, download files, select a GPU or schedule jobs for the caller. A missing, corrupt, incomplete or differently bound cache fails without recreating teachers.
+Supply the staged native runtime. For non-CPU execution, the resource owner's
+admission callback must return `True` before cache transfer or component
+construction. A missing, corrupt, incomplete or differently bound cache fails
+before training begins.
 
 ## Save already completed teacher data
 
 Cache only original `PreparedResponse` objects whose native trajectory and positive/neutral teacher responses have already completed. Preserve full encoded conditioning/masks/null input, noise, time, CFG and complete RGB target/neutral fields. Supply the actual completed-output origins; these records describe provenance and do not issue qualification. A missing or UNKNOWN teacher cannot be reconstructed or relabeled by this function.
 
 ```python
-from iris_sliders_fresh95 import save_prepared_cache
+from iris_sliders_scoped import save_prepared_cache
 
 cache_pin = save_prepared_cache(
     new_cache_path,
@@ -33,7 +46,7 @@ Use the unchanged `iris_sliders.train.configuration` function for the original r
 
 ```python
 from iris_sliders.train import configuration
-from iris_sliders_fresh95 import open_training
+from iris_sliders_scoped import open_training
 
 config = configuration(
     rows, steps=128, seed=7, batch=2,
@@ -48,7 +61,7 @@ config = configuration(
 
 trainer = open_training(
     runtime, cache_pin, new_output_directory,
-    mode="fresh", cohort_id="my-explicit-Iris-fresh95-cohort",
+    mode="fresh", cohort_id="my-iris-scoped-cohort",
     config=config, ema_decay=None, owner_admission=owner_admission,
 )
 try:
@@ -60,7 +73,7 @@ finally:
 
 resumed = open_training(
     runtime, cache_pin, another_new_output_directory,
-    mode="resume", cohort_id="my-explicit-Iris-fresh95-cohort",
+    mode="resume", cohort_id="my-iris-scoped-cohort",
     config=config, resume=full_pin, ema_decay=None,
     owner_admission=owner_admission,
 )
@@ -74,7 +87,7 @@ Resume accepts only this profile's typed whole-file FULL pin, exact config/cohor
 ## RAW native velocity
 
 ```python
-from iris_sliders_fresh95 import open_inference
+from iris_sliders_scoped import open_inference
 
 inference = open_inference(
     runtime, raw=raw_pin, owner_admission=owner_admission,
