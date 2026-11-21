@@ -158,6 +158,13 @@ The archived `iris-native-routed-particle-v3` safetensors format remains availab
 to `iris-slider-infer` for historical use with matching source pins. Earlier core
 pins are rejected; retain the original pinned source/environment for those artifacts.
 
+On that native render command, add `--step-gains` with a JSON array containing
+one gain per solver interval. For example, `--steps 4 --strength 0.5 --step-gains
+'[1.5, 1.5, 0.5, 0.5]'` illustrates the input format. Keep each effective
+strength within `[0, 1]`. The image sidecar records the native shifted sigma
+grid and applied strengths. Constant-gain parity is verified with the official
+solver on CPU. A matched finished-image gain is pending.
+
 The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
 or `legacy_train.train(TinyRuntime(), ..., allow_legacy=True, dummy=True)` on CPU.
 All archived raw resume and real-model training requests fail before checkpoint

@@ -23,6 +23,7 @@ def main(argv=None):
     parser.add_argument("--height", type=int, default=1024)
     parser.add_argument("--width", type=int, default=1024)
     parser.add_argument("--steps", type=int, default=100)
+    parser.add_argument("--step-gains", help="JSON array with one gain per solver interval")
     parser.add_argument("--cfg-scale", type=float, default=3.0)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--cache-dir", type=Path, default=Path("/ml2/iris-particle-sliders/cache"))
@@ -32,12 +33,23 @@ def main(argv=None):
     parser.add_argument("--text-device", default="cpu")
     parser.add_argument("--allow-hub", action="store_true")
     args = parser.parse_args(argv)
+    strengths = None
+    if args.step_gains is not None:
+        from .scheduled_render import step_strengths
+
+        try:
+            strengths = step_strengths(args.strength, json.loads(args.step_gains), args.steps)
+        except ValueError as error:
+            parser.error(str(error))
     if args.adapter.suffix == ".pt":
-        raise ValueError("ParticleGAN 0.11.1 exports support iris-slider-response only; native FlowDPMSolver rendering is unqualified")
+        raise ValueError(
+            "ParticleGAN 0.11.1 exports support iris-slider-response only; native FlowDPMSolver rendering is unqualified"
+        )
     if Path("/ml2") not in args.out.resolve().parents:
         raise ValueError("image outputs must live under /ml2")
     from .profiles import select_profile, verify_runtime
-    select_profile('native-engine-v1')
+
+    select_profile("native-engine-v1")
     verify_runtime()
     saved = read_metadata(args.adapter)
     if saved.get("validation", {}).get("dummy"):
@@ -68,15 +80,29 @@ def main(argv=None):
             protocol=protocol,
         )
         load_adapter(args.adapter, bank, particles, expected)
-        with bank.active(particles, args.strength), torch.no_grad():
-            image = runtime.render(
-                args.prompt,
-                seed=args.seed,
-                height=args.height,
-                width=args.width,
-                steps=args.steps,
-                cfg_scale=args.cfg_scale,
-            )[0]
+        request = {
+            "prompt": args.prompt,
+            "seed": args.seed,
+            "height": args.height,
+            "width": args.width,
+            "steps": args.steps,
+            "cfg_scale": args.cfg_scale,
+        }
+        schedule_receipt = {}
+        with torch.no_grad():
+            if strengths is None:
+                with bank.active(particles, args.strength):
+                    images = runtime.render(**request)
+            else:
+                from .scheduled_render import generate
+
+                images, schedule_receipt = generate(
+                    runtime,
+                    lambda value: bank.active(particles, value),
+                    strengths=strengths,
+                    **request,
+                )
+        image = images[0]
         pixels = ((image.clamp(-1, 1) + 1) * 127.5).round().byte().permute(1, 2, 0).cpu().numpy()
         args.out.parent.mkdir(parents=True, exist_ok=True)
         Image.fromarray(pixels).save(args.out)
@@ -96,6 +122,7 @@ def main(argv=None):
                     "model_sha256": runtime.base_sha256,
                     "text_revision": saved["text_revision"],
                     "pixel_range": [-1, 1],
+                    **schedule_receipt,
                 },
                 indent=2,
             )
