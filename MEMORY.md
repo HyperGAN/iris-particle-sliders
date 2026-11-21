@@ -41,7 +41,7 @@ Cache bound for the training profile: **128 rows**, each with three FP32 native 
 
 ## Activation, cache and host calculation
 
-The auditable inputs and per-profile subtotals are in [source-facts.json](docs/memory/source-facts.json). For a transformer envelope, let `N=image tokens+bounded text tokens`, `D=hidden width`, `I=FFN width`, `H=attention heads`, `L=covered blocks`, and `B=simultaneously retained native graphs`:
+The auditable inputs and per-profile subtotals are in [source-facts.json](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/memory/source-facts.json). For a transformer envelope, let `N=image tokens+bounded text tokens`, `D=hidden width`, `I=FFN width`, `H=attention heads`, `L=covered blocks`, and `B=simultaneously retained native graphs`:
 
 - One-block inference allowance: `4B(16ND+6NI)` bytes. The4-byte coefficient deliberately covers FP32 intermediates even for BF16 weights;16 and6 allow Q/K/V/output, normalization/residual, gated FFN and adapter intermediates.
 - Uncheckpointed training allowance: `4LB(16ND+6NI)`; checkpointed allowance: `4(4LBND+2B(16ND+6NI))`. Checkpointing saves layer inputs and recomputes block internals; it does not remove the frozen model, adapter or critic.
@@ -60,7 +60,7 @@ This profile's text-state allowance is **44,236,800 bytes** (0.041 GiB): bounded
 - [src/iris_sliders/adapters.py](src/iris_sliders/adapters.py)
 - [src/iris_sliders/train.py](src/iris_sliders/train.py)
 - [src/iris_sliders/teacher.py](src/iris_sliders/teacher.py)
-- [Captured architecture, published file/index sizes and arithmetic](docs/memory/source-facts.json) retains exact model revisions, metadata SHA256s and direct Hugging Face config URLs. No weights were downloaded or opened for this calculation.
+- [Captured architecture, published file/index sizes and arithmetic](https://github.com/HyperGAN/iris-particle-sliders/blob/7236ede009983b9fdbe020c5eed7c65a466ba408/docs/memory/source-facts.json) retains exact model revisions, metadata SHA256s and direct Hugging Face config URLs. No weights were downloaded or opened for this calculation.
 - Optimizer facts: the archived ParticleGAN release `recipes.py` (`bcap`/`bispf_optimized`, lines1435–1451), `optim/dualnorm.py` momentum/state branch, and `optim/direction_blend.py` FP64 normals. These are part of the dependency selected by the repository's existing core lock; their source facts are recorded in the combined calculation report.
 
 Documentation was calculated from source and published metadata on 2026-11-14. No model construction, import of Torch/Diffusers, forward pass, benchmark, sampling, training or new GPU work was performed.
