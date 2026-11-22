@@ -211,10 +211,21 @@ Fit the direction on separate matched positive and neutral Iris trajectories
 at the same solver coordinates and conditioning protocol. Calibrate the
 budget with the adapter active on a separate split and compare with matched
 OFF and constant-strength outputs on held-out cases using the intended-effect
-score. Assess catastrophic output failures independently. The archived
-Golden Hour RAW128 panel uses a different conditional-only runtime and
-provides fixed-schedule effect evidence for that cohort. Iris adaptive gains
-remain unmeasured.
+score. Assess catastrophic output failures independently.
+
+On four held-out Golden Hour RAW128 cases, CFP averaged +0.00510553 over
+OFF and +0.00405687 over its same-dose constant. CLABS averaged +0.00513827
+over OFF and +0.00440889 over its same-dose constant, with three wins and one
+tie. All four matched comparisons for each gate passed independent image
+integrity checks. The random timing comparison has incomplete integrity
+coverage. The [per-case evidence](docs/golden-hour-raw128-adaptive-strength.json)
+records the fitted plans, calibration, native sigma grid, realized strengths,
+and image hashes.
+
+This study used the captured ParticleGAN 0.10.1 RAW128 checkpoint and a
+conditional-only CFG3 adapter scope. The CLI example above uses the joint CFG
+forward. The separate fixed early-heavy study used the full integrated dose
+of constant strength 0.5.
 [Shared calibration and controls](https://github.com/HyperGAN/particle-sliders/blob/b1f780decc516808cfd3019d5e5b674457161f86/docs/strength-schedules.md)
 
 The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
