@@ -214,13 +214,19 @@ OFF and constant-strength outputs on held-out cases using the intended-effect
 score. Assess catastrophic output failures independently.
 
 On four held-out Golden Hour RAW128 cases, CFP averaged +0.00510553 over
-OFF and +0.00405687 over its same-dose constant. CLABS averaged +0.00513827
-over OFF and +0.00440889 over its same-dose constant, with three wins and one
+OFF and +0.00405687 over its constant control. CLABS averaged +0.00513827
+over OFF and +0.00440889 over its constant control, with three wins and one
 tie. All four matched comparisons for each gate passed independent image
 integrity checks. The random timing comparison has incomplete integrity
 coverage. The [per-case evidence](docs/golden-hour-raw128-adaptive-strength.json)
 records the fitted plans, calibration, native sigma grid, realized strengths,
 and image hashes.
+
+The pinned CUDA source identifies FP32 as the scalar multiplication precision
+for this captured runtime. All eight CFP and CLABS controls use the nearest
+representable FP32 constant on their native sigma grid. Two match the gated
+scalar dose exactly. The largest absolute dose difference is 9.67e-9.
+[Pinned CUDA multiplication](https://github.com/pytorch/pytorch/blob/70d99e998b4955e0049d13a98d77ae1b14db1f45/aten/src/ATen/native/cuda/BinaryMulKernel.cu#L33-L39) · [Shared exact-dose check](https://github.com/HyperGAN/particle-sliders/commit/07dbd331c3a548709949032c01ce19e7c64a2520)
 
 This study used the captured ParticleGAN 0.10.1 RAW128 checkpoint and a
 conditional-only CFG3 adapter scope. The CLI example above uses the joint CFG
