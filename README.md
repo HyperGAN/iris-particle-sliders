@@ -228,10 +228,44 @@ representable FP32 constant on their native sigma grid. Two match the gated
 scalar dose exactly. The largest absolute dose difference is 9.67e-9.
 [Pinned CUDA multiplication](https://github.com/pytorch/pytorch/blob/70d99e998b4955e0049d13a98d77ae1b14db1f45/aten/src/ATen/native/cuda/BinaryMulKernel.cu#L33-L39) · [Shared exact-dose check](https://github.com/HyperGAN/particle-sliders/commit/07dbd331c3a548709949032c01ce19e7c64a2520)
 
-This study used the captured ParticleGAN 0.10.1 RAW128 checkpoint and a
-conditional-only CFG3 adapter scope. The CLI example above uses the joint CFG
-forward. The separate fixed early-heavy study used the full integrated dose
-of constant strength 0.5.
+#### Replay the measured Golden Hour RAW128 CLABS profile
+
+Use the archived ParticleGAN 0.10.1 RAW128 response runtime and the frozen
+conditioning named in the per-case evidence. The captured sampler uses
+1024 × 1024 FP32 RGB, 100 second-order FlowDPMSolver intervals with shift 4,
+and BF16 denoiser autocast. It applies the resolved adapter strength to the
+positive prediction at CFG 3 and uses strength zero for the separate negative
+prediction. The public `iris-slider-infer` example uses the joint CFG forward
+and the source-matched safetensors format.
+
+The recorded nominal strength is 0.5. Active calibration selected CLABS
+bias `-0.12136021007487631` at 201 of 400 firings. The per-case evidence
+includes the fitted direction, feedback parameters, calibration digest,
+checkpoint digest, native noise seeds, and exact decimal gate seeds. Parse
+the gate seed as an integer to preserve all 64 bits.
+[Measured plan and per-case evidence](docs/golden-hour-raw128-adaptive-strength.json)
+
+With the original local capture available, set `IRIS_CAPTURED_CAMPAIGN` to its
+campaign directory, `IRIS_CAPTURED_REPLAY` to the captured replay directory
+containing `captured_replay.py`, and `NEW_REPLAY_DIR` to an unused output
+directory. The captured command prepares the registered CLABS case with its
+original plan.
+
+```bash
+CUDA_VISIBLE_DEVICES='' HIP_VISIBLE_DEVICES='' \
+  PYTHONPATH="$IRIS_CAPTURED_CAMPAIGN:$IRIS_CAPTURED_CAMPAIGN/pg0101-rollout-v1/site:$IRIS_CAPTURED_CAMPAIGN/pg0101-rollout-v1/stock-core-src" \
+  "$IRIS_CAPTURED_CAMPAIGN/iris-env/bin/python" -B "$IRIS_CAPTURED_REPLAY/captured_replay.py" \
+  --stage "$NEW_REPLAY_DIR" --method clabs --case case0 --arm gated
+```
+
+Preparation checks the archived plan, gate decisions, and dose before writing
+`prepared-replay.json` with the original guardian command and environment.
+The guarded replay verifies the native pre-edit trace and PNG hash. Use
+`--arm constant` with a separate output directory to replay that case’s
+recorded comparison.
+
+The separate fixed early-heavy study used the full integrated dose of
+constant strength 0.5.
 [Shared calibration and controls](https://github.com/HyperGAN/particle-sliders/blob/b1f780decc516808cfd3019d5e5b674457161f86/docs/strength-schedules.md)
 
 The archived trainer is restricted to `iris-slider-train-legacy --allow-legacy --dummy`,
